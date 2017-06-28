@@ -14,8 +14,6 @@ class BQFPSLabel: UILabel {
     private var count: Int = 0
     private var lastTime: TimeInterval = 0
     private var link: CADisplayLink!
-    //MARK: - ***** Class Method *****
-    
     //MARK: - ***** initialize Method *****
     
     override init(frame: CGRect) {
@@ -28,25 +26,19 @@ class BQFPSLabel: UILabel {
         fatalError("init(coder:) has not been implemented")
     }
     deinit {
-        print("\(self.classForCoder) 释放了")
-    }
-    //MARK: - ***** public Method *****
-    override func removeFromSuperview() {
         self.link.invalidate()
-        super.removeFromSuperview()
+        print("\(self.classForCoder) 释放了")
     }
     //MARK: - ***** private Method *****
     private func initData() {
         self.text = "60 fps"
         self.textAlignment = .center
-        self.link = CADisplayLink(target: self, selector: #selector(updateLink(link:)))
+        self.link = CADisplayLink(target: BQWeakProxy(target: self), selector: #selector(updateLink(link:)))
         self.link.add(to: RunLoop.main, forMode: .commonModes)
     }
     private func initUI() {
         self.backgroundColor = UIColor.white
     }
-    //MARK: - ***** LoadData Method *****
-    
     //MARK: - ***** respond event Method *****
     @objc private func updateLink(link: CADisplayLink) {
         if self.lastTime == 0 {
@@ -62,9 +54,5 @@ class BQFPSLabel: UILabel {
         self.count = 0
         self.lastTime = link.timestamp
         self.text = String("\(fps) fps")
-    }
-    //MARK: - ***** Protocol *****
-    
-    //MARK: - ***** create Method *****
-    
+    } 
 }
