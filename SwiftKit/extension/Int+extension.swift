@@ -67,4 +67,24 @@ extension Int {
         
         return UIColor.black
     }
+    // year day hour minute second to TimeInterval
+    var year: TimeInterval {
+        return 365 * self.day
+    }
+    
+    var day: TimeInterval {
+        return 24 * self.hour
+    }
+    
+    var hour: TimeInterval {
+        return 60 * self.minute
+    }
+
+    var minute: TimeInterval {
+        return 60 * self.second
+    }
+    
+    var second: TimeInterval {
+        return TimeInterval(self)
+    }
 }
