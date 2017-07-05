@@ -1,0 +1,8 @@
+"BQRefreshHeaderIdleText" = "下拉可以刷新";
+"BQRefreshHeaderPullingText" = "鬆開立即刷新";
+"BQRefreshHeaderRefreshingText" = "正在刷新數據中...";
+
+"BQRefreshAutoFooterIdleText" = "點擊或上拉加載更多";
+"BQRefreshAutoFooterRefreshingText" = "正在加載更多的數據...";
+"BQRefreshAutoFooterNoMoreDataText" = "已經全部加載完畢";
+
