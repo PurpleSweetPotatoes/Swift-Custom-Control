@@ -61,11 +61,11 @@ class BQRefreshFooterView: BQRefreshView {
         self.addGestureRecognizer(tap)
     }
     @objc private func beginAnimation() {
-        self.refreshBlock()
         self.status = .refreshing
         self.stateLab.text = Bundle.refreshString(key: .footRefresh)
         self.loadingView.isHidden = false
         self.loadingView.startAnimating()
+        self.refreshBlock()
     }
     //MARK: - ***** respond event Method *****
     override func contentOffsetDidChange(change: [NSKeyValueChangeKey : Any]?) {
