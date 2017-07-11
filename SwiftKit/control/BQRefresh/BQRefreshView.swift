@@ -52,6 +52,11 @@ class BQRefreshView: UIView {
         self.scrollViewOriginalInset = self.scrollView.contentInset
         self.addObservers()
     }
+    
+    override func removeFromSuperview() {
+        self.removeObservers()
+        super.removeFromSuperview()
+    }
     //MARK: - ***** private Method *****
 
     private func addObservers() {
