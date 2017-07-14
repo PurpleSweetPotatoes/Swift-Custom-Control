@@ -44,6 +44,17 @@ extension String {
             return false
         }
     }
+    func toDictionary(text: String) -> [String: Any]? {
+        var dict:[String: Any]?
+        if let data = text.data(using: .utf8) {
+            do {
+                dict = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+        return dict
+    }
     subscript(index: Int) -> Character {
         get {
             return self[self.index(startIndex, offsetBy: index)]
