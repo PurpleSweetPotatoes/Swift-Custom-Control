@@ -31,8 +31,8 @@ class BQTool: NSObject {
         self.currentVc()?.present(alertVc, animated: true, completion: nil)
     }
     class func currentVc() -> UIViewController? {
-        var vc:UIViewController = UIApplication.shared.keyWindow?.rootViewController!
-        while let presentVc = vc.presentedViewController {
+        var vc = UIApplication.shared.keyWindow?.rootViewController
+        while let presentVc = vc?.presentedViewController {
             vc = presentVc
         }
         return vc
