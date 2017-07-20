@@ -51,6 +51,8 @@ class BQRefreshView: UIView {
         self.scrollView = newSuperview as! UIScrollView
         self.scrollViewOriginalInset = self.scrollView.contentInset
         self.addObservers()
+        //初始化状态(防止第一次无数据tableView下拉时出现异常)
+        self.scrollView.contentOffset = CGPoint.zero
     }
     
     override func removeFromSuperview() {
