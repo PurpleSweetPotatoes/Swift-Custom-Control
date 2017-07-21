@@ -17,22 +17,61 @@ class BQNetWork: NSObject {
     public class func sendRequest(urlstr:String, parameter:[String:Any]? = nil, method: HTTPMethod = .post, time:TimeInterval = 10,headers:[String:String]? = nil, completionHandler:@escaping (Data?, URLResponse?, Error?) -> Void ) -> URLSessionDataTask? {
         if let url = URL(string: urlstr) {
             print("url: \(url) \nparameter: \(String(describing: parameter))")
-            var request = encode(url: url, method: method, parameters: parameter)
+            var request = encode(url: url, method: method, parameters: parameter,headers:headers)
             request.timeoutInterval = time
-            if let head = headers {
-                for (headerField, headerValue) in head {
-                    request.setValue(headerValue, forHTTPHeaderField: headerField)
-                }
-            }
             let task = URLSession.shared.dataTask(with: request, completionHandler: completionHandler)
             task.resume()
             return task
         }
         return nil
     }
-    private class func encode(url:URL,method:HTTPMethod,parameters:[String:Any]?) -> URLRequest {
+    
+    ///    use method
+    ///    BQNetWork.uploadImag(bqImgData: { (imgData) in
+    ///    imgData.append(data, withName: "img", fileName: "image.jpg", mimeType: "image/jpeg")
+    ///    }, to: url, completionHandler: { (result, error) in
+    ///    if let err = error {
+    ///    print(err.localizedDescription)
+    ///    }else {
+    ///    print(result)
+    ///    }
+    ///    })
+    public class func uploadImag(bqImgData: @escaping (BQImgData) -> Void,to url:String, method: HTTPMethod = .post, headers:[String: String]? = nil, completionHandler:@escaping (Any?, Error?) -> Void) {
+        if let url = URL(string: url) {
+            print("upload url: \(url))")
+            DispatchQueue.global(qos: .utility).async {
+                let formData = BQImgData()
+                bqImgData(formData)
+                let data = try? formData.encode()
+                var request = encode(url: url, method: method, parameters: nil,headers:headers)
+                request.setValue(formData.contentType, forHTTPHeaderField: "Content-Type")
+                let task = URLSession.shared.uploadTask(with: request, from: data, completionHandler: { (data, response, error) in
+                    if let error = error {
+                        completionHandler(nil,error)
+                    }
+                    if let data = data {
+                        do {
+                            let result = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
+                            completionHandler(result,nil)
+                        } catch let err as NSError {
+                            completionHandler(nil,err)
+                        }
+                    }
+                })
+                task.resume()
+            }
+        }
+    }
+    
+    //MARK: ---- private Method
+    private class func encode(url:URL,method:HTTPMethod,parameters:[String:Any]?, headers:[String: String]?) -> URLRequest {
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
+        if let head = headers {
+            for (headerField, headerValue) in head {
+                request.setValue(headerValue, forHTTPHeaderField: headerField)
+            }
+        }
         
         guard let parameters = parameters else { return request }
 
@@ -51,6 +90,7 @@ class BQNetWork: NSObject {
         
         return request
     }
+    
     private class func query(_ parameters: [String: Any]) -> String {
         var components: [(String, String)] = []
         
@@ -61,7 +101,7 @@ class BQNetWork: NSObject {
         
         return components.map { "\($0)=\($1)" }.joined(separator: "&")
     }
-    public class func queryComponents(fromKey key: String, value: Any) -> [(String, String)] {
+    private class func queryComponents(fromKey key: String, value: Any) -> [(String, String)] {
         var components: [(String, String)] = []
         
         if let dictionary = value as? [String: Any] {
@@ -85,7 +125,7 @@ class BQNetWork: NSObject {
         }
         return components
     }
-    public class func escape(_ string: String) -> String {
+    private class func escape(_ string: String) -> String {
         let generalDelimitersToEncode = ":#[]@" // does not include "?" or "/" due to RFC 3986 - Section 3.4
         let subDelimitersToEncode = "!$&'()*+,;="
         
