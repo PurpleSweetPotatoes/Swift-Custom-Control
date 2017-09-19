@@ -43,30 +43,7 @@ extension Int {
         
         return "\(self)B"
     }
-    /// 16进制数值转化为颜色
-    public var hexColor : UIColor {
-        
-        guard self > 0 else {
-            return UIColor.white
-        }
-        
-        let red = (CGFloat)((self & 0xFF0000) >> 16) / 255.0
-        let green = (CGFloat)((self & 0xFF00) >> 8) / 255.0
-        let blue = (CGFloat)((self & 0xFF)) / 255.0
-        
-        //#available 进行系统版本条件判断
-        if #available(iOS 10, *)
-        {
-            return UIColor(displayP3Red:red , green: green, blue: blue, alpha: 1.0)
-        }
-        
-        guard #available(iOS 10, *) else {
-            
-            return UIColor(red: red, green: green, blue: blue, alpha: 1.0)
-        }
-        
-        return UIColor.black
-    }
+    
     // year day hour minute second to TimeInterval
     var year: TimeInterval {
         return 365 * self.day
