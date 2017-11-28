@@ -53,7 +53,7 @@ class BQShowImgsView: UIView, UIScrollViewDelegate {
         self.addSubview(self.contentView)
         self.contentView.alpha = 0
         self.contentView.delegate = self
-        self.contentView.contentSize = CGSize(width: self.width * CGFloat(self.imgArr.count), height: self.height)
+        self.contentView.contentSize = CGSize(width: self.sizeW * CGFloat(self.imgArr.count), height: self.sizeH)
         self.contentView.addTapGes {[weak self] (view) in
             self?.removeSelf()
         }
@@ -61,9 +61,9 @@ class BQShowImgsView: UIView, UIScrollViewDelegate {
         
         for index in 0 ..< self.imgArr.count {
             self.selectInfo[String(index)] = true
-            let imgWith = self.width - space * 2
+            let imgWith = self.sizeW - space * 2
             let height = self.imgArr[index].image!.size.height * imgWith / self.imgArr[index].image!.size.width
-            let imgView = UIImageView(frame: CGRect(x:space + CGFloat(index) * self.width, y: (self.height - height) * 0.5, width: imgWith, height: height))
+            let imgView = UIImageView(frame: CGRect(x:space + CGFloat(index) * self.sizeW, y: (self.sizeH - height) * 0.5, width: imgWith, height: height))
             imgView.image = self.imgArr[index].image
             self.contentView.addSubview(imgView)
             if self.currentIndex == index {
@@ -76,19 +76,19 @@ class BQShowImgsView: UIView, UIScrollViewDelegate {
             self.selectBtn.isHidden = true
         }
         self.selectBtn.alpha = 0
-        self.selectBtn.frame = CGRect(x: self.width - 70, y: 20, width: 50, height: 50)
+        self.selectBtn.frame = CGRect(x: self.sizeW - 70, y: 20, width: 50, height: 50)
         self.selectBtn.addTarget(self, action: #selector(showImgsBtnAction(btn:)), for: .touchUpInside)
         self.selectBtn.setImage(UIImage(named: "no_select"), for: .normal)
         self.selectBtn.setImage(UIImage(named: "select"), for: .selected)
         self.selectBtn.isSelected = true
         self.addSubview(self.selectBtn)
         
-        self.pageContrl.center = CGPoint(x: self.center.x, y: self.height - 60)
+        self.pageContrl.center = CGPoint(x: self.center.x, y: self.sizeH - 60)
         self.pageContrl.numberOfPages = self.imgArr.count
         self.pageContrl.alpha = 0
         self.addSubview(pageContrl)
         
-        self.contentView.setContentOffset(CGPoint(x: CGFloat(self.currentIndex) * self.width, y: 0), animated: true)
+        self.contentView.setContentOffset(CGPoint(x: CGFloat(self.currentIndex) * self.sizeW, y: 0), animated: true)
         let imgView = self.imgArr[self.currentIndex]
         self.animationView.frame = imgView.superview!.convert(imgView.frame, to: UIApplication.shared.keyWindow?.rootViewController?.view)
         self.animationView.image = imgView.image
@@ -96,9 +96,9 @@ class BQShowImgsView: UIView, UIScrollViewDelegate {
     }
     private func removeSelf() {
         let imgView = self.imgArr[self.currentIndex]
-        let imgWith = self.width - space * 2
+        let imgWith = self.sizeW - space * 2
         let height = imgView.image!.size.height * imgWith / imgView.image!.size.width
-        self.animationView.frame = CGRect(x:space , y: (self.height - height) * 0.5, width: imgWith, height: height)
+        self.animationView.frame = CGRect(x:space , y: (self.sizeH - height) * 0.5, width: imgWith, height: height)
         self.animationView.image = self.imgArr[self.currentIndex].image
         self.toFrame = imgView.superview!.convert(imgView.frame, to: UIApplication.shared.keyWindow?.rootViewController?.view)
         self.animationView.alpha = 1
@@ -123,7 +123,7 @@ class BQShowImgsView: UIView, UIScrollViewDelegate {
         }
     }
     private func changeStatus(scrollView:UIScrollView) {
-        self.currentIndex = Int(scrollView.contentOffset.x / self.width)
+        self.currentIndex = Int(scrollView.contentOffset.x / self.sizeW)
         self.pageContrl.currentPage = self.currentIndex
         self.selectBtn.isSelected = self.selectInfo[String(self.currentIndex)]!
     }

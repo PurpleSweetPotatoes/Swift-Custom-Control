@@ -18,7 +18,7 @@ class BQBaseVc: UIViewController, UINavigationControllerDelegate {
         self.view.backgroundColor = UIColor.randomColor
         self.contentView.frame = self.view.bounds
         if self.navigationController != nil {
-            self.contentView.height = UIScreen.main.bounds.size.height - 64
+            self.contentView.sizeH = UIScreen.main.bounds.size.height - 64
         }
         self.contentView.bounces = false
         self.contentView.contentSize = self.contentView.size
@@ -40,17 +40,17 @@ class BQBaseVc: UIViewController, UINavigationControllerDelegate {
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-    func leftBarItemAction() -> Void {
+    @objc func leftBarItemAction() -> Void {
         self.navigationController?.popViewController(animated: true)
     }
     func hideNavBar() -> Void {
         self.contentView.top = 0
-        self.contentView.height = UIScreen.main.bounds.size.height
+        self.contentView.sizeH = UIScreen.main.bounds.size.height
         self.ishideNavBar = true
     }
     func showNavBar() -> Void {
         self.contentView.top = 64
-        self.contentView.height = UIScreen.main.bounds.size.height - 64
+        self.contentView.sizeH = UIScreen.main.bounds.size.height - 64
         self.ishideNavBar = false
     }
     func layoutContentView() -> Void {
@@ -60,7 +60,7 @@ class BQBaseVc: UIViewController, UINavigationControllerDelegate {
                 maxHeight = view.bottom
             }
         }
-        self.contentView.contentSize = CGSize(width: self.contentView.width, height: maxHeight)
+        self.contentView.contentSize = CGSize(width: self.contentView.sizeW, height: maxHeight)
     }
     //MARK:- ***** navgationDelegate *****
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {

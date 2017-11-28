@@ -56,12 +56,12 @@ class BQVerifyCodeView: UIView {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
         var attrs = [
-            NSFontAttributeName: UIFont.systemFont(ofSize: self.fontSize),
-            NSParagraphStyleAttributeName: paragraphStyle]
+            NSAttributedStringKey.font: UIFont.systemFont(ofSize: self.fontSize),
+            NSAttributedStringKey.paragraphStyle: paragraphStyle]
         for i in 0 ..< self.codeNum {
             let index = Int(arc4random_uniform(UInt32(charArr.count)))
             let code = charArr[index]
-            attrs[NSForegroundColorAttributeName] = self.textColor ?? UIColor.randomColor
+            attrs[NSAttributedStringKey.foregroundColor] = self.textColor ?? UIColor.randomColor
             code.draw(at: CGPoint(x: charWidth * CGFloat(i) + (charWidth - self.fontSize) * 0.5, y: (rect.height - self.fontSize) * 0.5), withAttributes: attrs)
             self.verCode += code
         }

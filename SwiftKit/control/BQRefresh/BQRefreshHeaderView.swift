@@ -22,8 +22,8 @@ class BQRefreshHeaderView: BQRefreshView {
     }
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.height = 54
-        self.top = -self.height
+        self.sizeH = 54
+        self.top = -self.sizeH
         self.initUI()
     }
     
@@ -38,9 +38,9 @@ class BQRefreshHeaderView: BQRefreshView {
     }
     
     override func layoutSubviews() {
-        imgView.center = CGPoint(x: self.width * 0.25, y: self.height * 0.5)
+        imgView.center = CGPoint(x: self.sizeW * 0.25, y: self.sizeH * 0.5)
         loadingView.center = imgView.center
-        stateLab.frame = CGRect(x: 0, y: 0, width: self.width, height: self.height)
+        stateLab.frame = CGRect(x: 0, y: 0, width: self.sizeW, height: self.sizeH)
         super.layoutSubviews()
     }
     //MARK: - ***** private Method *****
@@ -69,7 +69,7 @@ class BQRefreshHeaderView: BQRefreshView {
                 UIView.animate(withDuration: 0.25, animations: { 
                     self.imgView.transform = CGAffineTransform.identity
                 })
-                if (origiOffsetY - self.scrollView.contentOffset.y) > self.height{
+                if (origiOffsetY - self.scrollView.contentOffset.y) > self.sizeH {
                     self.status = .willRefresh
                 }
             case .willRefresh:
@@ -77,7 +77,7 @@ class BQRefreshHeaderView: BQRefreshView {
                     self.imgView.transform = CGAffineTransform(rotationAngle: CGFloat(0.0000001 - Double.pi))
                 })
                 self.stateLab.text = Bundle.refreshString(key: .headerPull)
-                if (origiOffsetY - self.scrollView.contentOffset.y) <= self.height{
+                if (origiOffsetY - self.scrollView.contentOffset.y) <= self.sizeH {
                     self.status = .pull
                 }
             default:
@@ -101,7 +101,7 @@ class BQRefreshHeaderView: BQRefreshView {
         self.loadingView.startAnimating()
         self.stateLab.text = Bundle.refreshString(key: .headerRefresh)
         UIView.animate(withDuration: 0.25) { 
-            self.scrollView.contentInset = UIEdgeInsetsMake(self.height - self.origiOffsetY, 0, 0, 0)
+            self.scrollView.contentInset = UIEdgeInsetsMake(self.sizeH - self.origiOffsetY, 0, 0, 0)
         }
     }
     private func endAnimation() {

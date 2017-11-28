@@ -31,6 +31,7 @@ import UIKit
 }
 //MARK:- ***** 视图位置调整 *****
 extension UIView {
+    
     var left : CGFloat {
         get {
             return self.frame.origin.x
@@ -39,14 +40,16 @@ extension UIView {
             self.frame.origin = CGPoint(x: left, y: self.frame.origin.y)
         }
     }
+    
     var right : CGFloat {
         get {
-            return self.frame.origin.x + self.width
+            return self.frame.maxX
         }
         set(right) {
-            self.left = right - self.width
+            self.left = right - self.sizeW
         }
     }
+    
     var top : CGFloat {
         get {
             return self.frame.origin.y
@@ -55,30 +58,34 @@ extension UIView {
             self.frame.origin = CGPoint(x: self.frame.origin.x, y: top)
         }
     }
+    
     var bottom : CGFloat {
         get {
-            return self.frame.origin.y + self.height
+            return self.frame.maxY
         }
         set(bottom) {
-            self.top = bottom - self.height
+            self.top = bottom - self.sizeH
         }
     }
-    var width : CGFloat {
+    
+    var sizeW : CGFloat {
         get {
             return self.bounds.size.width
         }
-        set(width) {
-            self.frame.size = CGSize(width: width, height: self.frame.height)
+        set(sizeW) {
+            self.frame.size = CGSize(width: sizeW, height: self.frame.height)
         }
     }
-    var height : CGFloat {
+    
+    var sizeH : CGFloat {
         get {
             return self.bounds.size.height
         }
         set(height) {
-            self.frame.size = CGSize(width: self.width, height: height)
+            self.frame.size = CGSize(width: self.sizeW, height: height)
         }
     }
+    
     var size: CGSize {
         get {
             return self.bounds.size
@@ -87,41 +94,68 @@ extension UIView {
             self.frame.size = size
         }
     }
-    func setCorner(readius:CGFloat) -> Void {
+    
+    var origin : CGPoint {
+        get {
+            return self.frame.origin;
+        }
+        set(origin) {
+            self.frame.origin = origin
+        }
+    }
+    
+    func setCorner(readius:CGFloat) {
+        self.layer.allowsEdgeAntialiasing = true
         self.layer.cornerRadius = readius
         self.clipsToBounds = true
     }
-    func setBordColor(color:UIColor) -> Void {
+    
+    func toRound() {
+        var diameter: CGFloat = 0
+        
+        for constraint in self.constraints {
+            if constraint.firstItem as? UIView == self && constraint.secondItem == nil && constraint.firstAttribute == NSLayoutAttribute.width {
+                diameter = constraint.constant
+                break;
+            }
+        }
+        
+        if diameter == 0 {
+            diameter = self.bounds.size.width
+        }
+        
+        self .setCorner(readius: diameter * 0.5)
+    }
+    
+    func setBordColor(color:UIColor) {
         self.layer.borderColor = color.cgColor
         self.layer.borderWidth = 1.0
     }
+    
     func addTapGes(action:@escaping (_ view: UIView) -> ()) {
         let gesture = UITapGestureRecognizer(target: self, action: #selector(self.tapGestureAction))
         self.isUserInteractionEnabled = true
         self.action = action
         self.addGestureRecognizer(gesture)
     }
-    @discardableResult
-    func setCornerColor( color:UIColor, readius:CGFloat, corners:UIRectCorner) -> CAShapeLayer {
-        guard let supView = self.superview else {
-            assert(false, "\(self.classForCoder) must have superview")
-        }
+    
+    func setRoundCorners( readius:CGFloat, corners:UIRectCorner) {
+
         let beizPath = UIBezierPath(roundedRect: self.bounds, byRoundingCorners: corners, cornerRadii: CGSize(width: readius, height: readius))
-        let colorLayer = CAShapeLayer()
-        colorLayer.frame = self.frame
-        colorLayer.path = beizPath.cgPath
-        colorLayer.fillColor = color.cgColor
-        self.backgroundColor = UIColor.clear
-        supView.layer.addSublayer(colorLayer)
-        supView.bringSubview(toFront: self)
-        return colorLayer
+        let maskLayer = CAShapeLayer()
+        maskLayer.frame = self.bounds
+        
+        maskLayer.path = beizPath.cgPath
+        self.layer.mask = maskLayer
     }
+    
     //MARK: ---- 添加点击手势
     typealias addBlock = (_ imageView: UIView) -> Void
     
     private struct AssociatedKeys {
         static var actionKey = "actionBlock"
     }
+    
     private var action: addBlock? {
         get {
             return objc_getAssociatedObject(self, &AssociatedKeys.actionKey) as? addBlock
@@ -130,6 +164,7 @@ extension UIView {
             objc_setAssociatedObject(self, &AssociatedKeys.actionKey, newValue!, .OBJC_ASSOCIATION_COPY_NONATOMIC)
         }
     }
+    
     @objc private func tapGestureAction() {
         if let action = self.action {
             action(self)

@@ -26,7 +26,7 @@ class BQNetWork: NSObject {
         return nil
     }
     
-    ///    use method
+    ///    Use Method
     ///    BQNetWork.uploadImag(bqImgData: { (imgData) in
     ///    imgData.append(data, withName: "img", fileName: "image.jpg", mimeType: "image/jpeg")
     ///    }, to: url, completionHandler: { (result, error) in

@@ -23,41 +23,49 @@ extension UIColor {
             return UIColor(r: red, g: green, b: blue);
         }
     }
+    
     class var mainColor: UIColor {
         get {
             return main_color
         }
     }
+    
     class var textColor: UIColor {
         get {
             return text_color
         }
     }
+    
     class var lineColor: UIColor {
         get {
             return line_color
         }
     }
+    
     var rgbRed: CGFloat {
         get {
             return self.rgbaArray()[0]
         }
     }
+    
     var rgbGreen: CGFloat {
         get {
             return self.rgbaArray()[1]
         }
     }
+    
     var rgbBlue: CGFloat {
         get {
             return self.rgbaArray()[2]
         }
     }
+    
     var alpha: CGFloat {
         get {
             return self.rgbaArray()[3]
         }
     }
+    
     public func rgbaArray() -> Array<CGFloat> {
         var r: CGFloat = 0
         var g: CGFloat = 0
@@ -66,6 +74,7 @@ extension UIColor {
         self.getRed(&r, green: &g, blue: &b, alpha: &a)
         return [r,g,b,a]
     }
+    
     public convenience init(_ hexString:String) {
         let colorStr = hexString.replacingOccurrences(of: "", with: "#")
         let scan = Scanner(string: colorStr)
@@ -76,6 +85,7 @@ extension UIColor {
         let blue = CGFloat(rgbValue & 0xFF) / 255.0;
         self.init(r: red, g: green, b: blue)
     }
+    
     /// r,g,b (0 ~ 1)
     public convenience init(r:CGFloat, g:CGFloat, b:CGFloat) {
         self.init(red: r , green: g , blue: b , alpha: 1)

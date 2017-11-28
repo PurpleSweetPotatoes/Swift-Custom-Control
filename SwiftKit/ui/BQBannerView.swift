@@ -43,8 +43,8 @@ class BQBannerView: UIView, UIScrollViewDelegate {
     }
     //MARK: - ***** Instance Method *****
     private func initUI() {
-        let width = self.width
-        let height = self.height
+        let width = self.sizeW
+        let height = self.sizeH
         self.backgroundColor = UIColor.cyan
         self.scrollView.frame = self.bounds
         self.scrollView.contentSize = CGSize(width: width * 3, height: height)
@@ -54,11 +54,11 @@ class BQBannerView: UIView, UIScrollViewDelegate {
         self.scrollView.delegate = self
         self.scrollView.contentOffset = CGPoint(x: width, y: 0)
         self.addSubview(self.scrollView)
-        self.pageCtlr.frame = CGRect(x: 0, y: self.height - 30, width: width, height: 30)
+        self.pageCtlr.frame = CGRect(x: 0, y: self.sizeH - 30, width: width, height: 30)
         self.addSubview(self.pageCtlr)
         for index in 0..<3 {
             let imgView = UIImageView(frame: self.scrollView.bounds)
-            imgView.left = CGFloat(index) * imgView.width
+            imgView.left = CGFloat(index) * imgView.sizeW
             self.imgViews.append(imgView)
             self.scrollView.addSubview(imgView)
         }
@@ -101,7 +101,7 @@ class BQBannerView: UIView, UIScrollViewDelegate {
     //MARK: - ***** respond event Method *****
     @objc private func timerHandler(timer:Timer) {
         self.currentIndex += 1
-        self.scrollView.setContentOffset(CGPoint(x: self.scrollView.width * 2, y: 0), animated: true)
+        self.scrollView.setContentOffset(CGPoint(x: self.scrollView.sizeW * 2, y: 0), animated: true)
     }
     //MARK: - ***** Protocol *****
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -110,20 +110,20 @@ class BQBannerView: UIView, UIScrollViewDelegate {
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         var point:CGPoint = CGPoint.zero
-        if targetContentOffset.pointee.x >= scrollView.width * 1.5 {
-            point = CGPoint(x: scrollView.width * 2, y: 0)
+        if targetContentOffset.pointee.x >= scrollView.sizeW * 1.5 {
+            point = CGPoint(x: scrollView.sizeW * 2, y: 0)
             self.currentIndex += 1
-        }else if targetContentOffset.pointee.x < scrollView.width * 0.5{
+        }else if targetContentOffset.pointee.x < scrollView.sizeW * 0.5{
             point = CGPoint(x: 0, y: 0)
             self.currentIndex -= 1
         }else {
-            point = CGPoint(x: scrollView.width, y: 0)
+            point = CGPoint(x: scrollView.sizeW, y: 0)
         }
         scrollView.setContentOffset(point, animated: true)
     }
     
     func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-        scrollView.setContentOffset(CGPoint(x: scrollView.width, y: 0), animated: false)
+        scrollView.setContentOffset(CGPoint(x: scrollView.sizeW, y: 0), animated: false)
         self.beginTimer()
     }
 

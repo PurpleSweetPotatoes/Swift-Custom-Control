@@ -9,13 +9,18 @@
 
 //需导入Kingfisher三方库
 import Foundation
-import Kingfisher
+//import Kingfisher
 import UIKit
 
 extension UIImageView {
-    func setImage(urlStr:String?) {
-        self.kf.setImage(with: URL(string: urlStr!), placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
+    
+    func setImage(urlStr: String?) {
+//        if let ulrString = urlStr {
+//            self.kf.setImage(with: URL(string: urlStr!), placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
+//        }
     }
+    
+    
     func canshow() {
         self.addTapGes {[weak self] (view) in
             if let image = self?.image {
@@ -23,10 +28,84 @@ extension UIImageView {
             }
         }
     }
+    
+    func setGifImg(name: String?, bundle:Bundle = Bundle.main) {
+        
+        guard let gifName = name else {
+            return
+        }
+        
+        var data: Data = Data()
+        let originPath = bundle.path(forResource: gifName, ofType: "gif")
+        
+        if UIScreen.main.scale > 1.0 {
+            let retinaPath = bundle.path(forResource: gifName.appendingFormat("@2x"), ofType: "gif")
+            data = NSData(contentsOfFile: retinaPath!)! as Data
+        }
+        
+        if data.isEmpty {
+            data = NSData(contentsOfFile: originPath!)! as Data
+        }
+        
+        if data.isEmpty { return }
+        
+        let source: CGImageSource = CGImageSourceCreateWithData(data as CFData, nil)!
+        let count: size_t = CGImageSourceGetCount(source)
+        
+        var animatedImg: UIImage?
+        
+        if count <= 1 {
+            animatedImg = UIImage(data: data)
+        }else {
+            var imgs: [UIImage] = []
+            var duration: TimeInterval = 0
+            
+            for i in (0...count) {
+                let image: CGImage? = CGImageSourceCreateImageAtIndex(source, i, nil)
+                if let img = image {
+                    duration += type(of: self).frameDuration(index: i, source: source)
+                    imgs.append(UIImage(cgImage: img, scale: UIScreen.main.scale, orientation: .up))
+                }
+            }
+            
+            if duration == 0 {
+                duration = (1.0 / 10.0) * Double(count)
+            }
+            
+            animatedImg = UIImage.animatedImage(with: imgs, duration: duration)
+        }
+        
+        self.image = animatedImg
+    }
+    
+    class func frameDuration(index:Int, source:CGImageSource) -> Double {
+        var frameDuration: Double = 0.1
+        let frameProperties = CGImageSourceCopyPropertiesAtIndex(source, index, nil)! as! Dictionary<String, AnyObject>
+        let gifProperties = frameProperties[kCGImagePropertyGIFDictionary as String] as! Dictionary<String, AnyObject>
+        let delayTimeUnclampedProp = gifProperties[kCGImagePropertyGIFUnclampedDelayTime as String] as? NSNumber
+        
+        if let delayTime = delayTimeUnclampedProp {
+            frameDuration = Double(delayTime.floatValue)
+        }else {
+            let delayTimeProp = gifProperties[kCGImagePropertyGIFDelayTime as String] as? NSNumber
+            if let delayTime = delayTimeProp {
+                frameDuration = Double(delayTime.floatValue)
+            }
+        }
+        
+        if frameDuration < 0.011 {
+            frameDuration = 0.1
+        }
+        
+        return frameDuration
+    }
 }
 
-var startCenter: CGPoint = CGPoint(x:0, y:0)
-var startScale: CGFloat = 1
+
+
+private var startCenter: CGPoint = CGPoint(x:0, y:0)
+private var startScale: CGFloat = 1
+
 class BQShowImageView: UIView {
     let imageView: UIImageView = UIImageView()
     let backView: UIView = UIView(frame: UIScreen.main.bounds)
@@ -88,8 +167,8 @@ class BQShowImageView: UIView {
     }
     private func startShow() {
         self.backView.alpha = 0;
-        let toWidth = self.width - 10;
-        let toHeight = self.imageView.height * toWidth / self.imageView.width;
+        let toWidth = self.sizeW - 10;
+        let toHeight = self.imageView.sizeH * toWidth / self.imageView.sizeW;
         UIView.animate(withDuration: 0.25) {
             self.backView.alpha = 1;
             self.imageView.bounds = CGRect(x:0, y:0, width:toWidth, height:toHeight);

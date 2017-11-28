@@ -7,13 +7,17 @@
 //
 
 import UIKit
+
 private let shareManager = BQKeyManager()
+
 class BQKeyManager: NSObject {
+    
     private var isRegister = false
     private var currentTF: UIView!
     private var viewBottom: CGFloat = 0
     private var keyBoardOrigiY: CGFloat = 0
     private var forntOrigiY: CGFloat = 0
+    
     private func startManager() {
             NotificationCenter.default.addObserver(self, selector: #selector(keyBoardWillDisplay(notifi:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
             NotificationCenter.default.addObserver(self, selector: #selector(keyBoardWillDismiss(notifi:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
@@ -23,23 +27,27 @@ class BQKeyManager: NSObject {
             NotificationCenter.default.addObserver(self, selector: #selector(didEndEditing(notifi:)), name: NSNotification.Name.UITextFieldTextDidEndEditing, object: nil)
             NotificationCenter.default.addObserver(self, selector: #selector(didEndEditing(notifi:)), name: NSNotification.Name.UITextViewTextDidEndEditing, object: nil)
     }
+    
     class func start() {
         if !shareManager.isRegister {
             shareManager.startManager()
             shareManager.isRegister = true
         }
     }
+    
     class func close() {
         if shareManager.isRegister {
             NotificationCenter.default.removeObserver(self)
             shareManager.isRegister = false
         }
     }
+    
     deinit {
         if self.isRegister {
             NotificationCenter.default.removeObserver(self)
         }
     }
+    
     @objc private func keyBoardWillDisplay(notifi:Notification) {
         
         //获取userInfo
@@ -49,10 +57,13 @@ class BQKeyManager: NSObject {
         self.keyBoardOrigiY = kbRect.origin.y
         self.adjustViewHeight()
     }
+    
     private func adjustViewHeight() {
+        
         if self.keyBoardOrigiY == 0 || self.viewBottom == 0 {
             return
         }
+        
         let keyView = UIApplication.shared.keyWindow?.rootViewController?.view
         if self.keyBoardOrigiY < self.viewBottom {
             self.forntOrigiY = self.keyBoardOrigiY
@@ -68,12 +79,14 @@ class BQKeyManager: NSObject {
             }
         }
     }
+    
     @objc private func keyBoardWillDismiss(notifi:Notification) {
         
         UIView.animate(withDuration: 0.25) {
             UIApplication.shared.keyWindow?.rootViewController?.view.frame = UIScreen.main.bounds
         }
     }
+    
     @objc private func didBeginEditing(notifi:Notification) {
         self.currentTF = notifi.object as? UIView
         let keyView = UIApplication.shared.keyWindow?.rootViewController?.view
@@ -81,6 +94,7 @@ class BQKeyManager: NSObject {
         self.viewBottom = rect.maxY
         self.adjustViewHeight()
     }
+    
     @objc private func didEndEditing(notifi:Notification) {
         self.keyBoardOrigiY = 0
         self.viewBottom = 0

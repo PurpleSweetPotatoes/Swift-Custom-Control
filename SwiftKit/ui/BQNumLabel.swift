@@ -14,10 +14,10 @@ class BQNumLabel: UILabel {
         didSet {
             let center = self.center
             self.adjustWidthForFont()
-            let width: Int = Int(self.width + 8)
-            self.width = CGFloat(width % 2 == 0 ? width : width + 1)
-            self.height = self.width
-            self.layer.cornerRadius = self.width * 0.5
+            let width: Int = Int(self.sizeW + 8)
+            self.sizeW = CGFloat(width % 2 == 0 ? width : width + 1)
+            self.sizeH = self.sizeW
+            self.layer.cornerRadius = self.sizeW * 0.5
             self.center = center
         }
     }

@@ -55,12 +55,12 @@ class BQTextView: UITextView {
     private func initUI() {
         self.addSubview(self.placeLab)
         self.placeLab.font = self.font
-        self.placeLab.width = self.width
+        self.placeLab.sizeW = self.sizeW
         self.placeLab.text = self.placeHolder
         let spaing: CGFloat = 8;
         self.placeLab.top = spaing
         self.placeLab.left = spaing / 2.0
-        self.placeLab.width = self.width - spaing
+        self.placeLab.sizeW = self.sizeW - spaing
         NotificationCenter.default.addObserver(self, selector: #selector(textDidChage), name: .UITextViewTextDidChange, object: self)
     }
     //MARK: - ***** LoadData Method *****

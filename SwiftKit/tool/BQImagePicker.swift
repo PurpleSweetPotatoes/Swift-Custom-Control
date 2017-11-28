@@ -74,7 +74,7 @@ class BQImagePicker: NSObject,UIImagePickerControllerDelegate,UINavigationContro
     private func showImagePickVc(type:UIImagePickerControllerSourceType) -> Void {
         self.imagePicker.sourceType = type
         self.imagePicker.allowsEditing = self.type == ClipSizeType.system
-        BQTool.currentVc().present(self.imagePicker, animated: true, completion: nil)
+        BQTool.currentVc()?.present(self.imagePicker, animated: true, completion: nil)
     }
     //MARK: - ***** Instance Method *****
     
@@ -138,7 +138,7 @@ class BQClipView: UIView {
     func initUI() {
         self.backgroundColor = UIColor.gray
         self.imageView = UIImageView(image: self.image)
-        self.imageView.frame = CGRect(x: 0, y: 0, width: self.width, height: self.image.size.height * self.width / self.image.size.width)
+        self.imageView.frame = CGRect(x: 0, y: 0, width: self.sizeW, height: self.image.size.height * self.sizeW / self.image.size.width)
         self.imageView.center = self.center
         
         self.imageView.isUserInteractionEnabled = true
@@ -148,17 +148,17 @@ class BQClipView: UIView {
         self.imageView.addGestureRecognizer(pinch)
         self.addSubview(self.imageView)
         self.createLayer()
-        self.createBtn(frame: CGRect(x: 40, y: self.height - 70, width: 50, height: 30), title: "取消", tag: 100)
-        self.createBtn(frame: CGRect(x: self.width - 90, y: self.height - 70, width: 50, height: 30), title: "裁剪", tag: 101)
+        self.createBtn(frame: CGRect(x: 40, y: self.sizeH - 70, width: 50, height: 30), title: "取消", tag: 100)
+        self.createBtn(frame: CGRect(x: self.sizeW - 90, y: self.sizeH - 70, width: 50, height: 30), title: "裁剪", tag: 101)
     }
     
     func createLayer() {
         self.clipLayer = CAShapeLayer()
-        var width = self.width / 4.0
+        var width = self.sizeW / 4.0
         var height: CGFloat = 0
         switch self.type {
         case ClipSizeType.oneScaleOne:
-            width = self.width / 3.0
+            width = self.sizeW / 3.0
             height = width
             break
         case ClipSizeType.twoScaleOne:
@@ -199,8 +199,8 @@ class BQClipView: UIView {
         self.clipLayer.strokeColor = UIColor.green.cgColor
         self.clipLayer.fillColor = UIColor.clear.cgColor
         
-        width = self.width
-        height = self.height
+        width = self.sizeW
+        height = self.sizeH
         self.addMaskLayer(frame: CGRect(x: 0, y: 0, width: width, height: self.clipLayer.frame.origin.y))
         self.addMaskLayer(frame: CGRect(x: 0, y: self.clipLayer.frame.origin.y, width: self.clipLayer.frame.origin.x, height: self.clipLayer.frame.size.height))
         self.addMaskLayer(frame: CGRect(x: 0, y: self.clipLayer.frame.maxY, width: width, height: height - self.clipLayer.frame.maxY))
@@ -225,7 +225,7 @@ class BQClipView: UIView {
         self.addSubview(btn)
     }
     //MARK: - ***** respond event Method *****
-    func gestureRecognizerChange(gesture:UIGestureRecognizer){
+    @objc func gestureRecognizerChange(gesture:UIGestureRecognizer){
         if gesture.isKind(of: UIPanGestureRecognizer.self) {
             let pan = gesture as! UIPanGestureRecognizer
             switch pan.state {
@@ -286,7 +286,7 @@ class BQClipView: UIView {
                 startSacle = 1
                 if self.imageView.frame.size.width < self.clipLayer.bounds.size.width || self.imageView.frame.size.height < self.clipLayer.bounds.size.height {
                     UIView.animate(withDuration: 0.1, animations: {
-                        self.imageView.frame = CGRect(x: 0,y: 0,width: self.bounds.size.width, height: self.image.size.height * self.width / self.image.size.width);
+                        self.imageView.frame = CGRect(x: 0,y: 0,width: self.bounds.size.width, height: self.image.size.height * self.sizeW / self.image.size.width);
                         self.imageView.center = self.center;
                     })
                 }
@@ -296,7 +296,7 @@ class BQClipView: UIView {
             }
         }
     }
-    func btnAction(btn:UIButton) {
+    @objc func btnAction(btn:UIButton) {
         if btn.tag == 101 {
             self.clipLayer.isHidden = true
             let scale = UIScreen.main.scale

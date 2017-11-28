@@ -38,8 +38,8 @@ class BQPhotoView: UIView {
         let showView = BQPhotoView(frame: UIScreen.main.bounds)
         showView.imageView.image = img
         let imgSize = img.size
-        let height = imgSize.height * showView.width / imgSize.width
-        let frame = CGRect(x: 0, y: (showView.height - height) * 0.5, width: showView.width, height: height)
+        let height = imgSize.height * showView.sizeW / imgSize.width
+        let frame = CGRect(x: 0, y: (showView.sizeH - height) * 0.5, width: showView.sizeW, height: height)
         showView.imageView.frame = frame
         UIApplication.shared.keyWindow?.rootViewController?.view.addSubview(showView)
     }
@@ -84,8 +84,8 @@ class BQPhotoView: UIView {
         self.imageView.frame = self.origiFrame
         self.backView.alpha = 0
         let imgSize = self.imageView.image!.size
-        let height = imgSize.height * self.width / imgSize.width
-        let frame = CGRect(x: 0, y: (self.height - height) * 0.5, width: self.width, height: height)
+        let height = imgSize.height * self.sizeW / imgSize.width
+        let frame = CGRect(x: 0, y: (self.sizeH - height) * 0.5, width: self.sizeW, height: height)
         UIView.animate(withDuration: 0.25, animations: {
             self.imageView.frame = frame
             self.backView.alpha = 1
@@ -116,8 +116,8 @@ class BQPhotoView: UIView {
         }
         if scrollView.zoomScale <= scrollView.minimumZoomScale {
             let location = ges.location(in: imageView)
-            let width = imageView.width/scrollView.maximumZoomScale
-            let height = imageView.height/scrollView.maximumZoomScale
+            let width = imageView.sizeW/scrollView.maximumZoomScale
+            let height = imageView.sizeH/scrollView.maximumZoomScale
             let rect = CGRect(x: location.x - width * 0.5, y: location.y - height * 0.5, width: width, height: height)
             scrollView.zoom(to: rect, animated: true)
             print(scrollView.contentOffset)
@@ -151,8 +151,8 @@ extension BQPhotoView : UIScrollViewDelegate {
     }
     // 居中显示图片
     func setImageViewToTheCenter() {
-        let offsetX = (scrollView.width > scrollView.contentSize.width) ? (scrollView.width - scrollView.contentSize.width)*0.5 : 0.0
-        let offsetY = (scrollView.height > scrollView.contentSize.height) ? (scrollView.height - scrollView.contentSize.height)*0.5 : 0.0
+        let offsetX = (scrollView.sizeW > scrollView.contentSize.width) ? (scrollView.sizeW - scrollView.contentSize.width)*0.5 : 0.0
+        let offsetY = (scrollView.sizeH > scrollView.contentSize.height) ? (scrollView.sizeH - scrollView.contentSize.height)*0.5 : 0.0
         
         imageView.center = CGPoint(x: scrollView.contentSize.width * 0.5 + offsetX, y: scrollView.contentSize.height * 0.5 + offsetY)
         

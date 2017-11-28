@@ -23,7 +23,7 @@ class BQRefreshFooterView: BQRefreshView {
     }
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.height = 44
+        self.sizeH = 44
         self.initUI()
     }
     
@@ -45,8 +45,8 @@ class BQRefreshFooterView: BQRefreshView {
     }
     
     override func layoutSubviews() {
-        loadingView.center = CGPoint(x: self.width * 0.25, y: self.height * 0.5)
-        stateLab.frame = CGRect(x: 0, y: 0, width: self.width, height: self.height)
+        loadingView.center = CGPoint(x: self.sizeW * 0.25, y: self.sizeH * 0.5)
+        stateLab.frame = CGRect(x: 0, y: 0, width: self.sizeW, height: self.sizeH)
         super.layoutSubviews()
     }
     //MARK: - ***** private Method *****
@@ -79,7 +79,7 @@ class BQRefreshFooterView: BQRefreshView {
         if self.scrollView.isDragging {
             switch self.status {
             case .pull:
-                if self.scrollView.contentSize.height < self.scrollView.height + self.scrollView.contentOffset.y {
+                if self.scrollView.contentSize.height < self.scrollView.sizeH + self.scrollView.contentOffset.y {
                     self.status = .willRefresh
                 }
             case .willRefresh:
@@ -94,7 +94,7 @@ class BQRefreshFooterView: BQRefreshView {
         if !self.resetContentSize {
             self.resetContentSize = true
             self.top = self.scrollView.contentSize.height
-            self.scrollView.contentSize = CGSize(width: self.width, height: self.scrollView.contentSize.height + self.height)
+            self.scrollView.contentSize = CGSize(width: self.sizeW, height: self.scrollView.contentSize.height + self.sizeH)
             self.resetContentSize = false
         }
     }

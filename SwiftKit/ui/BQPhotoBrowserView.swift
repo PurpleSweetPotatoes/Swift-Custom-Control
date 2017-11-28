@@ -89,8 +89,8 @@ class BQPhotoBrowserView: UIView {
     }
     func configImgFrame(imgView:UIImageView) {
         let imgSize = imgView.image!.size
-        let height = imgSize.height * (self.width - 16) / imgSize.width
-        let frame = CGRect(x: 8, y: (self.height - height) * 0.5, width: (self.width - 16), height: height)
+        let height = imgSize.height * (self.sizeW - 16) / imgSize.width
+        let frame = CGRect(x: 8, y: (self.sizeH - height) * 0.5, width: (self.sizeW - 16), height: height)
         self.animationView.image = self.datas[self.index].image
         self.animationView.frame = frame
     }
@@ -115,8 +115,8 @@ class BQPhotoBrowserView: UIView {
         self.addSubview(self.collectionView)
     }
     func createPageContrl() {
-        self.pageControl = UIPageControl(frame: CGRect(x: 0, y: 0, width: self.width, height: 30))
-        self.pageControl.center = CGPoint(x: self.width * 0.5, y: self.height - 70)
+        self.pageControl = UIPageControl(frame: CGRect(x: 0, y: 0, width: self.sizeW, height: 30))
+        self.pageControl.center = CGPoint(x: self.sizeW * 0.5, y: self.sizeH - 70)
         self.pageControl.numberOfPages = self.datas.count
         self.pageControl.currentPage = self.index
         self.addSubview(self.pageControl)
@@ -145,7 +145,7 @@ extension BQPhotoBrowserView: UICollectionViewDelegate, UICollectionViewDataSour
 
 extension BQPhotoBrowserView: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        self.pageControl.currentPage = Int((scrollView.contentOffset.x + scrollView.width * 0.5) / scrollView.width)
+        self.pageControl.currentPage = Int((scrollView.contentOffset.x + scrollView.sizeW * 0.5) / scrollView.sizeW)
     }
 }
 
@@ -169,8 +169,8 @@ class PhotoCollectionCell: UICollectionViewCell {
     func setImage(img:UIImage?) {
         if let image = img {
             let imgSize = image.size
-            let height = imgSize.height * self.photoView.width / imgSize.width
-            let frame = CGRect(x: 0, y: (self.photoView.height - height) * 0.5, width: self.photoView.width, height: height)
+            let height = imgSize.height * self.photoView.sizeW / imgSize.width
+            let frame = CGRect(x: 0, y: (self.photoView.sizeH - height) * 0.5, width: self.photoView.sizeW, height: height)
             self.photoView.imageView.frame = frame
             self.photoView.imageView.image = img
         }else {

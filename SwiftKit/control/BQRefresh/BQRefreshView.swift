@@ -46,7 +46,7 @@ class BQRefreshView: UIView {
             return
         }
         self.removeObservers()
-        self.width = newSuperview?.width ?? 0
+        self.sizeW = newSuperview?.sizeW ?? 0
         self.left = 0
         self.scrollView = newSuperview as! UIScrollView
         self.scrollViewOriginalInset = self.scrollView.contentInset

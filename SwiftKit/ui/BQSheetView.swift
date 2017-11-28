@@ -72,32 +72,36 @@ class BQSheetView: UIView, UICollectionViewDataSource, UICollectionViewDelegate 
     }
     private func initUI() {
         self.backView = UIView(frame: self.bounds)
-        self.backView.backgroundColor = UIColor(white: 0.3, alpha: 0.6)
-        self.backView.alpha = 0
+        self.backView.backgroundColor = UIColor(white: 0.5, alpha: 0.4)
+        self.backView.alpha = 0;
+        
         self.backView.addTapGes {[weak self] (view) in
             self?.removeAnimation()
         }
         self.addSubview(self.backView)
-        self.bottomView = UIView(frame: CGRect(x: 0, y: self.height, width: self.width, height: 0))
+        
+        self.bottomView = UIView(frame: CGRect(x: 0, y: self.sizeH, width: self.sizeW, height: 0))
         self.addSubview(self.bottomView)
+        
         var top: CGFloat = 0
+        
         if self.type == .table {
             top = self.createTableUI(y: top)
         }else {
             top = self.createShareUI(y: top)
         }
-        self.bottomView.height = top + 8
+        self.bottomView.sizeH = top + 8
     }
     
     private func startAnimation() {
         UIView.animate(withDuration: 0.25) {
-            self.bottomView.top = self.height - self.bottomView.height
+            self.bottomView.top = self.sizeH - self.bottomView.sizeH
             self.backView.alpha = 1
         }
     }
     private func removeAnimation() {
         UIView.animate(withDuration: 0.25, animations: {
-            self.bottomView.top = self.height
+            self.bottomView.top = self.sizeH
             self.backView.alpha = 0
         }) { (flag) in
             self.removeFromSuperview()
@@ -131,19 +135,9 @@ class BQSheetView: UIView, UICollectionViewDataSource, UICollectionViewDelegate 
         var top = y
         let spacing: CGFloat = 20
         let height: CGFloat = 44
-        let labWidth: CGFloat = self.width - spacing * 2
-        if let titl = self.title {
-            let lab = UILabel(frame: CGRect(x: spacing, y: top, width: labWidth, height: height))
-            lab.text = titl
-            lab.textAlignment = .center
-            lab.numberOfLines = 0
-            lab.font = UIFont.systemFont(ofSize: 14)
-            lab.textColor = UIColor.gray
-            let labHeight = titl.boundingRect(with: CGSize(width: labWidth, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: [NSFontAttributeName:lab.font], context: nil).size.height + 20
-            lab.height = labHeight
-            self.bottomView.addSubview(lab)
-            lab.setCornerColor(color: UIColor.white, readius: 8, corners: [.topLeft,.topRight])
-            top = labHeight
+        let labWidth: CGFloat = self.sizeW - spacing * 2
+        if let title = self.title {
+            top = self.setUpTitleLabel(title: title, frame: CGRect(x: spacing, y: top, width: labWidth, height: height))
         }
         
         top += 1
@@ -154,18 +148,15 @@ class BQSheetView: UIView, UICollectionViewDataSource, UICollectionViewDelegate 
             btn.setTitle(str, for: .normal)
             btn.tag = count
             btn.titleLabel?.textAlignment = .center
+            btn.backgroundColor = UIColor.white
             btn.setTitleColor(UIColor.black, for: .normal)
             btn.addTarget(self, action: #selector(tableBtnAction(btn:)), for: .touchUpInside)
             self.bottomView.addSubview(btn)
             if count == self.tableDatas.count - 1 {
-                btn.setCornerColor(color: UIColor.white, readius: 8, corners: [.bottomLeft,.bottomRight])
+                btn.setRoundCorners(readius: 8, corners: [.bottomLeft,.bottomRight])
                 
-            }else {
-                if count == 0 && self.title == nil {
-                    btn.setCornerColor(color: UIColor.white, readius: 8, corners: [.topLeft,.topRight])
-                }else {
-                    btn.backgroundColor = UIColor.white
-                }
+            }else if count == 0 && self.title == nil {
+                btn.setRoundCorners(readius: 8, corners: [.topLeft,.topRight])
             }
             count += 1
             top = btn.bottom + 1
@@ -186,20 +177,10 @@ class BQSheetView: UIView, UICollectionViewDataSource, UICollectionViewDelegate 
     private func createShareUI(y:CGFloat) -> CGFloat {
         var top = y
         let spacing: CGFloat = 10
-        let labWidth: CGFloat = self.width - spacing * 2
+        let labWidth: CGFloat = self.sizeW - spacing * 2
         let itemWidth = labWidth / 4.0
-        if let titl = self.title {
-            let lab = UILabel(frame: CGRect(x: spacing, y: top, width: labWidth, height: height))
-            lab.text = titl
-            lab.textAlignment = .center
-            lab.numberOfLines = 0
-            lab.font = UIFont.systemFont(ofSize: 14)
-            lab.textColor = UIColor.gray
-            let labHeight = titl.boundingRect(with: CGSize(width: labWidth, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: [NSFontAttributeName:lab.font], context: nil).size.height + 20
-            lab.height = labHeight
-            self.bottomView.addSubview(lab)
-            lab.setCornerColor(color: UIColor.white, readius: 8, corners: [.topLeft,.topRight])
-            top = labHeight
+        if let title = self.title {
+            top = self.setUpTitleLabel(title: title, frame: CGRect(x: spacing, y: top, width: labWidth, height: 20))
         }
         top += 1
         let layout = UICollectionViewFlowLayout()
@@ -219,14 +200,31 @@ class BQSheetView: UIView, UICollectionViewDataSource, UICollectionViewDelegate 
         self.bottomView.addSubview(collectionView)
         top = collectionView.bottom + 1
         let lab = UILabel(frame: CGRect(x: spacing, y: top, width: labWidth, height: 44))
+        lab.backgroundColor = UIColor.white
         lab.text = "返回"
         lab.textAlignment = .center
         lab.addTapGes(action: {[weak self] (view) in
             self?.removeAnimation()
         })
+        lab.setRoundCorners(readius: 8, corners: [.bottomLeft,.bottomRight])
         self.bottomView.addSubview(lab)
-        lab.setCornerColor(color: UIColor.white, readius: 8, corners: [.bottomLeft,.bottomRight])
         return lab.bottom
+    }
+    
+    private func setUpTitleLabel(title: String ,frame: CGRect) -> CGFloat {
+        let lab = UILabel(frame: frame)
+        lab.backgroundColor = UIColor.white
+        lab.text = title
+        lab.textAlignment = .center
+        lab.numberOfLines = 0
+        lab.font = UIFont.systemFont(ofSize: 14)
+        lab.textColor = UIColor.gray
+        lab.adjustHeightForFont(spacing: 20)
+        lab.setRoundCorners(readius: 8, corners: [.topLeft,.topRight])
+        
+        self.bottomView.addSubview(lab)
+        
+        return lab.sizeH
     }
 }
 
@@ -245,13 +243,13 @@ class BQShareItemCell: UICollectionViewCell {
     }
     
     private func initUI() {
-        let imgWidth = self.width / 2.0
-        let spacing = (self.width - imgWidth) * 0.5
+        let imgWidth = self.sizeW / 2.0
+        let spacing = (self.sizeW - imgWidth) * 0.5
         let imageView = UIImageView(frame: CGRect(x: spacing, y: spacing * 0.7, width: imgWidth, height: imgWidth))
         self.contentView.addSubview(imageView)
         self.imgView = imageView
         
-        let lab = UILabel(frame: CGRect(x: 0, y: imageView.bottom, width: self.width, height: spacing))
+        let lab = UILabel(frame: CGRect(x: 0, y: imageView.bottom, width: self.sizeW, height: spacing))
         lab.textAlignment = .center
         lab.font = UIFont.systemFont(ofSize: 13)
         lab.textColor = UIColor.gray

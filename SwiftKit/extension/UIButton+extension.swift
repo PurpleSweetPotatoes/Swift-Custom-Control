@@ -35,7 +35,7 @@ extension UIButton {
     class func createCornerBtn(frame:CGRect, color:UIColor, title:String) -> UIButton {
         let btn = UIButton(type: .custom)
         btn.frame = frame
-        btn.setCorner(readius: btn.width * 0.5)
+        btn.setCorner(readius: btn.sizeW * 0.5)
         btn.setBordColor(color: color)
         btn.setTitle(title, for: .normal)
         btn.setTitleColor(color, for: .normal)

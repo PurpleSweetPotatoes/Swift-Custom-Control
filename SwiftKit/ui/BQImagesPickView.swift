@@ -141,7 +141,7 @@ class BQImagesPickView: UIView {
             self.addBtn.frame = frame
         }
         
-        self.height = frame.maxY + space
+        self.sizeH = frame.maxY + space
     }
     private func creatImgView() -> UIImageView {
         let imgView = UIImageView()

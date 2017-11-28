@@ -56,7 +56,7 @@ class BQTimeBtn: UIButton {
     //MARK: - ***** private Method *****
     private func initData() {
         self.timer = DispatchSource.makeTimerSource(queue:DispatchQueue.main)
-        self.timer.scheduleRepeating(deadline: .now(), interval: .seconds(1), leeway: .seconds(0))
+        self.timer.schedule(deadline: .now(), repeating: .seconds(1), leeway: .seconds(0))
         timer.setEventHandler { [weak self] in
             self?.upDateTime()
         }

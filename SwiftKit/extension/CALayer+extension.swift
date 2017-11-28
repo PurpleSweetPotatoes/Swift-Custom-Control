@@ -26,14 +26,16 @@ extension CALayer {
             self.frame.origin = CGPoint(x: left, y: self.frame.origin.y)
         }
     }
+    
     var right : CGFloat {
         get {
-            return self.frame.origin.x + self.width
+            return self.frame.maxY
         }
         set(right) {
-            self.left = right - self.width
+            self.left = right - self.sizeW
         }
     }
+    
     var top : CGFloat {
         get {
             return self.frame.origin.y
@@ -42,15 +44,35 @@ extension CALayer {
             self.frame.origin = CGPoint(x: self.frame.origin.x, y: top)
         }
     }
+    
     var bottom : CGFloat {
         get {
-            return self.frame.origin.y + self.height
+            return self.frame.origin.y + self.sizeH
         }
         set(bottom) {
-            self.top = bottom - self.height
+            self.top = bottom - self.sizeH
         }
     }
-    var width : CGFloat {
+    
+    var origin : CGPoint {
+        get {
+            return self.frame.origin;
+        }
+        set(origin) {
+            self.frame.origin = origin
+        }
+    }
+    
+    var size : CGSize {
+        get {
+            return self.frame.size;
+        }
+        set(size) {
+            self.frame.size = size
+        }
+    }
+    
+    var sizeW : CGFloat {
         get {
             return self.bounds.size.width
         }
@@ -58,12 +80,14 @@ extension CALayer {
             self.frame.size = CGSize(width: width, height: self.frame.height)
         }
     }
-    var height : CGFloat {
+    
+    var sizeH : CGFloat {
         get {
             return self.bounds.size.height
         }
         set(height) {
-            self.frame.size = CGSize(width: self.width, height: height)
+            self.frame.size = CGSize(width: self.sizeW, height: height)
         }
     }
+    
 }

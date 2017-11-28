@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SwiftyJSON
+//import SwiftyJSON
 
 class BQModel: NSObject {
     required init(dic: Dictionary<String,Any>) {
@@ -28,39 +28,39 @@ class BQModel: NSObject {
             }
         }
     }
-    required init(dic: JSON) {
-        super.init()
-        self.configValue(dic: dic)
-    }
-    private func configValue(dic: JSON) {
-        if let modelInfo = dic.dictionary {
-            let mirror = Mirror(reflecting: self)
-            for p in mirror.children {
-                let name = p.label!
-                if let value = modelInfo[name] {
-                    switch value.type {
-                    case .string:
-                        self.setValue(value.string, forKey: name)
-                    case .number:
-                        self.setValue(value.number, forKey: name)
-                    case .bool:
-                        self.setValue(value.bool, forKey: name)
-                    case .dictionary:
-                        let val = self.value(forKey: name)
-                        if val is BQModel {
-                            (val as! BQModel).configValue(dic: value)
-                        }else {
-                            self.setValue(value.dictionary, forKey: name)
-                        }
-                    case .array:
-                        self.setValue(value.array, forKey: name)
-                    default:
-                        break
-                    }
-                }
-            }
-        }
-    }
+//    required init(dic: JSON) {
+//        super.init()
+//        self.configValue(dic: dic)
+//    }
+//    private func configValue(dic: JSON) {
+//        if let modelInfo = dic.dictionary {
+//            let mirror = Mirror(reflecting: self)
+//            for p in mirror.children {
+//                let name = p.label!
+//                if let value = modelInfo[name] {
+//                    switch value.type {
+//                    case .string:
+//                        self.setValue(value.string, forKey: name)
+//                    case .number:
+//                        self.setValue(value.number, forKey: name)
+//                    case .bool:
+//                        self.setValue(value.bool, forKey: name)
+//                    case .dictionary:
+//                        let val = self.value(forKey: name)
+//                        if val is BQModel {
+//                            (val as! BQModel).configValue(dic: value)
+//                        }else {
+//                            self.setValue(value.dictionary, forKey: name)
+//                        }
+//                    case .array:
+//                        self.setValue(value.array, forKey: name)
+//                    default:
+//                        break
+//                    }
+//                }
+//            }
+//        }
+//    }
     required override init() {}
     override var description: String {
         let mirror = Mirror(reflecting: self)
@@ -81,11 +81,11 @@ extension Array where Element: BQModel {
         }
         return result
     }
-    static func modelArr(arr: Array<JSON>) -> Array<Element> {
-        var result = [Element]()
-        for dic in arr {
-            result.append(Element(dic: dic))
-        }
-        return result
-    }
+//    static func modelArr(arr: Array<JSON>) -> Array<Element> {
+//        var result = [Element]()
+//        for dic in arr {
+//            result.append(Element(dic: dic))
+//        }
+//        return result
+//    }
 }
