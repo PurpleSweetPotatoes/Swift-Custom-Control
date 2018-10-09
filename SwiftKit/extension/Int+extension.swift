@@ -1,9 +1,9 @@
 //
 //  Int+extension.swift
-//  swift-Test
+//  swift4.2Demo
 //
-//  Created by MrBai on 2017/6/14.
-//  Copyright © 2017年 MrBai. All rights reserved.
+//  Created by baiqiang on 2018/10/6.
+//  Copyright © 2018年 baiqiang. All rights reserved.
 //
 
 import UIKit
@@ -21,7 +21,7 @@ extension Int {
         guard Double(self) < unit else {
             return String(format:"%.1fkm",Double(self) / unit)
         }
-
+        
         return "\(self)m"
     }
     
@@ -56,7 +56,7 @@ extension Int {
     var hour: TimeInterval {
         return 60 * self.minute
     }
-
+    
     var minute: TimeInterval {
         return 60 * self.second
     }
@@ -64,4 +64,5 @@ extension Int {
     var second: TimeInterval {
         return TimeInterval(self)
     }
+    
 }

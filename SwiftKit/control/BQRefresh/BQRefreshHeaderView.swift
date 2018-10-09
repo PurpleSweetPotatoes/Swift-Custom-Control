@@ -12,7 +12,7 @@ class BQRefreshHeaderView: BQRefreshView {
 
     //MARK: - ***** Ivars *****
     private var imgView = UIImageView(image: Bundle.arrowImage())
-    private let loadingView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+    private let loadingView = UIActivityIndicatorView(style: .gray)
     private let stateLab: UILabel = BQRefreshView.refreshLab()
 
     //MARK: - ***** initialize Method *****
@@ -101,13 +101,13 @@ class BQRefreshHeaderView: BQRefreshView {
         self.loadingView.startAnimating()
         self.stateLab.text = Bundle.refreshString(key: .headerRefresh)
         UIView.animate(withDuration: 0.25) { 
-            self.scrollView.contentInset = UIEdgeInsetsMake(self.sizeH - self.origiOffsetY, 0, 0, 0)
+            self.scrollView.contentInset = UIEdgeInsets(top: self.sizeH - self.origiOffsetY, left: 0, bottom: 0, right: 0)
         }
     }
     private func endAnimation() {
         self.status = .pull
         UIView.animate(withDuration: 0.25, animations: { 
-            self.scrollView.contentInset = UIEdgeInsetsMake( -self.origiOffsetY, 0, 0, 0)
+            self.scrollView.contentInset = UIEdgeInsets( top: -self.origiOffsetY, left: 0, bottom: 0, right: 0)
         }) { (flag) in
             self.imgView.isHidden = false
             self.loadingView.stopAnimating()

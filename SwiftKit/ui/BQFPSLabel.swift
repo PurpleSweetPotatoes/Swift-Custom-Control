@@ -34,7 +34,7 @@ class BQFPSLabel: UILabel {
         self.text = "60 fps"
         self.textAlignment = .center
         self.link = CADisplayLink(target: BQWeakProxy(target: self), selector: #selector(updateLink(link:)))
-        self.link.add(to: RunLoop.main, forMode: .commonModes)
+        self.link.add(to: RunLoop.main, forMode: .common)
     }
     private func initUI() {
         self.backgroundColor = UIColor.white

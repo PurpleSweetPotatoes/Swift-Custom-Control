@@ -11,7 +11,7 @@ import UIKit
 class BQRefreshFooterView: BQRefreshView {
 
     //MARK: - ***** Ivars *****
-    private let loadingView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+    private let loadingView = UIActivityIndicatorView(style: .gray)
     private let stateLab: UILabel = BQRefreshView.refreshLab()
     private var updateHeight: CGFloat = 0
     private var resetContentSize: Bool = false

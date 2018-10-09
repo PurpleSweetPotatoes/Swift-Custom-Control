@@ -1,36 +1,25 @@
 //
-//  UIView+AdjustScreen.swift
-//  HaoJiLai
+//  UIView+extension.swift
+//  swift4.2Demo
 //
-//  Created by baiqiang on 16/11/2.
-//  Copyright © 2016年 baiqiang. All rights reserved.
+//  Created by baiqiang on 2018/10/6.
+//  Copyright © 2018年 baiqiang. All rights reserved.
 //
 
 import UIKit
-//MARK:- ***** 类联函数 *****
-//实际屏幕与设计宽度的比例
-@inline(__always) func BQScale() -> CGFloat {
-    let width = UIScreen.main.bounds.size.width
-    return width / 750.0
-}
 
-@inline(__always) func BQAdjust(x:CGFloat) -> CGFloat {
-    return x * BQScale()
-}
-@inline(__always) func BQAdjustSize(width:CGFloat, height:CGFloat) -> CGSize {
-    let size = CGSize(width: width * BQScale(), height: height * BQScale())
-    return size
-}
-@inline(__always) func BQAdjustPoint(x:CGFloat, y:CGFloat) -> CGPoint {
-    let point = CGPoint(x: x * BQScale(), y: y * BQScale())
-    return point
-}
-@inline(__always) func BQAdjustFrame(x:CGFloat, y:CGFloat, width:CGFloat, height:CGFloat) -> CGRect {
-    let rect = CGRect(origin: BQAdjustPoint(x: x, y: y), size: BQAdjustSize(width: width, height: height))
-    return rect
-}
 //MARK:- ***** 视图位置调整 *****
 extension UIView {
+    
+    //MARK:- ***** publice var and function *****
+    var top : CGFloat {
+        get {
+            return self.frame.origin.y
+        }
+        set(top) {
+            self.frame.origin = CGPoint(x: self.frame.origin.x, y: top)
+        }
+    }
     
     var left : CGFloat {
         get {
@@ -41,30 +30,21 @@ extension UIView {
         }
     }
     
-    var right : CGFloat {
-        get {
-            return self.frame.maxX
-        }
-        set(right) {
-            self.left = right - self.sizeW
-        }
-    }
-    
-    var top : CGFloat {
-        get {
-            return self.frame.origin.y
-        }
-        set(top) {
-            self.frame.origin = CGPoint(x: self.frame.origin.x, y: top)
-        }
-    }
-    
     var bottom : CGFloat {
         get {
             return self.frame.maxY
         }
         set(bottom) {
             self.top = bottom - self.sizeH
+        }
+    }
+    
+    var right : CGFloat {
+        get {
+            return self.frame.maxX
+        }
+        set(right) {
+            self.left = right - self.sizeW
         }
     }
     
@@ -111,20 +91,7 @@ extension UIView {
     }
     
     func toRound() {
-        var diameter: CGFloat = 0
-        
-        for constraint in self.constraints {
-            if constraint.firstItem as? UIView == self && constraint.secondItem == nil && constraint.firstAttribute == NSLayoutAttribute.width {
-                diameter = constraint.constant
-                break;
-            }
-        }
-        
-        if diameter == 0 {
-            diameter = self.bounds.size.width
-        }
-        
-        self .setCorner(readius: diameter * 0.5)
+        self.setCorner(readius: self.bounds.size.width * 0.5)
     }
     
     func setBordColor(color:UIColor) {
@@ -140,7 +107,7 @@ extension UIView {
     }
     
     func setRoundCorners( readius:CGFloat, corners:UIRectCorner) {
-
+        
         let beizPath = UIBezierPath(roundedRect: self.bounds, byRoundingCorners: corners, cornerRadii: CGSize(width: readius, height: readius))
         let maskLayer = CAShapeLayer()
         maskLayer.frame = self.bounds
@@ -149,7 +116,30 @@ extension UIView {
         self.layer.mask = maskLayer
     }
     
-    //MARK: ---- 添加点击手势
+//    public class func startHideKeyBoardAction() {
+//        DispatchQueue.once("configInterval") {
+//            let before: Method = class_getInstanceMethod(self, #selector(UIView.hitTest))!
+//            let after: Method  = class_getInstanceMethod(self, #selector(UIButton.cs_hitTest))!
+//            method_exchangeImplementations(before, after)
+//        }
+//    }
+//
+//    @objc open func cs_hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+//        let view = self.cs_hitTest(point, with: event)
+//
+//        guard let backView = view else {
+//            return nil
+//        }
+//
+//        if !backView.isKind(of: UITextField.classForCoder()) && !backView.isKind(of: UITextView.classForCoder()) {
+//            UIApplication.shared.keyWindow?.endEditing(true)
+//        }
+//
+//        return backView
+//    }
+    //MARK:- ***** Override function *****
+    
+    //MARK:- ***** Private tapGesture *****
     typealias addBlock = (_ imageView: UIView) -> Void
     
     private struct AssociatedKeys {
@@ -165,12 +155,16 @@ extension UIView {
         }
     }
     
-    @objc private func tapGestureAction() {
-        if let action = self.action {
-            action(self)
+    @objc private func tapGestureAction(sender: UITapGestureRecognizer) {
+        
+        guard let actionBlock = self.action else {
+            return
+        }
+        
+        if sender.state == .ended {
+            actionBlock(self)
         }
     }
+    
+    
 }
-
-
-

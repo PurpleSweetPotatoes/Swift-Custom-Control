@@ -1,25 +1,14 @@
 //
 //  UIImageView+extension.swift
-//  HJLBusiness
+//  swift4.2Demo
 //
-//  Created by MrBai on 2017/5/17.
-//  Copyright © 2017年 baiqiang. All rights reserved.
+//  Created by baiqiang on 2018/10/6.
+//  Copyright © 2018年 baiqiang. All rights reserved.
 //
 
-
-//需导入Kingfisher三方库
-import Foundation
-//import Kingfisher
 import UIKit
 
 extension UIImageView {
-    
-    func setImage(urlStr: String?) {
-//        if let ulrString = urlStr {
-//            self.kf.setImage(with: URL(string: urlStr!), placeholder: nil, options: nil, progressBlock: nil, completionHandler: nil)
-//        }
-    }
-    
     
     func canshow() {
         self.addTapGes {[weak self] (view) in
@@ -114,6 +103,7 @@ class BQShowImageView: UIView {
             self.imageView.frame = self.origiFrame
         }
     }
+    
     class func show(img:UIImage, origiFrame:CGRect) {
         let showView = BQShowImageView(frame: UIScreen.main.bounds)
         showView.initUI()
@@ -125,6 +115,7 @@ class BQShowImageView: UIView {
         UIApplication.shared.keyWindow?.rootViewController?.view.addSubview(showView)
         showView.startShow()
     }
+    
     private func initUI() {
         self.backView.backgroundColor = UIColor(white: 0.2, alpha: 0.7)
         self.addSubview(self.backView)
@@ -135,7 +126,9 @@ class BQShowImageView: UIView {
         let pinch = UIPinchGestureRecognizer(target: self, action: #selector(self.gestureAction(gesture:)))
         self.imageView.addGestureRecognizer(pinch)
     }
+    
     @objc private func gestureAction(gesture:UIGestureRecognizer) {
+        
         if gesture is UIPanGestureRecognizer {
             switch gesture.state {
             case .began:
@@ -149,7 +142,7 @@ class BQShowImageView: UIView {
             default:
                 break
             }
-        }else if gesture is UIPinchGestureRecognizer {
+        } else if gesture is UIPinchGestureRecognizer {
             let pinch = gesture as! UIPinchGestureRecognizer
             switch gesture.state {
             case .began:
@@ -165,6 +158,7 @@ class BQShowImageView: UIView {
             }
         }
     }
+    
     private func startShow() {
         self.backView.alpha = 0;
         let toWidth = self.sizeW - 10;
@@ -175,6 +169,7 @@ class BQShowImageView: UIView {
             self.imageView.center = self.center;
         }
     }
+    
     private func removeSelf() {
         UIView.animate(withDuration: 0.25, animations: {
             self.imageView.frame = self.origiFrame!

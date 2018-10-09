@@ -1,9 +1,9 @@
 //
 //  UITableView+extension.swift
-//  QiShou-App
+//  swift4.2Demo
 //
-//  Created by MrBai on 2017/6/6.
-//  Copyright © 2017年 MrBai. All rights reserved.
+//  Created by baiqiang on 2018/10/6.
+//  Copyright © 2018年 baiqiang. All rights reserved.
 //
 
 import UIKit
@@ -13,7 +13,7 @@ typealias TableViewProtocol = UITableViewDelegate & UITableViewDataSource
 extension UITableView {
     
     /// use this method should use loadCell to get cell
-    convenience init(frame: CGRect, style: UITableViewStyle, delegate: TableViewProtocol) {
+    convenience init(frame: CGRect, style: UITableView.Style, delegate: TableViewProtocol) {
         self.init(frame: frame, style: style)
         self.separatorStyle = .none
         self.tableFooterView = UIView()

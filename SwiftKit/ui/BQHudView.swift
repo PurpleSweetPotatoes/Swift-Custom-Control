@@ -96,7 +96,7 @@ class BQHudView: UIView {
         var maxWidth: CGFloat = 0
         
         if let title = self.title {
-            let rect = title.boundingRect(with: CGSize(width: width, height: 100), options: .usesLineFragmentOrigin, attributes: [NSAttributedStringKey.font:UIFont.systemFont(ofSize: 16)], context: nil)
+            let rect = title.boundingRect(with: CGSize(width: width, height: 100), options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font:UIFont.systemFont(ofSize: 16)], context: nil)
             let lab = UILabel(frame: rect)
             lab.numberOfLines = 0
             lab.font = UIFont.systemFont(ofSize: 16)
@@ -107,7 +107,7 @@ class BQHudView: UIView {
             maxWidth = lab.sizeW
         }
         
-        let infoRect = self.info.boundingRect(with: CGSize(width: width, height: 100), options: .usesLineFragmentOrigin, attributes: [NSAttributedStringKey.font:UIFont.systemFont(ofSize: 15)], context: nil)
+        let infoRect = self.info.boundingRect(with: CGSize(width: width, height: 100), options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font:UIFont.systemFont(ofSize: 15)], context: nil)
         let contentLab = UILabel(frame: infoRect)
         contentLab.numberOfLines = 0
         contentLab.text = self.info

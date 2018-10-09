@@ -1,9 +1,9 @@
 //
 //  BQKeyManager.swift
-//  swift-test
+//  swift4.2Demo
 //
-//  Created by baiqiang on 2017/6/1.
-//  Copyright © 2017年 baiqiang. All rights reserved.
+//  Created by baiqiang on 2018/10/8.
+//  Copyright © 2018年 baiqiang. All rights reserved.
 //
 
 import UIKit
@@ -19,13 +19,16 @@ class BQKeyManager: NSObject {
     private var forntOrigiY: CGFloat = 0
     
     private func startManager() {
-            NotificationCenter.default.addObserver(self, selector: #selector(keyBoardWillDisplay(notifi:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-            NotificationCenter.default.addObserver(self, selector: #selector(keyBoardWillDismiss(notifi:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-            
-            NotificationCenter.default.addObserver(self, selector: #selector(didBeginEditing(notifi:)), name: NSNotification.Name.UITextFieldTextDidBeginEditing, object: nil)
-            NotificationCenter.default.addObserver(self, selector: #selector(didBeginEditing(notifi:)), name: NSNotification.Name.UITextViewTextDidBeginEditing, object: nil)
-            NotificationCenter.default.addObserver(self, selector: #selector(didEndEditing(notifi:)), name: NSNotification.Name.UITextFieldTextDidEndEditing, object: nil)
-            NotificationCenter.default.addObserver(self, selector: #selector(didEndEditing(notifi:)), name: NSNotification.Name.UITextViewTextDidEndEditing, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyBoardWillDisplay), name: UITextField.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyBoardWillDismiss), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(didBeginEditing), name: UITextField.textDidBeginEditingNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didEndEditing), name: UITextField.textDidEndEditingNotification, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(didBeginEditing), name: UITextView.textDidBeginEditingNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didEndEditing), name: UITextView.textDidEndEditingNotification, object: nil)
+        
     }
     
     class func start() {
@@ -53,7 +56,7 @@ class BQKeyManager: NSObject {
         //获取userInfo
         let kbInfo = notifi.userInfo
         //获取键盘的size
-        let kbRect = (kbInfo?[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
+        let kbRect = (kbInfo?[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
         self.keyBoardOrigiY = kbRect.origin.y
         self.adjustViewHeight()
     }

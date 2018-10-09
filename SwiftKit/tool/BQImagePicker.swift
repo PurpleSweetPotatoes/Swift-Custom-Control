@@ -71,10 +71,10 @@ class BQImagePicker: NSObject,UIImagePickerControllerDelegate,UINavigationContro
         }
     }
     //MARK: - ***** initialize Method *****
-    private func showImagePickVc(type:UIImagePickerControllerSourceType) -> Void {
+    private func showImagePickVc(type:UIImagePickerController.SourceType) -> Void {
         self.imagePicker.sourceType = type
         self.imagePicker.allowsEditing = self.type == ClipSizeType.system
-        BQTool.currentVc()?.present(self.imagePicker, animated: true, completion: nil)
+        UIViewController.currentVc()?.present(self.imagePicker, animated: true, completion: nil)
     }
     //MARK: - ***** Instance Method *****
     
@@ -218,10 +218,10 @@ class BQClipView: UIView {
     //MARK: - ***** create Method *****
     func  createBtn(frame:CGRect, title:String?, tag:Int) {
         let btn = UIButton(type: .custom)
-        btn.addTarget(self, action: #selector(btnAction(btn:)), for: UIControlEvents.touchUpInside)
+        btn.addTarget(self, action: #selector(self.btnAction), for: .touchUpInside)
         btn.frame = frame
         btn.tag = tag
-        btn.setTitle(title, for: UIControlState.normal)
+        btn.setTitle(title, for: .normal)
         self.addSubview(btn)
     }
     //MARK: - ***** respond event Method *****

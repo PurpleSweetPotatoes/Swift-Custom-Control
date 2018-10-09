@@ -85,7 +85,8 @@ class BQBannerView: UIView, UIScrollViewDelegate {
             }else if subIndex == self.urlArr.count {
                 subIndex = 0
             }
-            self.imgViews[index + 1].setImage(urlStr: self.urlArr[subIndex])
+            #warning ("config imgViews with image")
+//            self.imgViews[index + 1].setImage(urlStr: self.urlArr[subIndex])
         }
     }
     //MARK: - ***** LoadData Method *****

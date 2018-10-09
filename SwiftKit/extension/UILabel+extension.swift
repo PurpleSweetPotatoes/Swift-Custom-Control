@@ -1,9 +1,9 @@
 //
 //  UILabel+extension.swift
-//  swift-Test
+//  swift4.2Demo
 //
-//  Created by MrBai on 2017/6/14.
-//  Copyright © 2017年 MrBai. All rights reserved.
+//  Created by baiqiang on 2018/10/6.
+//  Copyright © 2018年 baiqiang. All rights reserved.
 //
 
 import UIKit
@@ -13,7 +13,7 @@ extension UILabel {
     @discardableResult
     func adjustHeightForFont(spacing:CGFloat = 0) -> CGFloat {
         if let content = self.text {
-            let rect = content.boundingRect(with: CGSize(width: self.sizeW, height: CGFloat.greatestFiniteMagnitude), options: [.usesLineFragmentOrigin,.usesFontLeading], attributes: [NSAttributedStringKey.font:self.font], context: nil)
+            let rect = content.boundingRect(with: CGSize(width: self.sizeW, height: CGFloat.greatestFiniteMagnitude), options: [.usesLineFragmentOrigin,.usesFontLeading], attributes: [NSAttributedString.Key.font:self.font], context: nil)
             self.sizeH = rect.height + spacing
             return rect.height
         }
@@ -23,7 +23,7 @@ extension UILabel {
     @discardableResult
     func adjustWidthForFont() -> CGFloat {
         if let content = self.text {
-            let rect = content.boundingRect(with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: self.sizeH), options: [.usesLineFragmentOrigin,.usesFontLeading], attributes: [NSAttributedStringKey.font:self.font], context: nil)
+            let rect = content.boundingRect(with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: self.sizeH), options: [.usesLineFragmentOrigin,.usesFontLeading], attributes: [NSAttributedString.Key.font:self.font], context: nil)
             self.sizeW = rect.width
             return rect.width
         }

@@ -1,15 +1,15 @@
 //
 //  UIImage+extension.swift
-//  HJLBusiness
+//  swift4.2Demo
 //
-//  Created by baiqiang on 2017/5/31.
-//  Copyright © 2017年 baiqiang. All rights reserved.
+//  Created by baiqiang on 2018/10/6.
+//  Copyright © 2018年 baiqiang. All rights reserved.
 //
 
 import UIKit
 
 extension UIImage {
-
+    
     /// 图片质量压缩
     ///
     /// - Parameters:
@@ -42,7 +42,8 @@ extension UIImage {
         self.draw(in: CGRect(origin: CGPoint.zero, size: aimSize))
         let newImage = UIGraphicsGetImageFromCurrentImageContext()!;
         UIGraphicsEndImageContext();
-        let data = UIImageJPEGRepresentation(newImage, 1)!
+        
+        let data = newImage.jpegData(compressionQuality: 1)!
         
         var dataLen = data.count
         let aim_max = aimLength * 1024 + accuracy * 1024
@@ -50,25 +51,30 @@ extension UIImage {
         
         if (dataLen <= aim_max) {
             return data;
-        }else{
+        } else {
             var maxQuality: CGFloat = 1.0
             var minQuality: CGFloat = 0.0
             var flag = 0
+            
             while true {
                 let midQuality = (minQuality + maxQuality) * 0.5
+                
                 if flag > 6 {
-                    return UIImageJPEGRepresentation(newImage, minQuality)!;
+                    return newImage.jpegData(compressionQuality: minQuality)!
                 }
+                
                 flag += 1
-                let imageData = UIImageJPEGRepresentation(newImage, midQuality)!;
+                
+                let imageData = newImage.jpegData(compressionQuality: minQuality)!
                 dataLen = imageData.count
+                
                 if dataLen > aim_max{
                     maxQuality = midQuality
                     continue
-                }else if dataLen < aim_min {
+                } else if dataLen < aim_min {
                     minQuality = midQuality;
                     continue;
-                }else {
+                } else {
                     return imageData;
                 }
             }

@@ -1,12 +1,11 @@
 //
 //  CALayer+extension.swift
-//  HJLBusiness
+//  swift4.2Demo
 //
-//  Created by MrBai on 2017/5/18.
-//  Copyright © 2017年 baiqiang. All rights reserved.
+//  Created by baiqiang on 2018/10/6.
+//  Copyright © 2018年 baiqiang. All rights reserved.
 //
 
-import Foundation
 import UIKit
 
 extension CALayer {
@@ -18,23 +17,6 @@ extension CALayer {
         return line
     }
     
-    var left : CGFloat {
-        get {
-            return self.frame.origin.x
-        }
-        set(left) {
-            self.frame.origin = CGPoint(x: left, y: self.frame.origin.y)
-        }
-    }
-    
-    var right : CGFloat {
-        get {
-            return self.frame.maxY
-        }
-        set(right) {
-            self.left = right - self.sizeW
-        }
-    }
     
     var top : CGFloat {
         get {
@@ -45,12 +27,30 @@ extension CALayer {
         }
     }
     
+    var left : CGFloat {
+        get {
+            return self.frame.origin.x
+        }
+        set(left) {
+            self.frame.origin = CGPoint(x: left, y: self.frame.origin.y)
+        }
+    }
+    
     var bottom : CGFloat {
         get {
             return self.frame.origin.y + self.sizeH
         }
         set(bottom) {
             self.top = bottom - self.sizeH
+        }
+    }
+    
+    var right : CGFloat {
+        get {
+            return self.frame.maxY
+        }
+        set(right) {
+            self.left = right - self.sizeW
         }
     }
     

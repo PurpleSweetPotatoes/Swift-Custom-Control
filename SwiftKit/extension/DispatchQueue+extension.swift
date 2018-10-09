@@ -1,18 +1,20 @@
 //
-//  GCD+extension.swift
-//  HJLBusiness
+//  DispatchQueue+extension.swift
+//  swift4.2Demo
 //
-//  Created by baiqiang on 2017/5/26.
-//  Copyright © 2017年 baiqiang. All rights reserved.
+//  Created by baiqiang on 2018/10/6.
+//  Copyright © 2018年 baiqiang. All rights reserved.
 //
+
 
 import Foundation
 
-
 typealias Task = (_ cancel: Bool) -> Void
+
 extension DispatchQueue {
     
     private static var _onceTracker = [String]()
+    
     public class func once(_ token: String, _ block:()->Void) {
         objc_sync_enter(self)
         defer { objc_sync_exit(self) }
@@ -22,7 +24,8 @@ extension DispatchQueue {
         _onceTracker.append(token)
         block()
     }
-
+    
+    @discardableResult
     class func delay(_ time:TimeInterval, task:@escaping ()->()) -> Task? {
         func dispatch_later(block:@escaping ()->()) {
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + time, execute: block)

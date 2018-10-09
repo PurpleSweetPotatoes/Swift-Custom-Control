@@ -85,7 +85,8 @@ class BQImagesPickView: UIView {
         self.clearImgs()
         for str in imgs {
             let imgView = self.creatImgView()
-            imgView.setImage(urlStr: str)
+            
+//            imgView.setImage(urlStr: str)
         }
         self.adjsutSubView()
     }
