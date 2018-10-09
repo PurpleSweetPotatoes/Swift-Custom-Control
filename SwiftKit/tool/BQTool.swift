@@ -10,6 +10,8 @@ import UIKit
 
 class BQTool: NSObject {
     
+    static var sapceName: String?
+    
     //MARK:- ***** 计算方法耗时 *****
     class func getFuntionUseTime(function:()->()) {
         let start = CACurrentMediaTime()
@@ -23,6 +25,35 @@ class BQTool: NSObject {
         let data:Data = try! JSONSerialization.data(withJSONObject: obj, options: .prettyPrinted)
         let json:String = String(data: data, encoding: .utf8)!
         return json
+    }
+    
+    class func loadVc(vcName:String, spaceName: String? = nil) -> UIViewController? {
+        
+        var clsName = ""
+        
+        if let space = spaceName{
+            
+            clsName = space + "." + vcName
+            
+        } else {
+            
+            if sapceName == nil {
+                var arrSapce = self.classForCoder().description().split(separator: ".")
+                arrSapce.removeLast()
+                sapceName = arrSapce.joined()
+            }
+            
+            clsName = sapceName! + "." + vcName
+        }
+        
+        let cls = NSClassFromString(clsName) as? UIViewController.Type
+        let vc = cls?.init()
+        
+        if let valueVc = vc {
+            return valueVc
+        } else {
+            return nil
+        }
     }
     
     ///获取设备型号
