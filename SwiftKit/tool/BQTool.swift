@@ -10,7 +10,7 @@ import UIKit
 
 class BQTool: NSObject {
     
-    static var sapceName: String?
+    static private var sapceName: String?
     
     //MARK:- ***** 计算方法耗时 *****
     class func getFuntionUseTime(function:()->()) {
@@ -27,6 +27,15 @@ class BQTool: NSObject {
         return json
     }
     
+    class func currentSapceName() -> String {
+        if sapceName == nil {
+            var arrSapce = self.classForCoder().description().split(separator: ".")
+            arrSapce.removeLast()
+            sapceName = arrSapce.joined()
+        }
+        return sapceName!
+    }
+    
     class func loadVc(vcName:String, spaceName: String? = nil) -> UIViewController? {
         
         var clsName = ""
@@ -36,14 +45,8 @@ class BQTool: NSObject {
             clsName = space + "." + vcName
             
         } else {
-            
-            if sapceName == nil {
-                var arrSapce = self.classForCoder().description().split(separator: ".")
-                arrSapce.removeLast()
-                sapceName = arrSapce.joined()
-            }
-            
-            clsName = sapceName! + "." + vcName
+
+            clsName = self.currentSapceName() + "." + vcName
         }
         
         let cls = NSClassFromString(clsName) as? UIViewController.Type

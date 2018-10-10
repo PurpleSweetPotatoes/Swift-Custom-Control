@@ -9,16 +9,13 @@
 import UIKit
 
 struct BQRouter {
-    static func loadVc<T: BaseVc>(vcName:String, spaceName: String? = nil) -> T where T:BQRouterCommProtocol {
+    static func loadVc<T: BaseVc>(vcName:String, spaceName: String? = nil) -> T {
         var clsName = ""
         
         if let space = spaceName{
             clsName = space + "." + vcName
         } else {
-            var arrSapce = self.classForCoder().description().split(separator: ".")
-            arrSapce.removeLast()
-            let spaceName = arrSapce.joined()
-            clsName = spaceName! + "." + vcName
+            clsName = BQTool.currentSapceName() + "." + vcName
         }
         
         let cls = NSClassFromString(clsName) as? BaseVc.Type
