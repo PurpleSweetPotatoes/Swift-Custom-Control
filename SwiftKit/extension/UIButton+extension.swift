@@ -102,15 +102,13 @@ extension UIButton {
     
     public class func startIntervalAction(interval: TimeInterval) {
         _interval = interval
-        DispatchQueue.once("configInterval") {
-            let before: Method = class_getInstanceMethod(self, #selector(UIButton.sendAction))!
-            let after: Method  = class_getInstanceMethod(self, #selector(UIButton.cs_sendAction))!
-            method_exchangeImplementations(before, after)
+        DispatchQueue.once(#function) {
+            BQTool.exchangeMethod(cls: self, targetSel: #selector(UIButton.sendAction), newSel: #selector(UIButton.re_sendAction))
         }
         
     }
     
-    @objc private func cs_sendAction(action: Selector, to target: AnyObject?, forEvent event: UIEvent?) {
+    @objc private func re_sendAction(action: Selector, to target: AnyObject?, forEvent event: UIEvent?) {
         if self.isKind(of: UIButton.classForCoder()) {
             if self.isIgnoreEvent {
                 return
@@ -120,7 +118,7 @@ extension UIButton {
         }
         
         self.isIgnoreEvent = true
-        self.cs_sendAction(action: action, to: target, forEvent: event)
+        self.re_sendAction(action: action, to: target, forEvent: event)
         
     }
     

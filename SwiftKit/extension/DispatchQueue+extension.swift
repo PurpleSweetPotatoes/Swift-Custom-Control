@@ -46,6 +46,7 @@ extension DispatchQueue {
         }
         return result
     }
+    
     class func cancel(task:Task?) {
         task?(true)
     }

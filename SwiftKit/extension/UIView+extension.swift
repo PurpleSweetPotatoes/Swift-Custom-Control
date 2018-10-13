@@ -116,27 +116,6 @@ extension UIView {
         self.layer.mask = maskLayer
     }
     
-//    public class func startHideKeyBoardAction() {
-//        DispatchQueue.once("configInterval") {
-//            let before: Method = class_getInstanceMethod(self, #selector(UIView.hitTest))!
-//            let after: Method  = class_getInstanceMethod(self, #selector(UIButton.cs_hitTest))!
-//            method_exchangeImplementations(before, after)
-//        }
-//    }
-//
-//    @objc open func cs_hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-//        let view = self.cs_hitTest(point, with: event)
-//
-//        guard let backView = view else {
-//            return nil
-//        }
-//
-//        if !backView.isKind(of: UITextField.classForCoder()) && !backView.isKind(of: UITextView.classForCoder()) {
-//            UIApplication.shared.keyWindow?.endEditing(true)
-//        }
-//
-//        return backView
-//    }
     //MARK:- ***** Override function *****
     
     //MARK:- ***** Private tapGesture *****

@@ -59,6 +59,25 @@ class BQTool: NSObject {
         }
     }
     
+    
+    /// 类实例方法交换
+    ///
+    /// - Parameters:
+    ///   - cls: 类名
+    ///   - targetSel: 目标方法
+    ///   - newSel: 替换方法
+    @discardableResult
+    public class func exchangeMethod(cls: AnyClass?, targetSel: Selector, newSel: Selector) -> Bool {
+        
+            guard let before: Method = class_getInstanceMethod(cls, targetSel),
+                let after: Method = class_getInstanceMethod(cls, newSel) else {
+                return false
+            }
+
+            method_exchangeImplementations(before, after)
+            return true
+    }
+    
     ///获取设备型号
     class var modelName: String {
         var systemInfo = utsname()

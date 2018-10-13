@@ -17,7 +17,6 @@ extension CALayer {
         return line
     }
     
-    
     var top : CGFloat {
         get {
             return self.frame.origin.y
