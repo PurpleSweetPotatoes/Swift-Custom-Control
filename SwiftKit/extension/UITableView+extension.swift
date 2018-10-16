@@ -70,6 +70,10 @@ extension UITableView {
                 return;
             }
             
+            if let subView = self.viewWithTag(EmptyViewTag) {
+                subView.removeFromSuperview()
+            }
+            
             view.tag = EmptyViewTag;
             self.addSubview(view)
             
@@ -78,7 +82,7 @@ extension UITableView {
             guard let view = self.viewWithTag(EmptyViewTag) else {
                 return;
             }
-            view .removeFromSuperview()
+            view.removeFromSuperview()
         }
     }
     
