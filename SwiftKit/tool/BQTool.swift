@@ -22,9 +22,16 @@ class BQTool: NSObject {
     
     //MARK:- ***** 对象转json *****
     class func jsonFromObject(obj:Any) -> String {
-        let data:Data = try! JSONSerialization.data(withJSONObject: obj, options: .prettyPrinted)
-        let json:String = String(data: data, encoding: .utf8)!
-        return json
+    
+        guard let data = try? JSONSerialization.data(withJSONObject: obj, options: .prettyPrinted) else {
+            return String(describing: obj)
+        }
+        
+        if let result = String(data: data, encoding: .utf8) {
+            return result
+        }
+        
+        return String(describing: obj)
     }
     
     class func currentSapceName() -> String {
@@ -45,7 +52,7 @@ class BQTool: NSObject {
             clsName = space + "." + vcName
             
         } else {
-
+            
             clsName = self.currentSapceName() + "." + vcName
         }
         
@@ -69,13 +76,13 @@ class BQTool: NSObject {
     @discardableResult
     public class func exchangeMethod(cls: AnyClass?, targetSel: Selector, newSel: Selector) -> Bool {
         
-            guard let before: Method = class_getInstanceMethod(cls, targetSel),
-                let after: Method = class_getInstanceMethod(cls, newSel) else {
+        guard let before: Method = class_getInstanceMethod(cls, targetSel),
+            let after: Method = class_getInstanceMethod(cls, newSel) else {
                 return false
-            }
-
-            method_exchangeImplementations(before, after)
-            return true
+        }
+        
+        method_exchangeImplementations(before, after)
+        return true
     }
     
     ///获取设备型号
@@ -137,7 +144,8 @@ class BQTool: NSObject {
 /// 需要在build setting -> other swift flags -> Debug 中设置 -D DEBUG
 func Log<T>(_ messsage : T, file : String = #file, funcName : String = #function, lineNum : Int = #line) {
     #if DEBUG
-    let fileName = (file as NSString).lastPathComponent
-    print("\(fileName)-line:\(lineNum) ==> \(messsage)")
+    let fileName = (file as NSString).lastPathComponent.split(separator: ".").first!
+    print("\(fileName) -> \(funcName) -> line:\(lineNum) ==> \(messsage)")
     #endif
 }
+
