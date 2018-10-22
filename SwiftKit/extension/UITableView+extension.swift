@@ -10,8 +10,6 @@ import UIKit
 
 typealias TableViewProtocol = UITableViewDelegate & UITableViewDataSource
 
-private let EmptyViewTag = 12345;
-
 protocol EmptyViewProtocol: NSObjectProtocol {
     
     ///用以判断是会否显示空视图
@@ -60,7 +58,7 @@ extension UITableView {
             BQTool.exchangeMethod(cls: self.classForCoder, targetSel: #selector(self.layoutSubviews), newSel: #selector(self.re_layoutSubviews))
         }
     }
-
+    
     @objc func re_layoutSubviews() {
         self.re_layoutSubviews()
         
@@ -70,33 +68,48 @@ extension UITableView {
                 return;
             }
             
-            if let subView = self.viewWithTag(EmptyViewTag) {
+            if view == self.emptyDisView {
+                return
+            }
+            
+            if let subView = self.emptyDisView {
                 subView.removeFromSuperview()
             }
             
-            view.tag = EmptyViewTag;
             self.addSubview(view)
+            self.emptyDisView = view
             
         } else {
             
-            guard let view = self.viewWithTag(EmptyViewTag) else {
+            guard let view = self.emptyDisView else {
                 return;
             }
+            
             view.removeFromSuperview()
         }
     }
     
     //MARK:- ***** Associated Object *****
     private struct AssociatedKeys {
-        static var emptyViewDelegate = "tableView_emptyViewDelegate"
+        static var kemptyViewDelegate = "tableView_emptyViewDelegate"
+        static var kemptyDisView = "tableView_emptyDisView"
+    }
+    
+    private var emptyDisView: UIView? {
+        get {
+            return (objc_getAssociatedObject(self, &AssociatedKeys.kemptyDisView) as? UIView)
+        }
+        set (newValue){
+            objc_setAssociatedObject(self, &AssociatedKeys.kemptyDisView, newValue!, .OBJC_ASSOCIATION_RETAIN)
+        }
     }
     
     private var emptyDelegate: EmptyViewProtocol? {
         get {
-            return (objc_getAssociatedObject(self, &AssociatedKeys.emptyViewDelegate) as! EmptyViewProtocol)
+            return (objc_getAssociatedObject(self, &AssociatedKeys.kemptyViewDelegate) as? EmptyViewProtocol)
         }
         set (newValue){
-            objc_setAssociatedObject(self, &AssociatedKeys.emptyViewDelegate, newValue!, .OBJC_ASSOCIATION_RETAIN)
+            objc_setAssociatedObject(self, &AssociatedKeys.kemptyViewDelegate, newValue!, .OBJC_ASSOCIATION_RETAIN)
         }
     }
     
