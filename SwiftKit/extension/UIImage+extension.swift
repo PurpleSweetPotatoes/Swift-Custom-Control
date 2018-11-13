@@ -10,6 +10,10 @@ import UIKit
 
 extension UIImage {
     
+    class func orginImg(name: String) -> UIImage? {
+        return UIImage(named: name)?.withRenderingMode(.alwaysOriginal)
+    }
+    
     /// 图片质量压缩
     ///
     /// - Parameters:
