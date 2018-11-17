@@ -63,17 +63,29 @@ extension String {
         }
     }
     
-    func toDictionary(text: String) -> [String: Any]? {
-        var dict:[String: Any]?
-        if let data = text.data(using: .utf8) {
+    func toDictionary() -> [String: Any] {
+        var dict = [String: Any]()
+        if let data = self.data(using: .utf8) {
             do {
-                dict = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+                dict = try JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
             } catch {
                 print(error.localizedDescription)
             }
         }
         return dict
     }
+    
+    subscript(range: NSRange) -> String {
+        get {
+            if range.location < 0 || range.location + range.length >= self.count {
+                return ""
+            }
+            let start = self.index(self.startIndex, offsetBy: range.location)
+            let end = self.index(self.startIndex, offsetBy: range.location + range.length)
+            return String(self[start..<end])
+        }
+    }
+    
     subscript(index: Int) -> Character {
         get {
             return self[self.index(startIndex, offsetBy: index)]
