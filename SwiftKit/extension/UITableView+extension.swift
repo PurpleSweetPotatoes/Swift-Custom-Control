@@ -35,18 +35,18 @@ extension UITableView {
     }
     
     /// register cell by cellClass
-    open func registerCell(cellClass: AnyClass, isNib: Bool = false) {
+    open func registerCell(cellClass: AnyClass) {
         
-        let identifier = cellClass.description()
+        let identifier = cellClass.description().components(separatedBy: ".").last!
         
-        if isNib {
+        if identifier != "UITableViewCell" {
             self.register(UINib(nibName: identifier, bundle: nil), forCellReuseIdentifier: identifier)
         } else {
             self.register(cellClass, forCellReuseIdentifier: identifier)
         }
     }
     
-    /// get cell by dequeueReusableCell
+    /// get cell by dequeueReusableCell must register use nib
     open func loadCell(cellClass: AnyClass, indexPath: IndexPath) -> UITableViewCell {
         let identifier = cellClass.description().components(separatedBy: ".").last!
         return self.dequeueReusableCell(withIdentifier: identifier, for: indexPath)

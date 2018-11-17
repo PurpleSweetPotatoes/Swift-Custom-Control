@@ -10,6 +10,18 @@ import UIKit
 
 extension UIViewController {
     
+    var navBarBottom: CGFloat {
+        get {
+            return self.navigationController?.navigationBar.bottom ?? 0
+        }
+    }
+    
+    var tabBarSizeH: CGFloat {
+        get {
+            return self.tabBarController?.tabBar.sizeH ?? 0
+        }
+    }
+    
     class func currentVc() -> UIViewController? {
         var vc = UIApplication.shared.keyWindow?.rootViewController
         while let presentVc = vc?.presentedViewController {
