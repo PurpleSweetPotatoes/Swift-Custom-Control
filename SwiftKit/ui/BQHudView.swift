@@ -8,40 +8,49 @@
 
 import UIKit
 
-private let hudView = BQHudView()
-
 class BQHudView: UIView {
-
+    
+    private var titleFont = UIFont.systemFont(ofSize: 16)
     private var title:String?
     private var info:String!
-    private var block:(()->Void)?
+    private var infoFont = UIFont.systemFont(ofSize: 13)
     
-    private var showTimes: Int = 0
-    private var activeView: UIActivityIndicatorView?
-    
-    open class func startActive() {
-        hudView.showTimes += 1
-        if hudView.superview == nil {
-            UIApplication.shared.keyWindow?.addSubview(hudView)
+    @discardableResult
+    public class func show(supView: UIView, animation: Bool? = true, title: String? = nil) -> BQHudView {
+        
+        if let hudView = self.hudView(supView: supView) {
+            hudView.removeFromSuperview()
         }
-        hudView.alpha = 1
-        hudView.isHidden = false
+        
+        let hudView = BQHudView(frame: CGRect(x: 0, y: 0, width: 80, height: 80))
+        hudView.title = title
+        hudView.setUpUI()
+        hudView.center = CGPoint(x: supView.sizeW * 0.5, y: supView.sizeH * 0.5)
+        supView.addSubview(hudView)
+        return hudView
     }
-    open class func endActive() {
-        if hudView.showTimes > 0 {
-            hudView.showTimes -= 1;
+    
+    public class func hide(supView: UIView, animation: Bool? = true) {
+        
+        if let hudView = self.hudView(supView: supView) {
+            hudView.hide(animation: animation)
         }
-        if hudView.showTimes == 0 {
-            UIView.animate(withDuration: 0.25, animations: {
-                hudView.alpha = 0
-            }) { (finish) in
-                hudView.isHidden = true
+        
+    }
+    
+    public class func hudView(supView: UIView) -> BQHudView? {
+        
+        for view in supView.subviews.reversed() {
+            if view is BQHudView {
+                return view as? BQHudView
             }
         }
+        
+        return nil
     }
     
-    open class func show(info:String, title:String? = nil, complete:(()->Void)? = nil) {
-        let msgView = BQHudView(frame: UIScreen.main.bounds, info: info, title: title, complete: complete)
+    public class func showMsg(info:String, title:String? = nil) {
+        let msgView = BQHudView(frame: UIScreen.main.bounds, info: info, title: title)
         msgView.center = CGPoint(x: UIScreen.main.bounds.size.width * 0.5, y: UIScreen.main.bounds.size.height * 0.5)
         UIApplication.shared.keyWindow?.addSubview(msgView)
         msgView.alpha = 0
@@ -53,39 +62,55 @@ class BQHudView: UIView {
         }
     }
     
-    private func loadView () {
-        self.backgroundColor = UIColor(white: 0, alpha: 0.8)
-        let center = self.center
-        self.frame = CGRect(x: 0, y: 0, width: 80, height: 80)
-        self.setCorner(readius: 8)
-        self.center = center
-        self.activeView = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
-        self.activeView?.startAnimating()
-        self.activeView?.center = CGPoint(x: self.sizeW * 0.5, y: 30)
-        self.addSubview(self.activeView!)
-        let lab = UILabel(frame: CGRect(x: 0, y: (self.activeView?.bottom)! - 10, width: self.sizeW, height: self.sizeH - (self.activeView?.bottom)! + 10))
-        lab.font = UIFont.systemFont(ofSize: 14)
-        lab.textColor = UIColor.white
-        lab.textAlignment = .center
-        lab.text = "加载中..."
-        self.addSubview(lab)
-    }
-    
-    init() {
-        super.init(frame:UIScreen.main.bounds)
-        self.loadView()
-    }
-    
-    private init(frame:CGRect, info:String, title:String?, complete:(()->Void)?) {
-        super.init(frame:frame)
+    private convenience init(frame:CGRect, info:String, title:String?) {
+        self.init(frame:frame)
         self.info = info
         self.title = title
-        self.block = complete
         self.createContentView()
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    //MARK:- ***** instance method *****
+    
+    public func setUpUI() {
+        self.backgroundColor = UIColor("e3e7e7")
+        self.layer.cornerRadius = 8
+        
+        let activiView = UIActivityIndicatorView(style: .gray)
+        activiView.startAnimating()
+        activiView.center = CGPoint(x: self.sizeW * 0.5, y: self.sizeH * 0.5)
+        activiView.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
+        self.addSubview(activiView)
+        
+        if let text = self.title {
+            let lab = UILabel(frame: CGRect(x: 0, y: 0, width: 160, height: 20))
+            lab.font = infoFont
+            lab.textColor = .gray
+            lab.text = text
+            lab.numberOfLines = 0
+            lab.adjustHeightForFont(spacing: 10)
+            self.addSubview(lab)
+            if self.sizeW < lab.sizeW + 40 {
+                self.sizeW = lab.sizeW + 40
+            }
+            if self.sizeH < lab.sizeH + activiView.sizeH + 20 {
+                self.sizeH = lab.sizeH + activiView.sizeH + 20
+            }
+            activiView.center = CGPoint(x: self.sizeW * 0.5, y: self.sizeH * 0.5)
+            lab.center = activiView.center
+            activiView.top -= lab.sizeH * 0.5
+            lab.top = activiView.bottom + 5
+        }
+        
+    }
+    
+    public func hide(animation: Bool? = true) {
+        
+        UIView.animate(withDuration: 0.25, animations: {
+            self.alpha = (animation! ? 0:1)
+        }) { (finsh) in
+            self.removeFromSuperview()
+        }
+        
     }
     
     private func createContentView() {
@@ -96,7 +121,7 @@ class BQHudView: UIView {
         var maxWidth: CGFloat = 0
         
         if let title = self.title {
-            let rect = title.boundingRect(with: CGSize(width: width, height: 100), options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font:UIFont.systemFont(ofSize: 16)], context: nil)
+            let rect = title.boundingRect(with: CGSize(width: width, height: 100), options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font:self.titleFont], context: nil)
             let lab = UILabel(frame: rect)
             lab.numberOfLines = 0
             lab.font = UIFont.systemFont(ofSize: 16)
@@ -107,7 +132,7 @@ class BQHudView: UIView {
             maxWidth = lab.sizeW
         }
         
-        let infoRect = self.info.boundingRect(with: CGSize(width: width, height: 100), options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font:UIFont.systemFont(ofSize: 15)], context: nil)
+        let infoRect = self.info.boundingRect(with: CGSize(width: width, height: 100), options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font:self.infoFont], context: nil)
         let contentLab = UILabel(frame: infoRect)
         contentLab.numberOfLines = 0
         contentLab.text = self.info
@@ -127,5 +152,5 @@ class BQHudView: UIView {
         }
         self.setCorner(readius: 8)
     }
-
+    
 }

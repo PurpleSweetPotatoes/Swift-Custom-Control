@@ -8,6 +8,8 @@
 
 import UIKit
 
+private let KBgRoundLayer = "KBgRoundLayer"
+
 //MARK:- ***** 视图位置调整 *****
 extension UIView {
     
@@ -108,12 +110,27 @@ extension UIView {
     
     func setRoundCorners( readius:CGFloat, corners:UIRectCorner) {
         
-        let beizPath = UIBezierPath(roundedRect: self.bounds, byRoundingCorners: corners, cornerRadii: CGSize(width: readius, height: readius))
-        let maskLayer = CAShapeLayer()
-        maskLayer.frame = self.bounds
+        var bgColor = self.backgroundColor
+        self.backgroundColor = .clear
         
-        maskLayer.path = beizPath.cgPath
-        self.layer.mask = maskLayer
+        if let subLayers = self.layer.sublayers {
+            for subLayer in subLayers {
+                if subLayer.name == KBgRoundLayer {
+                    bgColor = UIColor(cgColor: (subLayer as! CAShapeLayer).fillColor!)
+                    subLayer.removeFromSuperlayer()
+                    break
+                }
+            }
+        }
+        
+        let beizPath = UIBezierPath(roundedRect: self.bounds, byRoundingCorners: corners, cornerRadii: CGSize(width: readius, height: readius))
+        let roundPath = CAShapeLayer()
+        roundPath.frame = self.bounds
+        roundPath.name = KBgRoundLayer
+        roundPath.path = beizPath.cgPath
+        roundPath.fillColor = bgColor?.cgColor
+        
+        self.layer.insertSublayer(roundPath, at: 0)
     }
     
     //MARK:- ***** Override function *****
