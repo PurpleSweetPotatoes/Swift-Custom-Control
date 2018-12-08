@@ -9,12 +9,12 @@
 import UIKit
 
 class BQRefreshHeaderView: BQRefreshView {
-
+    
     //MARK: - ***** Ivars *****
     private var imgView = UIImageView(image: Bundle.arrowImage())
     private let loadingView = UIActivityIndicatorView(style: .gray)
     private let stateLab: UILabel = BQRefreshView.refreshLab()
-
+    
     //MARK: - ***** initialize Method *****
     init(_ block:@escaping ()->()) {
         self.init()
@@ -30,9 +30,9 @@ class BQRefreshHeaderView: BQRefreshView {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     //MARK: - ***** public Method *****
-
+    
     public func endRefresh() {
         self.endAnimation()
     }
@@ -44,9 +44,9 @@ class BQRefreshHeaderView: BQRefreshView {
         super.layoutSubviews()
     }
     //MARK: - ***** private Method *****
-
-    private func initUI() {
     
+    private func initUI() {
+        
         self.addSubview(loadingView)
         loadingView.center = imgView.center
         loadingView.isHidden = true
@@ -66,7 +66,7 @@ class BQRefreshHeaderView: BQRefreshView {
             switch self.status {
             case .pull:
                 self.stateLab.text = Bundle.refreshString(key: .headerIdle)
-                UIView.animate(withDuration: 0.25, animations: { 
+                UIView.animate(withDuration: 0.25, animations: {
                     self.imgView.transform = CGAffineTransform.identity
                 })
                 if (origiOffsetY - self.scrollView.contentOffset.y) > self.sizeH {
@@ -100,14 +100,14 @@ class BQRefreshHeaderView: BQRefreshView {
         self.loadingView.isHidden = false
         self.loadingView.startAnimating()
         self.stateLab.text = Bundle.refreshString(key: .headerRefresh)
-        UIView.animate(withDuration: 0.25) { 
-            self.scrollView.contentInset = UIEdgeInsets(top: self.sizeH - self.origiOffsetY, left: 0, bottom: 0, right: 0)
+        UIView.animate(withDuration: 0.25) {
+            self.scrollView.contentInset = UIEdgeInsets(top: self.sizeH, left: 0, bottom: 0, right: 0)
         }
     }
     private func endAnimation() {
         self.status = .pull
-        UIView.animate(withDuration: 0.25, animations: { 
-            self.scrollView.contentInset = UIEdgeInsets( top: -self.origiOffsetY, left: 0, bottom: 0, right: 0)
+        UIView.animate(withDuration: 0.25, animations: {
+            self.scrollView.contentInset = UIEdgeInsets.zero
         }) { (flag) in
             self.imgView.isHidden = false
             self.loadingView.stopAnimating()
