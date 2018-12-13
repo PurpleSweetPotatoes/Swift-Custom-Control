@@ -86,6 +86,17 @@ extension String {
         }
     }
     
+    subscript(range:ClosedRange<Int>) -> String {
+        get {
+            if range.lowerBound < 0 || range.upperBound > self.count {
+                return "index is not in bound"
+            }
+            let start = self.index(self.startIndex, offsetBy: range.lowerBound)
+            let end = self.index(self.startIndex, offsetBy: range.upperBound)
+            return String(self[start..<end])
+        }
+    }
+    
     subscript(index: Int) -> Character {
         get {
             return self[self.index(startIndex, offsetBy: index)]
