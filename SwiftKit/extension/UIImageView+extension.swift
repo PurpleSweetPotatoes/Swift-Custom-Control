@@ -8,12 +8,32 @@
 
 import UIKit
 
+
+private let ioImgQueue = DispatchQueue(label: "ioImgQueue", qos: DispatchQoS.default, attributes: DispatchQueue.Attributes.concurrent)
+
 extension UIImageView {
     
     func canshow() {
         self.addTapGes {[weak self] (view) in
             if let image = self?.image {
                 BQShowImageView.show(img: image, origiFrame: (self?.superview!.convert((self?.frame)!, to: UIApplication.shared.keyWindow?.rootViewController?.view))!)
+            }
+        }
+    }
+    
+    func displayImg(imgFileName:String , bundle:Bundle = Bundle.main) {
+        if let path = bundle.path(forResource: imgFileName, ofType: nil) {
+            if let img = UIImage(contentsOfFile: path) {
+                self.displayImg(img: img)
+            }
+        }
+    }
+    
+    func displayImg(img:UIImage) {
+        ioImgQueue.async {
+            let leftImg = img.decompressedImg()
+            DispatchQueue.main.async{
+                self.image = leftImg
             }
         }
     }

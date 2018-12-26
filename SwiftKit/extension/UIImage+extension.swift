@@ -8,6 +8,8 @@
 
 import UIKit
 
+private let colorSpaceRef = CGColorSpaceCreateDeviceRGB()
+
 extension UIImage {
     
     class func orginImg(name: String) -> UIImage? {
@@ -83,5 +85,33 @@ extension UIImage {
                 }
             }
         }
+    }
+    
+    
+    /// Process Image use a bitmap context
+    ///
+    /// - Returns: success  => an image containing a snapshot of the bitmap context `context'
+    ///            fail     => self
+    func decompressedImg() -> UIImage {
+        if self.images != nil || self.cgImage == nil {
+            return self
+        }
+        
+        let imgRef = self.cgImage!
+        
+        let hasAlpha = !(imgRef.alphaInfo == .none || imgRef.alphaInfo == .noneSkipFirst || imgRef.alphaInfo == .noneSkipLast)
+        let bitmapInfo = CGBitmapInfo.byteOrder32Little
+        let bitRaw = bitmapInfo.rawValue | (hasAlpha ? CGImageAlphaInfo.premultipliedFirst.rawValue : CGImageAlphaInfo.noneSkipFirst.rawValue)
+        // create bitmap graphics contexts without alpha info
+        let bitContext = CGContext(data: nil, width: imgRef.width, height: imgRef.height, bitsPerComponent: 8, bytesPerRow: 0, space: colorSpaceRef, bitmapInfo: bitRaw)
+        if bitContext == nil {
+            return self
+        }
+        
+        bitContext!.draw(imgRef, in: CGRect(x: 0, y: 0, width: imgRef.width, height: imgRef.height))
+        let imgRefWithOutAlpha = bitContext!.makeImage()!
+        let backImg = UIImage(cgImage: imgRefWithOutAlpha, scale: self.scale, orientation: self.imageOrientation)
+        
+        return backImg
     }
 }
