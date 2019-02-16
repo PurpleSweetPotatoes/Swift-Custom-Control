@@ -149,3 +149,6 @@ func Log<T>(_ messsage : T, file : String = #file, funcName : String = #function
     #endif
 }
 
+func iPhoneXUp() -> Bool {
+    return UIScreen.main.bounds.size.height >= 812
+}
