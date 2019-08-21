@@ -11,8 +11,10 @@
 import UIKit
 
 protocol BQBannerViewDelegate {
-    func numberOfItems(bannerView: BQBannerView) -> NSInteger
+    
+    func numberOfBannerItems(bannerView: BQBannerView) -> NSInteger
     func prepareDisView(bannerView: BQBannerView, imgV: UIImageView, item: NSInteger)
+
     func didClickDisView(bannerView: BQBannerView, imgV: UIImageView, item: NSInteger)
     func didScrollToDisView(bannerView: BQBannerView, imgV: UIImageView, item: NSInteger)
 }
@@ -62,7 +64,7 @@ class BQBannerView: UIView {
         _index = 0
         if showPageCtrl {
             _pageCtlr.currentPage = _index
-            _pageCtlr.numberOfPages = delegate?.numberOfItems(bannerView: self) ?? 0
+            _pageCtlr.numberOfPages = delegate?.numberOfBannerItems(bannerView: self) ?? 0
             let size = _pageCtlr.size(forNumberOfPages: _pageCtlr.numberOfPages)
             _pageCtlr.frame = CGRect(x: (self.sizeW - size.width) * 0.5, y: self.sizeH - size.height, width: size.width, height: size.height)
         }
@@ -72,7 +74,7 @@ class BQBannerView: UIView {
     // MARK: - private method
     private func reloadImgsInfo() {
         if let delegate = self.delegate {
-            let maxNum = delegate.numberOfItems(bannerView: self)
+            let maxNum = delegate.numberOfBannerItems(bannerView: self)
             _scrollView.isUserInteractionEnabled = maxNum > 1
             
             for (num, imgV) in _imgVList.enumerated() {
@@ -184,4 +186,10 @@ extension BQBannerView: UIScrollViewDelegate {
         scrollView.setContentOffset(CGPoint(x: scrollView.sizeW, y: 0), animated: false)
         self.startTimer()
     }
+}
+
+
+extension BQBannerViewDelegate {
+    func didClickDisView(bannerView: BQBannerView, imgV: UIImageView, item: NSInteger) {}
+    func didScrollToDisView(bannerView: BQBannerView, imgV: UIImageView, item: NSInteger) {}
 }
