@@ -132,6 +132,18 @@ final class BQTextAttributes {
         return self
     }
     
+    // MARK: - alignment 对齐方式
+    var alignment: NSTextAlignment {
+        get { return paragraphStyle.alignment }
+        set { paragraphStyle.alignment = newValue }
+    }
+    
+    @discardableResult
+    func alignment(_ alignment: NSTextAlignment) -> Self {
+        self.alignment = alignment
+        return self
+    }
+    
     // MARK: - link 链接
     var link: URL? {
         get {

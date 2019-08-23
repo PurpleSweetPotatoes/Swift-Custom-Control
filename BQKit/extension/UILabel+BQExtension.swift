@@ -14,6 +14,14 @@ import UIKit
 
 extension UILabel {
     
+    convenience init(frame: CGRect, font: UIFont? = nil, text: String? = nil, textColor: UIColor? = nil, alignment: NSTextAlignment = .left) {
+        self.init(frame: frame)
+        self.font = font
+        self.text = text
+        self.textColor = textColor
+        self.textAlignment = alignment
+    }
+    
     @discardableResult
     func adjustHeight(spacing:CGFloat = 0, isAttribute:Bool = false) -> CGRect {
         var rect = CGRect.zero

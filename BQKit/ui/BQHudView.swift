@@ -51,6 +51,8 @@ class BQHudView: UIView {
     }
     
     public class func showMsg(info:String, title:String? = nil) {
+        if info.count == 0  { return }
+
         let msgView = BQHudView(frame: UIScreen.main.bounds, info: info, title: title)
         
         if let hudView = self.hudView(supView: UIApplication.shared.keyWindow!) {

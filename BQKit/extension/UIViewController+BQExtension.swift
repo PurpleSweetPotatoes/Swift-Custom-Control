@@ -14,7 +14,7 @@ extension UIViewController {
     
     var navBarBottom: CGFloat {
         get {
-            return self.navigationController?.navigationBar.bottom ?? 0
+            return self.navigationController?.navigationBar.sizeH != 0 ? (self.navigationController!.navigationBar.sizeH + 20) : 0
         }
     }
     

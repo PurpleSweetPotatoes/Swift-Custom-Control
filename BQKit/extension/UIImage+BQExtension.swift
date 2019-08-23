@@ -103,6 +103,22 @@ extension UIImage {
         return newImg ?? self
     }
     
+    func reSizeImage(reSize:CGSize, round: Bool = false)->UIImage {
+        //UIGraphicsBeginImageContext(reSize);
+        UIGraphicsBeginImageContextWithOptions(reSize,false,UIScreen.main.scale);
+        let context = UIGraphicsGetCurrentContext()
+        context?.translateBy(x: 0, y: reSize.height)
+        context?.scaleBy(x: 1.0, y: -1.0)
+        if round {
+            context?.addEllipse(in: CGRect(origin: CGPoint.zero, size: reSize))
+            context?.clip()
+        }
+        context?.draw(self.cgImage!, in: CGRect(x: 0, y: 0, width: reSize.width, height: reSize.height))
+        let reSizeImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        return reSizeImage ?? self;
+    }
+    
     /// Process Image use a bitmap context
     ///
     /// - Returns: success  => an image containing a snapshot of the bitmap context `context'

@@ -42,7 +42,7 @@ extension UIView {
     }
     
     func toRound() {
-        self.setCorner(readius: self.frame.width * 0.5)
+        self.setCorner(readius: self.frame.height * 0.5)
     }
     
     func setCorner(readius:CGFloat) {
@@ -51,9 +51,9 @@ extension UIView {
         self.clipsToBounds = true
     }
     
-    func setBordColor(color:UIColor) {
+    func setBordColor(color:UIColor, width: CGFloat = 1.0) {
         self.layer.borderColor = color.cgColor
-        self.layer.borderWidth = 1.0
+        self.layer.borderWidth = width
     }
     
     func addTapGes(action:@escaping (_ view: UIView) -> ()) {

@@ -15,6 +15,13 @@ private var _interval: TimeInterval = 0.5
 
 extension UIButton {
     
+    convenience init(frame: CGRect, font: UIFont = .systemFont(ofSize: 17), text: String? = nil, textColor: UIColor? = nil) {
+        self.init(frame: frame)
+        titleLabel?.font = font
+        setTitle(text, for: .normal)
+        setTitleColor(textColor, for: .normal)
+    }
+    
     /// 倒计时功能
     ///
     /// - Parameters:
