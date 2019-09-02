@@ -10,7 +10,7 @@
 
 import UIKit
 
-protocol BQBannerViewDelegate {
+protocol BQBannerViewDelegate: NSObjectProtocol {
     
     func numberOfBannerItems(bannerView: BQBannerView) -> NSInteger
     func prepareDisView(bannerView: BQBannerView, imgV: UIImageView, item: NSInteger)
@@ -23,7 +23,7 @@ protocol BQBannerViewDelegate {
 class BQBannerView: UIView {
 
     // MARK: - var
-    var delegate: BQBannerViewDelegate?
+    weak var delegate: BQBannerViewDelegate?
     var placeHolderImg: UIImage?
     var autoShowTime: TimeInterval = 0
     var showPageCtrl: Bool = true {

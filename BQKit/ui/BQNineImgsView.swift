@@ -10,7 +10,7 @@
 
 import UIKit
 
-protocol BQNineImgsViewDelegate {
+protocol BQNineImgsViewDelegate: NSObjectProtocol {
     func numberOfImages(nineView: BQNineImgsView) -> Int
     func prepareNineView(nineView: BQNineImgsView, imgV: UIImageView, item: NSInteger)
     func imgVSelect(nineView: BQNineImgsView, imgV: UIImageView, item: NSInteger)
@@ -22,7 +22,7 @@ class BQNineImgsView: UIView {
     // MARK: - var
     var itemHeight: CGFloat = 0
     var itemSpace: CGFloat = 0
-    var delegate: BQNineImgsViewDelegate?
+    weak var delegate: BQNineImgsViewDelegate?
     private var _imgVList = [UIImageView]()
     
     var showVList = [UIImageView]()

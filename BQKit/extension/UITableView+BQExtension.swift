@@ -35,6 +35,7 @@ extension UITableView {
         self.init(frame: frame, style: style)
         self.separatorStyle = .none
         self.tableFooterView = UIView()
+        self.estimatedRowHeight = 50
         self.dataSource = delegate
         self.delegate = delegate
         
