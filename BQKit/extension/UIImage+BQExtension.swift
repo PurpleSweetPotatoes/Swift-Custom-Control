@@ -89,15 +89,16 @@ extension UIImage {
         }
     }
     
-    func fillColor(_ color: UIColor) -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(self.size, false, self.scale)
+    func fillColor(_ color: UIColor, _ model:CGBlendMode = .destinationIn) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(self.size, false, 0)
         let context = UIGraphicsGetCurrentContext()
-        context?.translateBy(x: 0, y: self.size.height)
-        context?.scaleBy(x: 1.0, y: -1.0)
-        let rect = CGRect(x: 0, y: 0, width: self.size.width, height: self.size.height)
-        context?.clip(to: rect, mask: self.cgImage!)
+        
+        let bounds = CGRect(x: 0, y: 0, width: self.size.width, height: self.size.height)
         color.setFill()
-        context?.fill(rect)
+        context?.fill(bounds)
+        
+        self.draw(in: bounds, blendMode: model, alpha: 1.0)
+        
         let newImg = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return newImg ?? self

@@ -76,6 +76,17 @@ extension String {
         return dict
     }
     
+    func htmlAttributeStr(fontName: String = "Heiti SC", fontSize: Int = 14, colorHex: String = "000000") -> NSAttributedString? {
+        do {
+            let cssPrefix = "<style>* { font-family: \(fontName); color: #\(colorHex); font-size: \(fontSize); }</style>"
+            let html = cssPrefix + self
+            guard let data = html.data(using: String.Encoding.utf8) else {  return nil }
+            return try NSAttributedString(data: data, options: [.documentType: NSAttributedString.DocumentType.html, .characterEncoding: String.Encoding.utf8.rawValue], documentAttributes: nil)
+        } catch {
+            return nil
+        }
+    }
+    
     subscript(range: NSRange) -> String {
         get {
             if range.location < 0 || range.location + range.length >= self.count {
