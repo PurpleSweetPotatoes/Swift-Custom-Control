@@ -44,6 +44,7 @@ final class BQTextAttributes {
     // MARK: - creat
     init() {
         dictionary[AttributesKey.paragraphStyle] = paragraphStyle
+        paragraphStyle.lineBreakMode = .byCharWrapping
     }
     
     init(base: BQTextAttributes) {
