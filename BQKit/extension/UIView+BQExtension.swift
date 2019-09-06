@@ -11,6 +11,12 @@
 import UIKit
 
 extension UIView {
+    
+    var origin: CGPoint {
+        get { return self.frame.origin }
+        set { self.frame.origin = newValue }
+    }
+    
     var top : CGFloat {
         get { return self.frame.origin.y }
         set { self.frame.origin = CGPoint(x: self.frame.origin.x, y: newValue) }
@@ -29,6 +35,11 @@ extension UIView {
     var right : CGFloat {
         get { return self.frame.origin.x  + self.frame.width}
         set { self.left = newValue - self.frame.width }
+    }
+    
+    var size: CGSize {
+        get { return self.bounds.size }
+        set { self.bounds.size = newValue }
     }
     
     var sizeW : CGFloat {
@@ -54,6 +65,17 @@ extension UIView {
     func setBordColor(color:UIColor, width: CGFloat = 1.0) {
         self.layer.borderColor = color.cgColor
         self.layer.borderWidth = width
+    }
+    
+    func snapshoot() -> UIImage? {
+        UIGraphicsBeginImageContextWithOptions(self.size, false, 0)
+        if let context = UIGraphicsGetCurrentContext() {
+            self.layer.render(in:context)
+            let opImg = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            return opImg
+        }
+        return nil
     }
     
     func addTapGes(action:@escaping (_ view: UIView) -> ()) {

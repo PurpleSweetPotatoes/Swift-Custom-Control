@@ -19,6 +19,11 @@ extension CALayer {
         return line
     }
     
+    var origin: CGPoint {
+        get { return self.frame.origin }
+        set { self.frame.origin = newValue }
+    }
+    
     var top : CGFloat {
         get { return self.frame.origin.y }
         set { self.frame.origin = CGPoint(x: self.frame.origin.x, y: newValue) }
@@ -37,6 +42,11 @@ extension CALayer {
     var right : CGFloat {
         get { return self.frame.origin.x  + self.frame.width}
         set { self.left = newValue - self.frame.width }
+    }
+    
+    var size: CGSize {
+        get { return self.bounds.size }
+        set { self.bounds.size = newValue }
     }
     
     var sizeW : CGFloat {

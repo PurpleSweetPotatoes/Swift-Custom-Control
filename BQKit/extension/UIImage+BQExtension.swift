@@ -18,6 +18,15 @@ extension UIImage {
         return UIImage(named: name)?.withRenderingMode(.alwaysOriginal)
     }
     
+    static var appIcon: UIImage? {
+        guard let iconsDictionary = Bundle.main.infoDictionary?["CFBundleIcons"] as? [String:Any],
+            let primaryIconsDictionary = iconsDictionary["CFBundlePrimaryIcon"] as? [String:Any],
+            let iconFiles = primaryIconsDictionary["CFBundleIconFiles"] as? [String],
+            let lastIcon = iconFiles.last else { return nil }
+        return UIImage(named: lastIcon)
+    }
+    
+    // MARK: - 压缩相关
     /// 图片质量压缩
     ///
     /// - Parameters:
@@ -88,7 +97,7 @@ extension UIImage {
             }
         }
     }
-    
+    // MARK: - 填充
     func fillColor(_ color: UIColor, _ model:CGBlendMode = .destinationIn) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(self.size, false, 0)
         let context = UIGraphicsGetCurrentContext()
@@ -104,6 +113,16 @@ extension UIImage {
         return newImg ?? self
     }
     
+    func addImg(img:UIImage, alpha: CGFloat = 1.0, rect:CGRect? = nil) -> UIImage? {
+        UIGraphicsBeginImageContextWithOptions(self.size, false, 0)
+        self.draw(in: CGRect(origin: CGPoint.zero, size: self.size))
+        img.draw(in: rect ?? CGRect(origin: CGPoint.zero, size: img.size), blendMode: .normal, alpha: alpha)
+        let opImg = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return opImg
+    }
+    
+    // MARK: - 处理
     func reSizeImage(reSize:CGSize)-> UIImage {
          UIGraphicsBeginImageContextWithOptions(reSize,false,UIScreen.main.scale);
         let context = UIGraphicsGetCurrentContext()
@@ -138,13 +157,17 @@ extension UIImage {
         }
         return nil;
     }
-    
-    static var appIcon: UIImage? {
-        guard let iconsDictionary = Bundle.main.infoDictionary?["CFBundleIcons"] as? [String:Any],
-            let primaryIconsDictionary = iconsDictionary["CFBundlePrimaryIcon"] as? [String:Any],
-            let iconFiles = primaryIconsDictionary["CFBundleIconFiles"] as? [String],
-            let lastIcon = iconFiles.last else { return nil }
-        return UIImage(named: lastIcon)
+
+    func blurred(_ radius: CGFloat) -> UIImage {
+        let ciContext = CIContext(options: nil)
+        guard let cgImage = cgImage else { return self }
+        let inputImage = CIImage(cgImage: cgImage)
+        guard let ciFilter = CIFilter(name: "CIGaussianBlur") else { return self }
+        ciFilter.setValue(inputImage, forKey: kCIInputImageKey)
+        ciFilter.setValue(radius, forKey: "inputRadius")
+        guard let resultImage = ciFilter.value(forKey: kCIOutputImageKey) as? CIImage else { return self }
+        guard let cgImage2 = ciContext.createCGImage(resultImage, from: inputImage.extent) else { return self }
+        return UIImage(cgImage: cgImage2)
     }
     
     /// Process Image use a bitmap context
@@ -172,5 +195,42 @@ extension UIImage {
         let backImg = UIImage(cgImage: imgRefWithOutAlpha, scale: self.scale, orientation: self.imageOrientation)
         
         return backImg
+    }
+    
+    // MARK: - 二维码
+    
+    class func QRCode(content: String, size: CGFloat? = nil) -> UIImage? {
+        guard let ciImg = self.createCIImage(content) else {
+            return nil
+        }
+        
+        if let imgSize = size {
+            let rect = ciImg.extent
+            let scale = min(imgSize / rect.width, imgSize / rect.height)
+            let context = CIContext(options: nil)
+            if let bitImg = context.createCGImage(ciImg, from: rect) {
+                let bitmapInfo = CGBitmapInfo.byteOrder32Little
+                let bitRaw = bitmapInfo.rawValue |  CGImageAlphaInfo.noneSkipFirst.rawValue
+                let bitContext = CGContext(data: nil, width: Int(scale * rect.width), height: Int(scale * rect.height), bitsPerComponent: 8, bytesPerRow: 0, space: colorSpaceRef, bitmapInfo: bitRaw)
+                bitContext?.interpolationQuality = .none
+                bitContext?.scaleBy(x: scale, y: scale)
+                bitContext?.draw(bitImg, in: rect)
+                if let cgimg = bitContext?.makeImage() {
+                    return UIImage(cgImage: cgimg)
+                }
+            }
+        }
+        return UIImage(ciImage: ciImg)
+    }
+    
+    // MARK: - 私有
+    
+    private class func createCIImage(_ content: String) -> CIImage? {
+        let filder = CIFilter(name: "CIQRCodeGenerator")
+        filder?.setDefaults()
+        let data = content.data(using: .utf8)
+        filder?.setValue(data, forKey: "inputMessage")
+        filder?.setValue("H", forKey: "inputCorrectionLevel")
+        return filder?.outputImage
     }
 }
