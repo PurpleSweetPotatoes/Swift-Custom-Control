@@ -176,6 +176,15 @@ class BQTool: NSObject {
         }
     }
     
+    class func callPhone(phone:String) {
+        if let url = URL(string: "tel:" + phone), UIApplication.shared.canOpenURL(url) {
+            if #available(iOS 10.0, *) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            } else {
+                UIApplication.shared.openURL(url)
+            }
+        }
+    }
     
     /// IP地址相关(第一个为外网ip)
     class func getIFAddresses() -> [String] {
