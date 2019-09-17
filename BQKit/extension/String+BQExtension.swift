@@ -26,7 +26,6 @@ private var Regular_hasChinese = "[\\u4e00-\\u9fa5]"
 extension String {
     
     public func isPhone() -> Bool {
-//        return self =~ Regular_Phone
         guard let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.phoneNumber.rawValue) else {
             return false
         }
@@ -69,15 +68,14 @@ extension String {
     }
     
     func toDictionary() -> [String: Any] {
-        var dict = [String: Any]()
         if let data = self.data(using: .utf8) {
             do {
-                dict = try JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
+                return try JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
             } catch {
-                print(error.localizedDescription)
+                return [String: Any]()
             }
         }
-        return dict
+        return [String: Any]()
     }
     
     func htmlAttributeStr(fontName: String = "Heiti SC", fontSize: Int = 14, colorHex: String = "000000") -> NSAttributedString? {
