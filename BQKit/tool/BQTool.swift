@@ -1,21 +1,21 @@
 // *******************************************
-//  File Name:      BQTool.swift       
+//  File Name:      BQTool.swift
 //  Author:         MrBai
 //  Created Date:   2019/8/15 3:03 PM
-//    
+//
 //  Copyright © 2019 baiqiang
 //  All rights reserved
 // *******************************************
-    
+
 
 import UIKit
 
-class BQTool: NSObject {
+struct BQTool {
     
     static private var sapceName: String?
     
     //MARK:- ***** 计算方法耗时 *****
-    class func getFuntionUseTime(function:()->()) {
+    static func getFuntionUseTime(function:()->()) {
         let start = CACurrentMediaTime()
         function()
         let end = CACurrentMediaTime()
@@ -23,7 +23,7 @@ class BQTool: NSObject {
     }
     
     //MARK:- ***** 对象转json *****
-    class func jsonFromObject(obj:Any) -> String {
+    static func jsonFromObject(obj:Any) -> String {
         
         guard let data = try? JSONSerialization.data(withJSONObject: obj, options: .prettyPrinted) else {
             return String(describing: obj)
@@ -36,16 +36,16 @@ class BQTool: NSObject {
         return String(describing: obj)
     }
     
-    class func currentSapceName() -> String {
+    static func currentSapceName() -> String {
         if sapceName == nil {
-            var arrSapce = self.classForCoder().description().split(separator: ".")
+            var arrSapce = AppDelegate.classForCoder().description().split(separator: ".")
             arrSapce.removeLast()
             sapceName = arrSapce.joined()
         }
         return sapceName!
     }
     
-    class func loadVc(vcName:String, spaceName: String? = nil) -> UIViewController? {
+    static func loadVc(vcName:String, spaceName: String? = nil) -> UIViewController? {
         
         var clsName = ""
         
@@ -75,7 +75,7 @@ class BQTool: NSObject {
     ///   - targetSel: 目标方法
     ///   - newSel: 替换方法
     @discardableResult
-    class func exchangeMethod(cls: AnyClass?, targetSel: Selector, newSel: Selector) -> Bool {
+    static func exchangeMethod(cls: AnyClass?, targetSel: Selector, newSel: Selector) -> Bool {
         
         guard let before: Method = class_getInstanceMethod(cls, targetSel),
             let after: Method = class_getInstanceMethod(cls, newSel) else {
@@ -87,7 +87,7 @@ class BQTool: NSObject {
     }
     
     ///获取设备型号
-    class var modelName: String {
+    static var modelName: String {
         var systemInfo = utsname()
         uname(&systemInfo)
         let identifier = withUnsafePointer(to: &systemInfo.machine.0) { ptr in
@@ -150,23 +150,23 @@ class BQTool: NSObject {
         }
     }
     
-    class var identifier: String? {
+    static var identifier: String? {
         return Bundle.main.bundleIdentifier
     }
     
-    class var appVersion: String? {
+    static var appVersion: String? {
         return Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
     }
     
-    class var systemVersion: String {
+    static var systemVersion: String {
         return UIDevice.current.systemVersion
     }
     
-    class var uuidIdentifier: String? {
+    static var uuidIdentifier: String? {
         return UIDevice.current.identifierForVendor?.uuidString
     }
     
-    class func goPermissionSettings() {
+    static func goPermissionSettings() {
         if let settingsUrl = URL(string: UIApplication.openSettingsURLString) {
             if #available(iOS 10.0, *) {
                 UIApplication.shared.open(settingsUrl, options: [:], completionHandler: nil)
@@ -176,18 +176,9 @@ class BQTool: NSObject {
         }
     }
     
-    class func callPhone(phone:String) {
-        if let url = URL(string: "tel:" + phone), UIApplication.shared.canOpenURL(url) {
-            if #available(iOS 10.0, *) {
-                UIApplication.shared.open(url, options: [:], completionHandler: nil)
-            } else {
-                UIApplication.shared.openURL(url)
-            }
-        }
-    }
     
     /// IP地址相关(第一个为外网ip)
-    class func getIFAddresses() -> [String] {
+    static func getIFAddresses() -> [String] {
         var addresses = [String]()
         
         // Get list of all interfaces on the local machine:

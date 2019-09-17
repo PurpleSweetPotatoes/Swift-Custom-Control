@@ -23,16 +23,20 @@ class BQRouterComm {
     //MARK: ---- private Ivar
     private static let share = BQRouterComm()
     private var commObjcs:[BaseVcProxy] = []
+    
     //MARK: ---- public Method
     class public func addRouterComm(names:Notification.Name..., target: BQRouterCommProtocol) {
         share.addComm(names: names, target: target)
     }
+    
     class public func postRouterComm(name:Notification.Name, params:Any? = nil) {
         share.postComm(name: name, params: params)
     }
+    
     class public func romveRouterComm(target: BQRouterCommProtocol) {
         share.removeComm(target: target)
     }
+    
     //MARK: ---- private Method
     private func addComm(names:[Notification.Name], target: BQRouterCommProtocol) {
         for weakVc in self.commObjcs {
@@ -47,6 +51,7 @@ class BQRouterComm {
         self.commObjcs.append(weakVc)
         target.removeIndex = self.commObjcs.firstIndex(of: weakVc)!
     }
+    
     private func postComm(name:Notification.Name, params:Any?) {
         for weakVc in self.commObjcs {
             if let vc = weakVc.vc {
@@ -56,12 +61,14 @@ class BQRouterComm {
             }
         }
     }
+    
     private func removeComm(target: BQRouterCommProtocol) {
         if target.removeIndex >= 0 {
             self.commObjcs.remove(at: target.removeIndex)
         }
         print(self.commObjcs)
     }
+    
     private init() {
         
     }

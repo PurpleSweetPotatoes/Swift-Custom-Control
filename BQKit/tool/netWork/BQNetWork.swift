@@ -13,8 +13,9 @@ public enum HTTPMethod: String {
     case post    = "POST"
 }
 
-class BQNetWork: NSObject {
-    public class func sendRequest(urlstr:String, parameter:[String:Any]? = nil, method: HTTPMethod = .post, time:TimeInterval = 10,headers:[String:String]? = nil, completionHandler:@escaping (Data?, URLResponse?, Error?) -> Void ) -> URLSessionDataTask? {
+struct BQNetWork {
+    
+    public static func sendRequest(urlstr:String, parameter:[String:Any]? = nil, method: HTTPMethod = .post, time:TimeInterval = 10,headers:[String:String]? = nil, completionHandler:@escaping (Data?, URLResponse?, Error?) -> Void ) -> URLSessionDataTask? {
         if let url = URL(string: urlstr) {
             print("url: \(url) \nparameter: \(String(describing: parameter))")
             var request = encode(url: url, method: method, parameters: parameter,headers:headers)
@@ -36,7 +37,7 @@ class BQNetWork: NSObject {
     ///    print(result)
     ///    }
     ///    })
-    public class func uploadImag(bqImgData: @escaping (BQImgData) -> Void,to url:String, method: HTTPMethod = .post, headers:[String: String]? = nil, completionHandler:@escaping (Any?, Error?) -> Void) {
+    public static func uploadImag(bqImgData: @escaping (BQImgData) -> Void,to url:String, method: HTTPMethod = .post, headers:[String: String]? = nil, completionHandler:@escaping (Any?, Error?) -> Void) {
         if let url = URL(string: url) {
             print("upload url: \(url))")
             DispatchQueue.global(qos: .utility).async {
@@ -64,7 +65,7 @@ class BQNetWork: NSObject {
     }
     
     //MARK: ---- private Method
-    private class func encode(url:URL,method:HTTPMethod,parameters:[String:Any]?, headers:[String: String]?) -> URLRequest {
+    private static func encode(url:URL,method:HTTPMethod,parameters:[String:Any]?, headers:[String: String]?) -> URLRequest {
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
         if let head = headers {
@@ -91,7 +92,7 @@ class BQNetWork: NSObject {
         return request
     }
     
-    private class func query(_ parameters: [String: Any]) -> String {
+    private static func query(_ parameters: [String: Any]) -> String {
         var components: [(String, String)] = []
         
         for key in parameters.keys.sorted(by: <) {
@@ -101,7 +102,7 @@ class BQNetWork: NSObject {
         
         return components.map { "\($0)=\($1)" }.joined(separator: "&")
     }
-    private class func queryComponents(fromKey key: String, value: Any) -> [(String, String)] {
+    private static func queryComponents(fromKey key: String, value: Any) -> [(String, String)] {
         var components: [(String, String)] = []
         
         if let dictionary = value as? [String: Any] {
@@ -125,7 +126,8 @@ class BQNetWork: NSObject {
         }
         return components
     }
-    private class func escape(_ string: String) -> String {
+    
+    private static func escape(_ string: String) -> String {
         let generalDelimitersToEncode = ":#[]@" // does not include "?" or "/" due to RFC 3986 - Section 3.4
         let subDelimitersToEncode = "!$&'()*+,;="
         

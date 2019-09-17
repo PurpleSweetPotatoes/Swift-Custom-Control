@@ -22,9 +22,9 @@ private let base_url:[String] = ["",
 
 let baseUrl = base_url[sever.rawValue]
 
-class BQAPIManager: NSObject {
+struct BQAPIManager {
     
-    public class func sendRequest(request: BQRequest, completionHandler:@escaping () -> ()) {
+    public static func sendRequest(request: BQRequest, completionHandler:@escaping () -> ()) {
         weak var req = request
         let task = BQNetWork.sendRequest(urlstr: baseUrl + request.url(), parameter: request.toDiction(), method: request.method, time: 10, headers: nil) { (data, response, error) in
             req?.responseAction(data: data, response: response, error: error)

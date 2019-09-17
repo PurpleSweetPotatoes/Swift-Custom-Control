@@ -37,6 +37,7 @@ class BQRequest: NSObject {
             print(error.localizedDescription)
         }
     }
+    
     deinit {
         print("request释放")
         if let task = self.task{
