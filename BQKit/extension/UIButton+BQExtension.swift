@@ -59,7 +59,7 @@ extension UIButton {
     public class func startIntervalAction(interval: TimeInterval) {
         _interval = interval
         DispatchQueue.once(token: #function) {
-            BQTool.exchangeMethod(cls: self, targetSel: #selector(UIButton.sendAction), newSel: #selector(UIButton.re_sendAction))
+            exchangeMethod(targetSel: #selector(sendAction), newSel: #selector(re_sendAction))
         }
         
     }

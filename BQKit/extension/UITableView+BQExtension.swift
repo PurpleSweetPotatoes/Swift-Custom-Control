@@ -123,7 +123,7 @@ extension UITableView {
     func setEmtpyViewDelegate(target: EmptyViewProtocol) {
         self.emptyDelegate = target
         DispatchQueue.once(token:#function) {
-            BQTool.exchangeMethod(cls: self.classForCoder, targetSel: #selector(self.layoutSubviews), newSel: #selector(self.re_layoutSubviews))
+            UITableView.exchangeMethod(targetSel: #selector(layoutSubviews), newSel: #selector(re_layoutSubviews))
         }
     }
     

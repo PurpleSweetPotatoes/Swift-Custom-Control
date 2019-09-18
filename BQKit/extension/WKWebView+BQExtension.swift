@@ -12,6 +12,14 @@ import WebKit
 
 extension WKWebView {
     
+    @discardableResult
+    func load(_ urlStr: String) -> WKNavigation? {
+        if let url = URL(string: urlStr) {
+            return self.load(URLRequest(url: url))
+        }
+        return nil
+    }
+    
     /// 文本大小自适应
     func textAutoFit() {
         let textJs = "var meta = document.createElement('meta'); meta.setAttribute('name', 'viewport'); meta.setAttribute('content', 'width=device-width'); document.getElementsByTagName('head')[0].appendChild(meta);"

@@ -12,7 +12,7 @@ import UIKit
 
 extension UIAlertController {
     
-    class func showAlert(content:String, title:String? = nil, handle:(() -> ())? = nil) {
+    class func showAlert(content:String, title:String? = nil, handle:(() -> Void)? = nil) {
         self.showAlert(content: content, title: title, btnTitleArr: ["确定"]) { (index) in
             if let block = handle {
                 block()

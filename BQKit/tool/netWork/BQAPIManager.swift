@@ -24,7 +24,7 @@ let baseUrl = base_url[sever.rawValue]
 
 struct BQAPIManager {
     
-    public static func sendRequest(request: BQRequest, completionHandler:@escaping () -> ()) {
+    public static func sendRequest(request: BQRequest, completionHandler: @escaping () -> Void) {
         weak var req = request
         let task = BQNetWork.sendRequest(urlstr: baseUrl + request.url(), parameter: request.toDiction(), method: request.method, time: 10, headers: nil) { (data, response, error) in
             req?.responseAction(data: data, response: response, error: error)
