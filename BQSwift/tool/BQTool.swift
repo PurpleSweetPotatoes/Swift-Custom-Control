@@ -19,7 +19,7 @@ struct BQTool {
         let start = CACurrentMediaTime()
         function()
         let end = CACurrentMediaTime()
-        Log("方法耗时为：\(end-start)")
+        print("耗时:\(end - start) s")
     }
     
     //MARK:- ***** 对象转json *****
@@ -159,6 +159,14 @@ struct BQTool {
         }
     }
     
+    static func address(_ pt: UnsafeRawPointer) -> String {
+        return String(format: "%p", Int(bitPattern: pt))
+    }
+    
+    static func random(_ range: Range<Int>) -> Int {
+        let count = UInt32(range.endIndex - range.startIndex)
+        return Int(arc4random_uniform(count)) + range.startIndex
+    }
     
     /// IP地址相关(第一个为外网ip)
     static func getIFAddresses() -> [String] {
@@ -194,12 +202,4 @@ struct BQTool {
         }
         return addresses
     }
-}
-
-/// 需要在build setting -> other swift flags -> Debug 中设置 -D DEBUG
-func Log<T>(_ messsage : T, file : String = #file, funcName : String = #function, lineNum : Int = #line) {
-    #if DEBUG
-    let fileName = (file as NSString).lastPathComponent.split(separator: ".").first!
-    print("\(fileName) -> \(funcName) -> line:\(lineNum) ==> \(messsage)")
-    #endif
 }

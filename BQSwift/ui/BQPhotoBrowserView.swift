@@ -153,7 +153,7 @@ extension BQPhotoBrowserView: UIScrollViewDelegate {
     }
 }
 
-protocol PhotoCellDelegate: NSObjectProtocol {
+protocol PhotoCellDelegate: class {
     func photoTapAction(row:Int)
 }
 

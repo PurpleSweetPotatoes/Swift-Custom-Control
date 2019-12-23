@@ -12,7 +12,7 @@ import UIKit
 
 extension UIAlertController {
     
-    class func showAlert(content:String, title:String? = nil, handle:(() -> Void)? = nil) {
+    class public func showAlert(content:String, title:String? = nil, handle:(() -> Void)? = nil) {
         self.showAlert(content: content, title: title, btnTitleArr: ["确定"]) { (index) in
             if let block = handle {
                 block()
@@ -20,7 +20,7 @@ extension UIAlertController {
         }
     }
     
-    class func showAlert(content:String, title:String? = nil, btnTitleArr:Array<String>,handle:@escaping ((_ index:Int) -> Void)) {
+    class public func showAlert(content:String, title:String? = nil, btnTitleArr:Array<String>,handle:@escaping ((_ index:Int) -> Void)) {
         let alertVc:UIAlertController = UIAlertController(title: title, message: content, preferredStyle: .alert);
         for (index, title) in btnTitleArr.enumerated() {
             let action:UIAlertAction = UIAlertAction(title: title, style: .default, handler: { (action) in

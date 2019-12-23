@@ -89,7 +89,7 @@ extension UIView {
     typealias addBlock = (_ view: UIView) -> Void
     
     private struct AssociatedKeys {
-        static var actionKey = "actionBlock"
+        static var actionKey: Void?
     }
     
     private var action: addBlock? {

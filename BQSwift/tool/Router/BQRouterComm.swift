@@ -13,7 +13,7 @@ extension Notification.Name {
     public static let RLogout = NSNotification.Name("RLogout")
 }
 
-protocol BQRouterCommProtocol:NSObjectProtocol {
+protocol BQRouterCommProtocol: class {
     var removeIndex: Int { get set }
     func loadVcInfo(params:Any)
     func reciveRouterComm(name:Notification.Name, params:Any?)

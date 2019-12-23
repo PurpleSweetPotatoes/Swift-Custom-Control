@@ -10,7 +10,7 @@
 
 import UIKit
 
-protocol BQNineImgsViewDelegate: NSObjectProtocol {
+protocol BQNineImgsViewDelegate: class {
     func numberOfImages(nineView: BQNineImgsView) -> Int
     func prepareNineView(nineView: BQNineImgsView, imgV: UIImageView, item: NSInteger)
     func imgVSelect(nineView: BQNineImgsView, imgV: UIImageView, item: NSInteger)

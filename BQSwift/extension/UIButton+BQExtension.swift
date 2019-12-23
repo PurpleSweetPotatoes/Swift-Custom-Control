@@ -65,12 +65,11 @@ extension UIButton {
     }
     
     @objc private func re_sendAction(action: Selector, to target: AnyObject?, forEvent event: UIEvent?) {
-        if self.isKind(of: UIButton.classForCoder()) {
-            if self.isIgnoreEvent {
-                return
-            } else {
-                self.perform(#selector(self.resetIgnoreEvent), with: nil, afterDelay: _interval)
-            }
+        
+        if self.isIgnoreEvent {
+            return
+        } else {
+            self.perform(#selector(self.resetIgnoreEvent), with: nil, afterDelay: _interval)
         }
         
         self.isIgnoreEvent = true
@@ -94,10 +93,10 @@ extension UIButton {
     typealias btnUpdateBlock = (_ sender: UIButton, _ currentTime: Int) -> Void
     
     private struct AssociatedKeys {
-        static var countKey = "btn_countTime"
-        static var timerKey = "btn_sourceTimer"
-        static var actionKey = "btn_actionKey"
-        static var isIgnoreEventKey = "btn_isIgnoreEventKey"
+        static var countKey: Void?
+        static var timerKey: Void?
+        static var actionKey: Void?
+        static var isIgnoreEventKey: Void?
     }
     
     private var action: btnUpdateBlock? {

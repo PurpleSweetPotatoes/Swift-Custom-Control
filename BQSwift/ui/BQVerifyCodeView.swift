@@ -10,19 +10,19 @@
 
 import UIKit
 
-class BQVerifyCodeView: UIView {
+public final class BQVerifyCodeView: UIView {
 
     // MARK: - var
     private var verCode: String = ""
     private var codeNum: Int = 0
     private var disturbLineNum: Int = 0
     private var fontSize: CGFloat = 0
-    var textColor: UIColor?
+    public var textColor: UIColor?
     /// 是否区分大小写
-    var checkStrict = false
+    public var checkStrict = false
     // MARK: - creat
 
-    init(frame: CGRect, fontSize: CGFloat = 20, codeNum: Int = 4, disturbLineNum: Int = 5) {
+    public init(frame: CGRect, fontSize: CGFloat = 20, codeNum: Int = 4, disturbLineNum: Int = 5) {
         super.init(frame: frame)
         self.codeNum = codeNum
         self.disturbLineNum = disturbLineNum
@@ -41,7 +41,8 @@ class BQVerifyCodeView: UIView {
         }
         return str.uppercased() == self.verCode.uppercased()
     }
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+    
+    public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         
         self.setNeedsDisplay()
     }
@@ -55,7 +56,7 @@ class BQVerifyCodeView: UIView {
     }
     
     // MARK: - UI method
-    override func draw(_ rect: CGRect) {
+    public override func draw(_ rect: CGRect) {
         super.draw(rect)
         self.verCode = ""
         let charArr = ["0", "1","2","3","4","5","6","7","8","9","a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]

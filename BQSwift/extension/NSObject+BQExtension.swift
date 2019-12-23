@@ -11,15 +11,16 @@
 import UIKit
 
 extension NSObject {
-    var pointAddress: UnsafeMutableRawPointer {
+    public var pointAddress: UnsafeMutableRawPointer {
         return Unmanaged.passUnretained(self).toOpaque()
     }
     
-    var jsonString: String? {
+    public var jsonString: String? {
         do {
             let data = try JSONSerialization.data(withJSONObject: self, options: .prettyPrinted)
             return String(data: data, encoding: .utf8)
         } catch let err {
+            assert(false, err.localizedDescription)
             return nil
         }
     }
@@ -28,7 +29,7 @@ extension NSObject {
     ///   - targetSel: 目标方法
     ///   - newSel: 替换方法
     @discardableResult
-    static func exchangeMethod(targetSel: Selector, newSel: Selector) -> Bool {
+    static public func exchangeMethod(targetSel: Selector, newSel: Selector) -> Bool {
         
         guard let before: Method = class_getInstanceMethod(self, targetSel),
             let after: Method = class_getInstanceMethod(self, newSel) else {

@@ -12,7 +12,7 @@ import Foundation
 
 extension Data {
     
-    func toDic() -> Any {
+    public func toDic() -> Any {
         var result: Any = ""
         do {
             result = try JSONSerialization.jsonObject(with: self, options: .mutableContainers)
@@ -25,7 +25,7 @@ extension Data {
     //MARK:- ***** 钥匙串保存 *****
     //if want to use this method should open keychain sharing
     @discardableResult
-    func saveKeychain(data:Data) -> Bool {
+    public func saveKeychain(data:Data) -> Bool {
         var keychainQuery = type(of: self).getkeychain()
         SecItemDelete(keychainQuery as CFDictionary)
         keychainQuery[kSecValueData as String] = data as AnyObject?
