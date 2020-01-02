@@ -12,11 +12,11 @@ import UIKit
 
 extension UIBarItem {
     
-    func configAttributes(fontSize: CGFloat, textColor: UIColor) {
+    public func configAttributes(fontSize: CGFloat, textColor: UIColor) {
         self.configAttributes(font: UIFont.systemFont(ofSize: fontSize), textColor: textColor)
     }
     
-    func configAttributes(font: UIFont? = nil, textColor: UIColor) {
+    public func configAttributes(font: UIFont? = nil, textColor: UIColor) {
         let textInfo = BQTextAttributes()
         textInfo.textColor(textColor)
         if let fontV = font {
@@ -26,7 +26,7 @@ extension UIBarItem {
     }
     
     
-    func setTextInfo(textInfo: BQTextAttributes, state: UIControl.State) {
+    public func setTextInfo(textInfo: BQTextAttributes, state: UIControl.State) {
         self.setTitleTextAttributes(textInfo.dictionary, for: state)
     }
 }

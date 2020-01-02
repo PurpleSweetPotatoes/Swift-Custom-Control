@@ -10,7 +10,7 @@
 
 import UIKit
 
-protocol BQTextViewDelegate: NSObjectProtocol {
+public protocol BQTextViewDelegate: class {
     /// 可选方法
     func textViewDidHasMaxNum(textView: BQTextView) -> Void
     func textViewDidAdjustFrame(textView: BQTextView) -> Void
@@ -25,16 +25,16 @@ protocol BQTextViewDelegate: NSObjectProtocol {
     
 }
 
-
-class BQTextView: UITextView {
+ 
+public final class BQTextView: UITextView {
 
     // MARK: - var
-    weak open var textDelegate: BQTextViewDelegate?
-    open var limitLenght: Int = 1000
-    open var autoAdjustHeight: Bool = false
+    public weak var textDelegate: BQTextViewDelegate?
+    public var limitLenght: Int = 1000
+    public var autoAdjustHeight: Bool = false
     
-    open var maxHeight: CGFloat = 400   ///< defualt is init height
-    open var minHeight: CGFloat?        ///< defualt is 0
+    public var maxHeight: CGFloat = 400   ///< defualt is init height
+    public var minHeight: CGFloat?        ///< defualt is 0
     
     private let placeLab: UILabel = {
         let lab = UILabel(frame: CGRect.zero)
@@ -42,7 +42,7 @@ class BQTextView: UITextView {
         return lab
     }()
     
-    override var font: UIFont? {
+    public override var font: UIFont? {
         didSet {
             self.placeLab.font = font
             self.setNeedsLayout()
@@ -50,20 +50,26 @@ class BQTextView: UITextView {
         }
     }
     
-    
+    public override weak var delegate: UITextViewDelegate? {
+        didSet {
+            if !(delegate is BQTextView) {
+                fatalError("代理请设置textDelegate")
+            }
+        }
+    }
     // MARK: - creat
 
-    override func awakeFromNib() {
+    public override func awakeFromNib() {
         super.awakeFromNib()
         self.configUI()
     }
     
-    override init(frame: CGRect, textContainer: NSTextContainer?) {
+    public override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
         self.configUI()
     }
     
-    convenience init(frame: CGRect, holder: String? = nil, color: UIColor = UIColor.gray) {
+    public convenience init(frame: CGRect, holder: String? = nil, color: UIColor = UIColor.gray) {
         self.init(frame: frame, textContainer: nil)
         self.configHolder(placeHolder: holder, color: color)
     }
@@ -74,18 +80,17 @@ class BQTextView: UITextView {
     
     // MARK: - public method
     
-    func configHolder(placeHolder: String?, color: UIColor = UIColor.gray) {
+    public func configHolder(placeHolder: String?, color: UIColor = UIColor.gray) {
         self.placeLab.text = placeHolder
         self.placeLab.textColor = color
     }
     
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         super.layoutSubviews()
         self.adjustFrames()
     }
     
-    // MARK: - private method
-    
+    // MARK: - private method    
     private func adjustFrames() {
     
         self.refreshPlaceholder()
@@ -124,14 +129,14 @@ class BQTextView: UITextView {
         self.placeLab.font = self.font
         self.placeLab.sizeW = self.sizeW
         self.addSubview(self.placeLab)
-        self.delegate = self
+        delegate = self
     }
 
 }
 
 extension BQTextView: UITextViewDelegate {
     
-    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+    public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if (textView.text.count + text.count <= self.limitLenght) {
             return true
         }
@@ -139,23 +144,23 @@ extension BQTextView: UITextViewDelegate {
         return false
     }
     
-    func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
+    public func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
         return self.textDelegate?.textViewShouldBeginEditing(textView: self) ?? true
     }
     
-    func textViewDidBeginEditing(_ textView: UITextView) {
+    public func textViewDidBeginEditing(_ textView: UITextView) {
         self.textDelegate?.textViewDidBeginEditing(textView: self)
     }
     
-    func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
+    public func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
         return self.textDelegate?.textViewShouldEndEditing(textView: self) ?? true
     }
     
-    func textViewDidEndEditing(_ textView: UITextView) {
+    public func textViewDidEndEditing(_ textView: UITextView) {
         self.textDelegate?.textViewDidEndEditing(textView: self)
     }
     
-    func textViewDidChange(_ textView: UITextView) {
+    public func textViewDidChange(_ textView: UITextView) {
         self.refreshPlaceholder()
         self.textDelegate?.textViewDidChange(textView: self)
     }

@@ -67,7 +67,7 @@ extension String {
         }
     }
     
-    func toDictionary() -> [String: Any] {
+    public func toDictionary() -> [String: Any] {
         if let data = self.data(using: .utf8) {
             do {
                 return try JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
@@ -78,7 +78,16 @@ extension String {
         return [String: Any]()
     }
     
-    func htmlAttributeStr(fontName: String = "Heiti SC", fontSize: Int = 14, colorHex: String = "000000") -> NSAttributedString? {
+    public func urlEncode() -> String? {
+        if self.hasChinese() {
+            var set = CharacterSet.urlQueryAllowed
+            set.insert(charactersIn: "#")
+            return self.addingPercentEncoding(withAllowedCharacters: set)
+        }
+        return self
+    }
+    
+    public func htmlAttributeStr(fontName: String = "Heiti SC", fontSize: Int = 14, colorHex: String = "000000") -> NSAttributedString? {
         do {
             let cssPrefix = "<style>* { font-family: \(fontName); color: #\(colorHex); font-size: \(fontSize); }</style>"
             let html = cssPrefix + self
@@ -92,7 +101,7 @@ extension String {
     /// 将中文字符串转换为拼音
     ///
     /// - Parameter hasBlank: 是否带空格（默认不带空格）
-    func transformToPinyin(hasBlank: Bool = false) -> String {
+    public func transformToPinyin(hasBlank: Bool = false) -> String {
         
         let stringRef = NSMutableString(string: self) as CFMutableString
         CFStringTransform(stringRef,nil, kCFStringTransformToLatin, false) // 转换为带音标的拼音
@@ -104,7 +113,7 @@ extension String {
     /// 获取中文首字母
     ///
     /// - Parameter lowercased: 是否小写（默认小写）
-    func transformToPinyinHead(lowercased: Bool = true) -> String {
+    public func transformToPinyinHead(lowercased: Bool = true) -> String {
         let pinyin = transformToPinyin(hasBlank: true).capitalized // 字符串转换为首字母大写
         var headPinyinStr = ""
         for (_, ch) in pinyin.enumerated() {
@@ -115,7 +124,7 @@ extension String {
         return lowercased ? headPinyinStr.lowercased() : headPinyinStr
     }
     
-    subscript(range: NSRange) -> String {
+    public subscript(range: NSRange) -> String {
         get {
             if range.location < 0 || range.location + range.length >= self.count {
                 return ""
@@ -126,7 +135,7 @@ extension String {
         }
     }
     
-    subscript(range:ClosedRange<Int>) -> String {
+    public subscript(range:ClosedRange<Int>) -> String {
         get {
             if range.lowerBound < 0 || range.upperBound > self.count {
                 return "index is not in bound"
@@ -137,7 +146,7 @@ extension String {
         }
     }
     
-    subscript(index: Int) -> Character {
+    public subscript(index: Int) -> Character {
         get {
             return self[self.index(startIndex, offsetBy: index)]
         }

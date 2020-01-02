@@ -10,12 +10,12 @@
 
 import UIKit
 
-class BQPopVc: UIViewController {
+open class BQPopVc: UIViewController {
 
     // MARK: - var
     open var showTime: TimeInterval = 0.25
     open var hideTime: TimeInterval = 0.25
-    open var showBgView: Bool = true {
+    public var showBgView: Bool = true {
         didSet {
             backView.isHidden = !showBgView
         }
@@ -24,7 +24,7 @@ class BQPopVc: UIViewController {
     private let backView: UIView = UIView(frame: UIScreen.main.bounds)
     // MARK: - create
     
-    public class func showView(presentVc: UIViewController) {
+    open class func showView(presentVc: UIViewController) {
         let popVc = self.init()
         presentVc.present(popVc, animated: false) {
             popVc.show()
@@ -36,12 +36,12 @@ class BQPopVc: UIViewController {
         self.modalPresentationStyle = .overCurrentContext
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    public required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
     // MARK: - life
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         self.configUI()
@@ -102,7 +102,7 @@ class BQPopVc: UIViewController {
     }
     
     // MARK: - UI method
-    func configUI() {
+    private func configUI() {
         backView.backgroundColor = UIColor.black.withAlphaComponent(0.25)
         view.addSubview(backView)
         

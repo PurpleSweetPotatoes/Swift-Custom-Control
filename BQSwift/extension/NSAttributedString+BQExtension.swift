@@ -37,7 +37,7 @@ extension NSAttributedString {
 }
 
 
-final class BQTextAttributes {
+final public class BQTextAttributes {
     
     fileprivate(set) var dictionary: [AttributesKey: Any] = [:]
     
@@ -56,7 +56,7 @@ final class BQTextAttributes {
     }
     
     // MARK: - font 字体
-    var font: UIFont? {
+    public var font: UIFont? {
         get {
             return dictionary[AttributesKey.font] as? UIFont
         }
@@ -66,18 +66,18 @@ final class BQTextAttributes {
     }
     
     @discardableResult
-    func font(_ font: UIFont?) -> Self {
+    public func font(_ font: UIFont?) -> Self {
         self.font = font
         return self
     }
 
     @discardableResult
-    func font(name: String, size: CGFloat) -> Self {
+    public func font(name: String, size: CGFloat) -> Self {
         return font(UIFont(name: name, size: size))
     }
 
     // MARK: - textColor 文字颜色
-    var textColor: UIColor? {
+    public var textColor: UIColor? {
         get {
             return dictionary[AttributesKey.foregroundColor] as? UIColor
         }
@@ -87,13 +87,13 @@ final class BQTextAttributes {
     }
     
     @discardableResult
-    func textColor(_ color: UIColor?) -> Self {
+    public func textColor(_ color: UIColor?) -> Self {
         self.textColor = color
         return self
     }
     
     // MARK: - backgroundColor 文字颜色
-    var backgroundColor: UIColor? {
+    public var backgroundColor: UIColor? {
         get {
             return dictionary[AttributesKey.backgroundColor] as? UIColor
         }
@@ -103,50 +103,50 @@ final class BQTextAttributes {
     }
     
     @discardableResult
-    func backgroundColor(_ color: UIColor?) -> Self {
+    public func backgroundColor(_ color: UIColor?) -> Self {
         self.backgroundColor = color
         return self
     }
     
     // MARK: - paragraphStyle 段落样式
-    var paragraphStyle: NSMutableParagraphStyle = NSMutableParagraphStyle() {
+    public var paragraphStyle: NSMutableParagraphStyle = NSMutableParagraphStyle() {
         didSet {
             dictionary[AttributesKey.paragraphStyle] = paragraphStyle
         }
     }
     
     @discardableResult
-    func paragraphStyle(_ style: NSMutableParagraphStyle) -> Self {
+    public func paragraphStyle(_ style: NSMutableParagraphStyle) -> Self {
         self.paragraphStyle = style
         return self
     }
     
     // MARK: - lineSpacing 行间距
-    var lineSpacing: CGFloat {
+    public var lineSpacing: CGFloat {
         get { return paragraphStyle.lineSpacing }
         set { paragraphStyle.lineSpacing = CGFloat(newValue) }
     }
     
     @discardableResult
-    func lineSpacing(_ value: CGFloat) -> Self {
+    public func lineSpacing(_ value: CGFloat) -> Self {
         self.lineSpacing = value
         return self
     }
     
     // MARK: - alignment 对齐方式
-    var alignment: NSTextAlignment {
+    public var alignment: NSTextAlignment {
         get { return paragraphStyle.alignment }
         set { paragraphStyle.alignment = newValue }
     }
     
     @discardableResult
-    func alignment(_ alignment: NSTextAlignment) -> Self {
+    public func alignment(_ alignment: NSTextAlignment) -> Self {
         self.alignment = alignment
         return self
     }
     
     // MARK: - link 链接
-    var link: URL? {
+    public var link: URL? {
         get {
             return dictionary[AttributesKey.link] as? URL
         }
@@ -156,13 +156,13 @@ final class BQTextAttributes {
     }
     
     @discardableResult
-    func link(_ link: URL?) -> Self {
+    public func link(_ link: URL?) -> Self {
         self.link = link
         return self
     }
     
     // MARK: - baselineOffset 基址偏移(正上移，负下移)
-    var baselineOffset: NSNumber? {
+    public var baselineOffset: NSNumber? {
         get {
             return dictionary[AttributesKey.baselineOffset] as? NSNumber
         }
@@ -172,13 +172,13 @@ final class BQTextAttributes {
     }
     
     @discardableResult
-    func baselineOffset(_ value: Float) -> Self {
+    public func baselineOffset(_ value: Float) -> Self {
         self.baselineOffset = NSNumber(value: value)
         return self
     }
     
     // MARK: - obliqueness 字体倾斜度(正右倾，负左倾)
-    var obliqueness: NSNumber? {
+    public var obliqueness: NSNumber? {
         get {
             return dictionary[AttributesKey.obliqueness] as? NSNumber
         }
@@ -188,14 +188,14 @@ final class BQTextAttributes {
     }
     
     @discardableResult
-    func obliqueness(_ value: Float) -> Self {
+    public func obliqueness(_ value: Float) -> Self {
         self.obliqueness = NSNumber(value: value)
         return self
     }
     
     
     // MARK: - kern 字间距
-    var kern: NSNumber? {
+    public var kern: NSNumber? {
         get {
             return dictionary[AttributesKey.kern] as? NSNumber
         }
@@ -205,13 +205,13 @@ final class BQTextAttributes {
     }
     
     @discardableResult
-    func kern(_ value: Float) -> Self {
+    public func kern(_ value: Float) -> Self {
         self.kern = NSNumber(value: value)
         return self
     }
     
     // MARK: - strokeColor 文字边框颜色配合strokeWidth使用
-    var strokeColor: UIColor? {
+    public var strokeColor: UIColor? {
         get {
             return dictionary[AttributesKey.strokeColor] as? UIColor
         }
@@ -221,13 +221,13 @@ final class BQTextAttributes {
     }
     
     @discardableResult
-    func strokeColor(_ color: UIColor?) -> Self {
+    public func strokeColor(_ color: UIColor?) -> Self {
         self.strokeColor = color
         return self
     }
     
     // MARK: - strokeWidth 文字边框宽度
-    var strokeWidth: NSNumber? {
+    public var strokeWidth: NSNumber? {
         get {
             return dictionary[AttributesKey.strokeWidth] as? NSNumber
         }
@@ -237,15 +237,14 @@ final class BQTextAttributes {
     }
     
     @discardableResult
-    func strokeWidth(_ value: Float) -> Self {
+    public func strokeWidth(_ value: Float) -> Self {
         self.strokeWidth = NSNumber(value:value)
         return self
     }
     
-    
-    
+ 
     // MARK: - underlineStyle 下划线类型
-    var underlineStyle: NSNumber? {
+    public var underlineStyle: NSNumber? {
         get {
             return dictionary[AttributesKey.underlineStyle] as? NSNumber
         }
@@ -255,13 +254,13 @@ final class BQTextAttributes {
     }
     
     @discardableResult
-    func underlineStyle(_ style: NSUnderlineStyle) -> Self {
+    public func underlineStyle(_ style: NSUnderlineStyle) -> Self {
         self.underlineStyle = NSNumber(value: style.rawValue)
         return self
     }
     
     // MARK: - underlineColor 下划线类型
-    var underlineColor: UIColor? {
+    public var underlineColor: UIColor? {
         get {
             return dictionary[AttributesKey.underlineColor] as? UIColor
         }
@@ -271,13 +270,13 @@ final class BQTextAttributes {
     }
     
     @discardableResult
-    func underlineColor(_ color: UIColor?) -> Self {
+    public func underlineColor(_ color: UIColor?) -> Self {
         self.underlineColor = color
         return self
     }
     
     // MARK: - deleteStyle 删除线
-    var deleteStyle: NSNumber? {
+    public var deleteStyle: NSNumber? {
         get {
             return dictionary[AttributesKey.strikethroughStyle] as? NSNumber
         }
@@ -287,13 +286,13 @@ final class BQTextAttributes {
     }
     
     @discardableResult
-    func deleteStyle(_ value: Float) -> Self {
+    public func deleteStyle(_ value: Float) -> Self {
         self.deleteStyle = NSNumber(value: value)
         return self
     }
     
     // MARK: - deleteStyleColor 删除线颜色
-    var deleteStyleColor: UIColor? {
+    public var deleteStyleColor: UIColor? {
         get {
             return dictionary[AttributesKey.strikethroughColor] as? UIColor
         }
@@ -303,7 +302,7 @@ final class BQTextAttributes {
     }
     
     @discardableResult
-    func deleteStyleColor(_ color: UIColor) -> Self {
+    public func deleteStyleColor(_ color: UIColor) -> Self {
         self.deleteStyleColor = color
         return self
     }

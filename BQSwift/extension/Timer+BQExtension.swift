@@ -11,7 +11,7 @@
 import UIKit
 
 extension Timer {
-    class func configTimer(timeInterval ti: TimeInterval, target aTarget: Any, selector aSelector: Selector, userInfo: Any?, repeats yesOrNo: Bool) -> Timer {
+    class public func configTimer(timeInterval ti: TimeInterval, target aTarget: Any, selector aSelector: Selector, userInfo: Any?, repeats yesOrNo: Bool) -> Timer {
         let proxy = BQWeakProxy(target: aTarget as! NSObject)
         let timer = scheduledTimer(timeInterval: ti, target: proxy, selector: aSelector, userInfo: userInfo, repeats: yesOrNo)
         RunLoop.current.add(timer, forMode: .common)
