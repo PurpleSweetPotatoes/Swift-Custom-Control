@@ -60,7 +60,9 @@ class BQPhotoView: UIView {
         self.singleTapAction = handle
     }
     func zoomNormal() {
-        self.scrollView.setZoomScale(scrollView.minimumZoomScale, animated: false)
+        if scrollView.zoomScale > scrollView.minimumZoomScale {
+            self.scrollView.setZoomScale(scrollView.minimumZoomScale, animated: false)
+        }
     }
     //MARK: - ***** private Method *****
     private func initGesture() {

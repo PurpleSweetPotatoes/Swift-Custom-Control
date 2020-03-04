@@ -172,6 +172,7 @@ class PhotoCollectionCell: UICollectionViewCell {
     }
     func setImage(img:UIImage?) {
         if let image = img {
+            self.photoView.zoomNormal()
             let imgSize = image.size
             let height = imgSize.height * self.photoView.sizeW / imgSize.width
             let frame = CGRect(x: 0, y: (self.photoView.sizeH - height) * 0.5, width: self.photoView.sizeW, height: height)
