@@ -67,6 +67,15 @@ extension String {
         }
     }
     
+    public func deleteCharset(regular: String) -> String {
+        if self.count > 0 && regular.count > 0 {
+            if let express = try? NSRegularExpression(pattern: regular, options: .caseInsensitive) {
+                return express.stringByReplacingMatches(in: self, options: .reportProgress, range: NSRange(location: 0, length: self.count), withTemplate: "")
+            }
+        }
+        return ""
+    }
+    
     public func toDictionary() -> [String: Any] {
         if let data = self.data(using: .utf8) {
             do {

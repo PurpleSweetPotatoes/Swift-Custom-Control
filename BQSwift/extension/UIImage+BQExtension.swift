@@ -12,6 +12,13 @@ import UIKit
 
 private let colorSpaceRef = CGColorSpaceCreateDeviceRGB()
 
+enum ArrowDirection {
+    case top
+    case left
+    case bottom
+    case right
+}
+
 extension UIImage {
     
     class func orginImg(name: String) -> UIImage? {
@@ -124,7 +131,7 @@ extension UIImage {
     
     // MARK: - 处理
     func reSizeImage(reSize:CGSize)-> UIImage {
-         UIGraphicsBeginImageContextWithOptions(reSize,false,UIScreen.main.scale);
+        UIGraphicsBeginImageContextWithOptions(reSize,false,UIScreen.main.scale);
         let context = UIGraphicsGetCurrentContext()
         context?.translateBy(x: 0, y: reSize.height)
         context?.scaleBy(x: 1.0, y: -1.0)
@@ -221,6 +228,57 @@ extension UIImage {
             }
         }
         return UIImage(ciImage: ciImg)
+    }
+    
+    
+    /// 生成箭头图标
+    /// - Parameters:
+    ///   - size: 大小
+    ///   - color: 颜色
+    ///   - lineWidth: 线宽
+    ///   - direction: 方向
+    class func arrowImg(size: CGSize, color: UIColor, lineWidth: CGFloat, direction: ArrowDirection) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(size,false,1);
+        let context = UIGraphicsGetCurrentContext()
+        
+        var sp, cp, ep: CGPoint
+        let sX = lineWidth * 0.5
+        let eX = size.width - sX
+        let sY = sX
+        let eY = size.height - sX
+        switch direction {
+        case .top:
+            sp = CGPoint(x: sX, y: eY - sX)
+            cp = CGPoint(x: size.width * 0.5, y: sX)
+            ep = CGPoint(x: eX, y: eY)
+        case .left:
+            sp = CGPoint(x: eX, y: sY)
+            cp = CGPoint(x: sX, y: size.height * 0.5)
+            ep = CGPoint(x: eX, y: eY - sX)
+        case .bottom:
+            sp = CGPoint(x: sX, y: sY)
+            cp = CGPoint(x: size.width * 0.5, y: eY)
+            ep = CGPoint(x: eX, y: sX)
+        case .right:
+            sp = CGPoint(x: sX, y: sY)
+            cp = CGPoint(x: eX, y: size.height * 0.5)
+            ep = CGPoint(x: sX, y: eY)
+        }
+    
+        context?.move(to: sp)
+        context?.addLine(to: cp)
+        context?.addLine(to: ep)
+       
+        context?.setLineJoin(.round)
+        context?.setLineCap(.round)
+        context?.setLineWidth(lineWidth)
+        context?.setStrokeColor(color.cgColor)
+        context?.strokePath()
+        
+        let img = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return img ?? UIImage()
     }
     
     // MARK: - 私有

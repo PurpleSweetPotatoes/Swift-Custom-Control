@@ -18,6 +18,8 @@ class BQKeyManager: NSObject {
     private var keyBoardOrigiY: CGFloat = 0
     private var forntOrigiY: CGFloat = 0
     
+    
+    
     private func startManager() {
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyBoardWillDisplay), name: UITextField.keyboardWillShowNotification, object: nil)

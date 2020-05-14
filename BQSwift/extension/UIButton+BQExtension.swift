@@ -54,8 +54,7 @@ extension UIButton {
         self.isUserInteractionEnabled = false
     }
     
-    
-    
+
     public class func startIntervalAction(interval: TimeInterval) {
         _interval = interval
         DispatchQueue.once(token: #function) {
@@ -81,11 +80,36 @@ extension UIButton {
         self.isIgnoreEvent = false;
     }
     
+    
+    /// 扩大点击区域
+    /// - Parameter space: 扩大范围
+    func addHitSpace(space: CGFloat) {
+        
+        let edge = UIEdgeInsets(top: -space, left: -space, bottom: -space, right: -space)
+        self.hitEdge = edge
+    }
+    
+    /// 扩大点击范围
+    /// - Parameter edge: 负为增加 正为减少
+    func addHitSpace(edge: UIEdgeInsets) {
+        self.hitEdge = edge
+    }
+    
     //MARK:- ***** Override func *****
     
     open override func removeFromSuperview() {
         super.removeFromSuperview()
         self.timer?.cancel()
+    }
+    
+    
+    open override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        if self.hitEdge == UIEdgeInsets.zero || !self.isEnabled || self.isHidden {
+            return super.point(inside: point, with: event)
+        }
+        
+        let hitFrame = self.bounds.inset(by: self.hitEdge)
+        return hitFrame.contains(point)
     }
     
     //MARK:- ***** Associated Object *****
@@ -97,6 +121,7 @@ extension UIButton {
         static var timerKey: Void?
         static var actionKey: Void?
         static var isIgnoreEventKey: Void?
+        static var hitSpaceKey: Void?
     }
     
     private var action: btnUpdateBlock? {
@@ -132,6 +157,15 @@ extension UIButton {
         }
         set (newValue){
             objc_setAssociatedObject(self, &AssociatedKeys.isIgnoreEventKey, newValue!, .OBJC_ASSOCIATION_ASSIGN)
+        }
+    }
+    
+    private var hitEdge: UIEdgeInsets {
+        get {
+            return (objc_getAssociatedObject(self, &AssociatedKeys.hitSpaceKey) as? UIEdgeInsets) ?? UIEdgeInsets.zero
+        }
+        set (newValue){
+            objc_setAssociatedObject(self, &AssociatedKeys.hitSpaceKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
     
