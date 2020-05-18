@@ -17,10 +17,7 @@ class BQKeyBoardManager: NSObject {
     private var editVList = [UIView]()
     private var managerV: UIView?
     private var curV: UIView!
-    private var perV: UIView?
-    private var nextV: UIView?
     private var didAdd = false
-    private var didShow = false
     
     public class func start(reView: UIView) -> Void {
         keyBoardManager.managerV = reView
@@ -35,11 +32,17 @@ class BQKeyBoardManager: NSObject {
     // MARK: - Event
     
     @objc private func preBtnAction(sender: UIButton) -> Void {
-        self.perV?.becomeFirstResponder()
+        if let index = self.editVList.firstIndex(of: self.curV) {
+            let v = self.editVList[index - 1]
+            v.becomeFirstResponder()
+        }
     }
 
     @objc private func nextBtnAction(sender: UIButton) -> Void {
-        self.nextV?.becomeFirstResponder()
+        if let index = self.editVList.firstIndex(of: self.curV) {
+            let v = self.editVList[index + 1]
+            v.becomeFirstResponder()
+        }
     }
 
     @objc private func dissBtnAction(sender: UIButton) -> Void {
@@ -50,12 +53,23 @@ class BQKeyBoardManager: NSObject {
     private func addNotification() -> Void {
         self.editVList.removeAll()
         self.checkCanResponseV(reV: self.managerV!)
-        for subV in self.editVList {
+        for (index, subV) in self.editVList.enumerated() {
             if subV.inputAccessoryView == nil {
                 let bar = BQkeyBoardToolBar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 44))
                 bar.preBtn.addTarget(self, action: #selector(preBtnAction(sender:)), for: .touchUpInside)
                 bar.nextBtn.addTarget(self, action: #selector(nextBtnAction(sender:)), for: .touchUpInside)
                 bar.dissBtn.addTarget(self, action: #selector(dissBtnAction(sender:)), for: .touchUpInside)
+                
+                if index == 0 {
+                    bar.preBtn.isSelected = true
+                    bar.preBtn.isUserInteractionEnabled = false;
+                }
+                
+                if index == self.editVList.count - 1 {
+                    bar.nextBtn.isUserInteractionEnabled = false;
+                    bar.nextBtn.isSelected = true;
+                }
+                
                 if let tf = subV as? UITextField {
                     tf.inputAccessoryView = bar
                 } else if let tv = subV as? UITextView {
@@ -63,10 +77,11 @@ class BQKeyBoardManager: NSObject {
                 }
             }
         }
+        
         if !self.didAdd {
             self.didAdd = true
             NotificationCenter.default.addObserver(self, selector: #selector(keyBoardWillDisplay), name: UITextField.keyboardWillShowNotification, object: nil)
-            NotificationCenter.default.addObserver(self, selector: #selector(keyBoardDidDisplay), name: UITextField.keyboardDidShowNotification, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(keyBoardWillDisplay), name: UITextField.keyboardDidShowNotification, object: nil)
             NotificationCenter.default.addObserver(self, selector: #selector(keyBoardWillDismiss), name: UIResponder.keyboardWillHideNotification, object: nil)
         }
     }
@@ -80,63 +95,29 @@ class BQKeyBoardManager: NSObject {
     }
     
     @objc private func keyBoardWillDisplay(notifi: Notification) -> Void {
-        self.didShow = false
         for editV in self.editVList {
-            if editV.isFirstResponder {
-                if let reV = self.managerV, let userInfo = notifi.userInfo as? [String:Any]  {
-                    
-                    if let bar = reV.inputAccessoryView as? BQkeyBoardToolBar {
-                        bar.preBtn.isUserInteractionEnabled = false
-                        bar.nextBtn.isUserInteractionEnabled = false
-                        bar.dissBtn.isUserInteractionEnabled = false
-                    }
-                    //回归原视图，这样不影响获取正确的视图最低点
-                    reV.transform = CGAffineTransform.identity
-                    let vRect = editV.superview?.convert(editV.frame, to: UIApplication.shared.keyWindow)
-                    let vY = vRect?.maxY ?? 0.0
-                    //获取键盘y值
-                    let value = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue
-                    let keyBoardRect = value.cgRectValue
-                    let keyBoardHeight = keyBoardRect.size.height
-                    let keyBoardY = UIScreen.main.bounds.height - keyBoardHeight
-                    if keyBoardY < vY {
-                        reV.transform = CGAffineTransform(translationX: 0, y: keyBoardY - vY)
-                    }
-                    return
+            if editV.isFirstResponder, let userInfo = notifi.userInfo as? [String:Any] {
+                self.curV = editV
+                if let bar = editV.inputAccessoryView as? BQkeyBoardToolBar, let tf = editV as? UITextField {
+                    bar.tipLab.text = tf.placeholder
                 }
-            }
-        }
-    }
-
-    @objc private func keyBoardDidDisplay(notifi: Notification) -> Void {
-        self.didShow = true
-        for (index, subV) in self.editVList.enumerated() {
-            if subV.isFirstResponder {
-                self.curV = subV
-                
-                if index >= 1 {
-                    self.perV = self.editVList[index-1]
+                //回归原视图，这样不影响获取正确的视图最低点
+                self.managerV?.transform = CGAffineTransform.identity
+                let vRect = editV.superview?.convert(editV.frame, to: UIApplication.shared.keyWindow)
+                let vY = vRect?.maxY ?? 0.0
+                //获取键盘y值
+                let value = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue
+                let keyBoardRect = value.cgRectValue
+                let keyBoardHeight = keyBoardRect.size.height
+                let keyBoardY = UIScreen.main.bounds.height - keyBoardHeight
+                if keyBoardY < vY {
+                    self.managerV?.transform = CGAffineTransform(translationX: 0, y: keyBoardY - vY)
                 }
-                
-                if index < self.editVList.count - 1 {
-                    self.nextV = self.editVList[index+1]
-                }
-                
-                if let bar = subV.inputAccessoryView as? BQkeyBoardToolBar {
-                    bar.preBtn.isUserInteractionEnabled = self.perV == nil ? false : true
-                    bar.nextBtn.isUserInteractionEnabled = self.nextV == nil ? false : true
-                    bar.dissBtn.isUserInteractionEnabled = true
-                    if let tf = subV as? UITextField {
-                        bar.tipLab.text = tf.placeholder
-                    }
-                }
-                
-                
                 return
             }
         }
     }
-    
+
     @objc private func keyBoardWillDismiss(notifi: Notification) {
         if let reV = self.managerV {
             reV.transform = CGAffineTransform.identity
@@ -178,13 +159,15 @@ class BQkeyBoardToolBar: UIView {
         
         let preBtn = UIButton(type: .custom)
         preBtn.frame = CGRect(x: 10, y: 0, width: self.sizeH, height: self.sizeH)
-        preBtn.setImage(UIImage.arrowImg(size: CGSize(width: 24, height: 12), color: .black, lineWidth: 2, direction: .top), for: .normal)
+        preBtn.setImage(UIImage.arrowImg(size: CGSize(width: 22, height: 12), color: .black, lineWidth: 2, direction: .top), for: .normal)
+        preBtn.setImage(UIImage.arrowImg(size: CGSize(width: 22, height: 12), color: .lightGray, lineWidth: 2, direction: .top), for: .selected)
         self.addSubview(preBtn)
         self.preBtn = preBtn
         
         let nextBtn = UIButton(type: .custom)
         nextBtn.frame = CGRect(x: preBtn.frame.maxX, y: 0, width: self.sizeH, height: self.sizeH)
-        nextBtn.setImage(UIImage.arrowImg(size: CGSize(width: 24, height: 12), color: .black, lineWidth: 2, direction: .bottom), for: .normal)
+        nextBtn.setImage(UIImage.arrowImg(size: CGSize(width: 22, height: 12), color: .black, lineWidth: 2, direction: .bottom), for: .normal)
+        nextBtn.setImage(UIImage.arrowImg(size: CGSize(width: 22, height: 12), color: .lightGray, lineWidth: 2, direction: .bottom), for: .selected)
         self.addSubview(nextBtn)
         self.nextBtn = nextBtn
         
