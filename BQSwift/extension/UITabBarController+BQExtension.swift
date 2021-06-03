@@ -10,11 +10,12 @@
 
 import UIKit
 
-public let kVcName: String = "kVcName"
-public let kVcTitle: String = "kVcTitle"
-public let kSelectImg: String = "kSelectImg"
-public let kNormalImg: String = "kNormalImg"
-
+enum TabBarVcInfo: String {
+    case name = "name"
+    case title = "title"
+    case selectImg = "selectImg"
+    case normalImg = "normalImg"
+}
 
 extension UITabBarController {
     
@@ -25,15 +26,21 @@ extension UITabBarController {
     public class func createVc(arr: [[String: String]], needNav: Bool = true) -> UITabBarController {
         let tabbarVc = UITabBarController()
         
+        tabbarVc.configVcs(arr: arr, needNav: needNav)
+        
+        return tabbarVc
+    }
+    
+    public func configVcs(arr: [[String: String]], needNav: Bool = true) -> Void {
+        
         if arr.count == 0 {
-            return tabbarVc
+            return
         }
         
         var vcArr:[UIViewController] = []
-        
         for vcInfo in arr {
             
-            guard let vcName = vcInfo[kVcName], let selectImg = vcInfo[kSelectImg], let normalImg = vcInfo[kNormalImg], let title = vcInfo[kVcTitle] else {
+            guard let vcName = vcInfo[TabBarVcInfo.name.rawValue], let selectImg = vcInfo[TabBarVcInfo.selectImg.rawValue], let normalImg = vcInfo[TabBarVcInfo.normalImg.rawValue], let title = vcInfo[TabBarVcInfo.title.rawValue] else {
                 continue
             }
             
@@ -44,7 +51,7 @@ extension UITabBarController {
                 vc.title = title
                 
                 if needNav {
-                    let navVc = UINavigationController(rootViewController: vc)
+                    let navVc = BQNavgationController(rootViewController: vc)
                     vcArr.append(navVc)
                 } else {
                     vcArr.append(vc)
@@ -53,9 +60,7 @@ extension UITabBarController {
             }
         }
         
-        tabbarVc.viewControllers = vcArr
-        
-        return tabbarVc
+        viewControllers = vcArr
     }
 }
 

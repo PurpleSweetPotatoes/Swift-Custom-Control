@@ -1,5 +1,5 @@
 // *******************************************
-//  File Name:      BQRequest.swift
+//  File Name:      BQAPI.swift
 //  Author:         MrBai
 //  Created Date:   2019/11/12 4:16 PM
 //
@@ -14,22 +14,16 @@
 import UIKit
 import Alamofire
 
-public enum RequestMethod: String {
-    case get
-    case post
-    case put
-    case delete
-}
 
-public protocol BQRequest {
+public protocol BQAPI {
     //自定义实现
     static var hostName: String { get }
     static var urlPath: String { get }
-    static func willSendRequest(url: String, params:[String:Any]?, header:[String:String]?)
+    static func willSendRequest(url: String, params:[String:Any]?, header: HTTPHeaders?)
     static func receiveResponse(data: Data?)
     
     //选择实现
-    static var method: RequestMethod { get }
+    static var method: HTTPMethod { get }
     
     //默认实现
     static func request(_ handle: @escaping (Any?, Error?) -> Void)
@@ -38,9 +32,9 @@ public protocol BQRequest {
     static func request(params:[String: Any]?, headers: [String:String]?, _ handle: @escaping (Any?, Error?) -> Void)
 }
 
-public extension BQRequest {
+public extension BQAPI {
         
-    static var method: RequestMethod {
+    static var method: HTTPMethod {
         return .get
     }
     
@@ -48,33 +42,20 @@ public extension BQRequest {
         self.request(params: nil, headers: nil, handle)
     }
     
-    static func request(params:[String: Any]?, _ handle: @escaping (Any?, Error?) -> Void) {
+    static func request(params:Parameters?, _ handle: @escaping (Any?, Error?) -> Void) {
         self.request(params: params, headers: nil, handle)
     }
     
-    static func request(headers: [String:String]?, _ handle: @escaping (Any?, Error?) -> Void) {
+    static func request(headers: HTTPHeaders?, _ handle: @escaping (Any?, Error?) -> Void) {
         self.request(params: nil, headers: headers, handle)
     }
     
-    static func request(params:[String: Any]?, headers: [String:String]?, _ handle: @escaping (Any?, Error?) -> Void) {
+    static func request(params:Parameters?, headers: HTTPHeaders?, _ handle: @escaping (Any?, Error?) -> Void) {
         let url = hostName + urlPath
-
-        var requestType: HTTPMethod
-        switch method {
-        case .get:
-            requestType = .get
-        case .post:
-            requestType = .post
-        case .put:
-            requestType = .put
-        case .delete:
-            requestType = .delete
-        }
-        
+    
         Self.willSendRequest(url: url, params: params, header: headers)
         
-        Alamofire.request(url, method: requestType, parameters: params, headers: headers).response { (response) in
-            
+        AF.request(url, method: method, parameters: params, headers: headers).responseJSON(completionHandler: { response in
             Self.receiveResponse(data: response.data)
             
             if let err = response.error {
@@ -87,8 +68,7 @@ public extension BQRequest {
                     print(err.localizedDescription)
                     handle(nil,err)
                 }
-                
             }
-        }
+        })
     }
 }

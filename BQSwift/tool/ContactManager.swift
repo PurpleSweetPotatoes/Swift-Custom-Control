@@ -14,11 +14,6 @@ import ContactsUI
 
 struct ContactManager {
     
-    static public func authAccess(_ handle: @escaping (Bool, Error?) -> Void) {
-        let contactStore = CNContactStore()
-        contactStore.requestAccess(for: .contacts, completionHandler: handle)
-    }
-    
     static public func requestContacts() -> [CNContact] {
         var models = [CNContact]()
         

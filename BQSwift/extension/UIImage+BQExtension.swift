@@ -238,7 +238,7 @@ extension UIImage {
     ///   - lineWidth: 线宽
     ///   - direction: 方向
     class func arrowImg(size: CGSize, color: UIColor, lineWidth: CGFloat, direction: ArrowDirection) -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(size,false,1);
+        UIGraphicsBeginImageContextWithOptions(size, false, UIScreen.main.scale);
         let context = UIGraphicsGetCurrentContext()
         
         var sp, cp, ep: CGPoint

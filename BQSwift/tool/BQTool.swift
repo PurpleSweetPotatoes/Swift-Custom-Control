@@ -133,6 +133,10 @@ struct BQTool {
         }
     }
     
+    static var appName: String? {
+        return Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String
+    }
+    
     static var identifier: String? {
         return Bundle.main.bundleIdentifier
     }

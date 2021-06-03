@@ -10,7 +10,7 @@
 
 import UIKit
 
-public protocol BQTextViewDelegate: class {
+public protocol BQTextViewDelegate: NSObjectProtocol {
     /// 可选方法
     func textViewDidHasMaxNum(textView: BQTextView) -> Void
     func textViewDidAdjustFrame(textView: BQTextView) -> Void
