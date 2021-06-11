@@ -82,6 +82,7 @@ extension UITableView {
     
 }
 
+
 extension UITableViewCell {
     /// 获取cell标示符，标示符为cell名称
     public static func getCellName() -> String {

@@ -40,14 +40,25 @@ extension BQDatePickerDelegate {
     func datePickerCancel(_ picker: BQDatePicker) {}
 }
 
+
 class BQDatePicker: UIView {
 
     //MARK: - *** Ivars
     public var delegate: BQDatePickerDelegate?
     
-    private var currentTitle: String!
-    private var disDate: Date!
-    private var options: DatePickerOptions!
+    public var options: DatePickerOptions {
+        didSet {
+            numopt = options.convenToArr()
+        }
+    }
+    public var currentTitle: String {
+        didSet {
+            if let lab = centerLab {
+                lab.text = currentTitle
+            }
+        }
+    }
+    
     private var numopt = [DatePickerOptions]()
     
     private var bgView: UIView!
@@ -56,36 +67,35 @@ class BQDatePicker: UIView {
     private var backBtn: UIButton!
     private var sureBtn: UIButton!
     private var centerLab: UILabel!
-    private var dateModel: DateComponents!
+    private var dateModel: DateComponents = Date().components()
     private var startYear: Int = 1970
     
     //MARK: - *** Public method
 
-    
     /// 配置时间选择器
     /// - Parameters:
-    ///   - disDate: 当前展示时间
     ///   - disTitle: 展示标题
     ///   - options: 展示内容
-    ///   - supV: 父视图
-    public static func config(disDate: Date = Date(), disTitle: String = "请选择时间", options: DatePickerOptions = [.year , .month, .day], supV: UIView? = nil) -> BQDatePicker {
+    ///   - supV: 父视图，未传入父视图，则会加载到KeyWindow上，需要自行控制remove
+    public static func config(disTitle: String = "请选择时间", options: DatePickerOptions = [.year , .month, .day], supV: UIView? = nil) -> BQDatePicker {
         
         let supView: UIView! = supV ?? UIApplication.shared.keyWindow
         
-        let pickerV = BQDatePicker(frame: supView.bounds, date: disDate, title: disTitle, opt: options)
+        let pickerV = BQDatePicker(frame: supView.bounds, title: disTitle, opt: options)
         supView.addSubview(pickerV)
         
         return pickerV
     }
     
-    
     /// 展示
-    public func show() {
-        self.isHidden = false
+    public func show(date: Date = Date()) {
+        changeDate(date: date)
+        isHidden = false
         UIView.animate(withDuration: 0.25) { [weak self] in
             self!.bgView.alpha = 1
             self!.animationView.top = self!.size.height - self!.animationView.size.height
         }
+        
     }
     
     /// 隐藏
@@ -98,38 +108,33 @@ class BQDatePicker: UIView {
         }
     }
     
-    
     /// 改变当前展示时间
     public func changeDate(date: Date) {
-        disDate = date
         dateModel = date.components()
         startYear = dateModel.year! - 30
-        showCurrentTime()
-    }
-    
-    /// 改变展示标题
-    public func changeTitle(title: String) {
-        currentTitle = title
-        if let lab = centerLab {
-            lab.text = currentTitle
-        }
-    }
-    
-    /// 改变展示内容
-    public func chageOptions(options opt: DatePickerOptions) {
-        options = opt
-        numopt = opt.convenToArr()
         pickView.reloadAllComponents()
+        
+        if pickView.showsSelectionIndicator {
+            for subV in pickView.subviews {
+                if (subV.frame.height <= 1) {
+                    subV.isHidden = false
+                    subV.backgroundColor = .gray
+                }
+            }
+            pickView.showsSelectionIndicator = false
+        }
+        
+        showCurrentTime()
     }
     
     //MARK: - *** Life cycle
     
-    private init(frame: CGRect, date: Date, title: String, opt: DatePickerOptions) {
+    private init(frame: CGRect, title: String, opt: DatePickerOptions) {
+        options = opt
+        currentTitle = title
         super.init(frame: frame)
         configUI()
-        chageOptions(options: opt)
-        changeDate(date: date)
-        changeTitle(title: title)
+        isHidden = true
     }
     
     required init?(coder: NSCoder) {
@@ -144,12 +149,12 @@ class BQDatePicker: UIView {
         if let delegate = delegate {
             delegate.datePickerCancel(self)
         }
-        self.isHidden = true
+        hide()
     }
     
     @objc private func sureBtnClick() {
         BQLog("确定")
-        self.isHidden = true
+        hide()
         
         if let delegate = delegate {
             delegate.datePickerSelect(self, model: dateModel)
@@ -203,7 +208,7 @@ class BQDatePicker: UIView {
         pickView = UIPickerView(frame: CGRect(x: 0, y: 44, width: animationView.size.width, height: animationView.size.height - 44))
         pickView.delegate = self
         pickView.dataSource = self
-        pickView.showsSelectionIndicator = true;
+        pickView.showsSelectionIndicator = true
         let lineLayer = CALayer.lineLayer(frame: CGRect(x: 0, y: 0, width: pickView.size.width, height: 1))
         pickView.layer.addSublayer(lineLayer)
         animationView.addSubview(pickView)
@@ -240,6 +245,7 @@ extension BQDatePicker: UIPickerViewDataSource, UIPickerViewDelegate {
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+
         let type = numopt[component]
         switch type {
         case .year:

@@ -206,10 +206,12 @@ extension UIImage {
     
     // MARK: - 二维码
     
-    class func QRCode(content: String, size: CGFloat? = nil) -> UIImage? {
+    class func qrcode(content: String, size: CGFloat? = nil) -> UIImage? {
         guard let ciImg = self.createCIImage(content) else {
             return nil
         }
+        
+        
         
         if let imgSize = size {
             let rect = ciImg.extent
@@ -217,12 +219,17 @@ extension UIImage {
             let context = CIContext(options: nil)
             if let bitImg = context.createCGImage(ciImg, from: rect) {
                 let bitmapInfo = CGBitmapInfo.byteOrder32Little
-                let bitRaw = bitmapInfo.rawValue |  CGImageAlphaInfo.noneSkipFirst.rawValue
+                let bitRaw = bitmapInfo.rawValue | CGImageAlphaInfo.noneSkipFirst.rawValue
                 let bitContext = CGContext(data: nil, width: Int(scale * rect.width), height: Int(scale * rect.height), bitsPerComponent: 8, bytesPerRow: 0, space: colorSpaceRef, bitmapInfo: bitRaw)
                 bitContext?.interpolationQuality = .none
                 bitContext?.scaleBy(x: scale, y: scale)
                 bitContext?.draw(bitImg, in: rect)
                 if let cgimg = bitContext?.makeImage() {
+                    
+                    if let prodata = cgimg.dataProvider {
+                        let data = prodata.data!
+                        BQLog("\(data)")   
+                    }
                     return UIImage(cgImage: cgimg)
                 }
             }

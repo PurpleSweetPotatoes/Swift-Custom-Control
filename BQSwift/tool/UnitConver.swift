@@ -66,5 +66,19 @@ extension UnitConver {
 
 extension String : UnitConver { }
 extension Double : UnitConver { }
-extension Int : UnitConver { }
 extension Float : UnitConver { }
+extension Int : UnitConver {
+    
+    public func hmsStr() -> String {
+        let seconds = self % 60
+        let min = self / 60
+        let hour = self / 3600
+        return String(format: "%02zd:%02zd:%02zd", hour, min, seconds)
+    }
+    
+    public func msStr() -> String {
+        let seconds = self % 60
+        let min = self / 60
+        return String(format: "%02zd:%02zd", min, seconds)
+    }
+}

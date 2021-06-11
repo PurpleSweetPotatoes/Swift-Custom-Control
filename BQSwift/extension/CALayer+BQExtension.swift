@@ -10,6 +10,23 @@
 
 import UIKit
 
+
+public enum GradientPostion: Int {
+    case leftTop, rightTop, leftBottom, rightBottom
+    func convenPoint() -> CGPoint {
+        switch self {
+        case .leftTop:
+            return CGPoint.zero
+        case .rightTop:
+            return CGPoint(x: 1, y: 0)
+        case .leftBottom:
+            return CGPoint(x: 0, y: 1)
+        case .rightBottom:
+            return CGPoint(x: 1, y: 1)
+        }
+    }
+}
+
 extension CALayer {
     
     public class func lineLayer(frame: CGRect, color: UIColor = UIColor.groupTableViewBackground) -> CAShapeLayer {
@@ -17,6 +34,17 @@ extension CALayer {
         line.frame = frame
         line.backgroundColor = color.cgColor
         return line
+    }
+    
+    public class func gradientLayer(frame: CGRect, start: GradientPostion = .leftTop, end: GradientPostion = .leftBottom, colors: [CGColor], locations: [NSNumber]? = nil) -> CAGradientLayer {
+        let gradLayer = CAGradientLayer()
+        gradLayer.frame = frame
+        gradLayer.colors = colors
+        gradLayer.locations = locations
+        gradLayer.startPoint = start.convenPoint()
+        gradLayer.endPoint = end.convenPoint()
+        
+        return gradLayer
     }
     
     public var origin: CGPoint {

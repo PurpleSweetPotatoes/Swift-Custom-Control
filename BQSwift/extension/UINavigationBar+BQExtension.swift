@@ -40,10 +40,12 @@ extension UINavigationBar {
     }
     
     public func lt_reset() -> Void {
+        lt_setElementsAlpha(alpha: 1)
         setBackgroundImage(nil, for: .default)
         setBackgroundImage(UIImage(), for: .default)
         shadowImage = nil
         overlayView?.removeFromSuperview()
+        overlayView = nil
     }
     
     // MARK: - privati var

@@ -68,7 +68,7 @@ extension UIView {
     }
     
     func snapshoot() -> UIImage? {
-        UIGraphicsBeginImageContextWithOptions(self.size, false, 0)
+        UIGraphicsBeginImageContextWithOptions(self.size, false, UIScreen.main.scale)
         if let context = UIGraphicsGetCurrentContext() {
             self.layer.render(in:context)
             let opImg = UIGraphicsGetImageFromCurrentImageContext()

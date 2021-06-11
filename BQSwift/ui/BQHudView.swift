@@ -14,7 +14,7 @@ class BQHudView: UIView {
     private var titleFont = UIFont.systemFont(ofSize: 16)
     private var title:String?
     private var info:String!
-    private var infoFont = UIFont.systemFont(ofSize: 13)
+    private var infoFont = UIFont.systemFont(ofSize: 14)
     
     @discardableResult
     public class func show(supView: UIView, animation: Bool? = true, title: String? = nil) -> BQHudView {
@@ -50,7 +50,7 @@ class BQHudView: UIView {
         return nil
     }
     
-    public class func showMsg(info:String, title:String? = nil) {
+    public class func show(_ info:String, title:String? = nil) {
         if info.count == 0  { return }
 
         let msgView = BQHudView(frame: UIScreen.main.bounds, info: info, title: title)

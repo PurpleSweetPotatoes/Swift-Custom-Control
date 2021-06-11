@@ -10,7 +10,7 @@
 
 import UIKit
 
-enum BQTextType {
+enum BQTextType: Int {
     /// 无规则
     case normal
     /// 数字
@@ -137,10 +137,14 @@ extension UITextField {
             }
 
             if let rule = newValue {
-                if let _ = rule.precision {
+                if let _ = rule.precision, rule.type == .price {
                     self.keyboardType = .decimalPad
                 } else if rule.type == .num {
                     self.keyboardType = .numberPad
+                } else if rule.type == .char {
+                    self.keyboardType = .asciiCapable
+                } else {
+                    self.keyboardType = .default
                 }
                 
                 self.addTarget(self, action: #selector(UITextField.tfValueDidChange), for: .editingChanged)
