@@ -19,6 +19,24 @@ enum PlayerStatus {
     case stop
 }
 
+protocol BQPlayerViewDelegate: NSObjectProtocol {
+    func playBtnClick(_ playV: BQPlayerView) -> Bool
+    func puaseBtnClick(_ playV: BQPlayerView)
+    func playItemDidEnd(_ playV: BQPlayerView)
+    func playFullStatusChange(_ playV: BQPlayerView)
+    func playTimeChange(_ playV: BQPlayerView)
+    func playStatusChange(_ playV: BQPlayerView)
+}
+
+extension BQPlayerViewDelegate {
+    func playBtnClick(_ playV: BQPlayerView) -> Bool { return true }
+    func puaseBtnClick(_ playV: BQPlayerView) {}
+    func playItemDidEnd(_ playV: BQPlayerView) {}
+    func playFullStatusChange(_ playV: BQPlayerView) {}
+    func playTimeChange(_ playV: BQPlayerView) {}
+    func playStatusChange(_ playV: BQPlayerView) {}
+}
+
 class BQPlayerView: UIView {
 
     //MARK: - *** Ivars
@@ -28,7 +46,14 @@ class BQPlayerView: UIView {
             ctrlView.fullBtn.isSelected = isFull
         }
     }
-    private(set) public var status: PlayerStatus = .none
+    private(set) public var status: PlayerStatus = .none {
+        didSet {
+            if let dele = delegate {
+                dele.playStatusChange(self)
+            }
+        }
+    }
+    public weak var delegate: BQPlayerViewDelegate?
     
     // 播放器相关
     private var player: AVPlayer!
@@ -47,28 +72,35 @@ class BQPlayerView: UIView {
     //MARK: - *** Public method
     @discardableResult
     public func play() -> Bool {
-        BQLog("播放")
-        status = .playing
-        player.play()
-        ctrlView.isPlaying = true
-        return true
+        var canPlay = true
+        if let dele = delegate {
+            canPlay = dele.playBtnClick(self)
+        }
+        if canPlay {
+            status = .playing
+            player.play()
+            ctrlView.isPlaying = canPlay
+        }
+        return canPlay
     }
     
     public func puase() {
-        BQLog("暂停")
         status = .puased
         ctrlView.isPlaying = false
         player.pause()
+        
+        if let dele = delegate {
+            dele.puaseBtnClick(self)
+        }
     }
     
     public func seek(time: Int) {
         player.seek(to: CMTime(value: CMTimeValue(time), timescale: 1), toleranceBefore: CMTime(value: 1, timescale: 1000), toleranceAfter: CMTime(value: 1, timescale: 1000))
     }
     
-    @discardableResult
-    public func setFull() -> Bool {
+    
+    public func setFull() {
         isFull = true
-
         let keyWindow = UIApplication.shared.keyWindow
         originFrame = self.frame
         supV = self.superview!
@@ -84,8 +116,9 @@ class BQPlayerView: UIView {
                 weakSelf.ctrlView.adjustSubView()
             }
         }
-        
-        return isFull
+        if let dele = delegate {
+            dele.playFullStatusChange(self)
+        }
     }
     
     public func backFull() {
@@ -100,6 +133,9 @@ class BQPlayerView: UIView {
                 weakSelf.ctrlView.adjustSubView()
                 weakSelf.activView.center = CGPoint(x: weakSelf.size.width * 0.5, y: weakSelf.size.height * 0.5)
             }
+        }
+        if let dele = delegate {
+            dele.playFullStatusChange(self)
         }
     }
     
@@ -191,7 +227,12 @@ class BQPlayerView: UIView {
                     let curTime = Int(time.seconds)
                     weakSelf.ctrlView.sliderV.setCurrentValue(curTime)
                     weakSelf.ctrlView.setCurrentTime(curTime)
+                    
+                    if let dele = weakSelf.delegate {
+                        dele.playTimeChange(weakSelf)
+                    }
                 }
+                
             }
         }
     }
@@ -228,7 +269,9 @@ class BQPlayerView: UIView {
     @objc private func playerIsEnd() {
         BQLog("播放完毕")
         status = .stop
-        
+        if let dele = delegate {
+            dele.playItemDidEnd(self)
+        }
     }
     
     private func playBufferEmpty() {
@@ -266,5 +309,20 @@ class BQPlayerView: UIView {
         addSubview(activView)
         
         NotificationCenter.default.addObserver(self, selector: #selector(playerIsEnd), name: .AVPlayerItemDidPlayToEndTime, object: nil)
+    }
+}
+
+extension Int {
+    public func hmsStr() -> String {
+        let seconds = self % 60
+        let min = self / 60
+        let hour = self / 3600
+        return String(format: "%02zd:%02zd:%02zd", hour, min, seconds)
+    }
+    
+    public func msStr() -> String {
+        let seconds = self % 60
+        let min = self / 60
+        return String(format: "%02zd:%02zd", min, seconds)
     }
 }

@@ -12,8 +12,6 @@ import UIKit
 
 struct BQTool {
     
-    static private var sapceName: String?
-    
     //MARK:- ***** 计算方法耗时 *****
     static func getFuntionUseTime(function:()->()) {
         let start = CACurrentMediaTime()

@@ -17,48 +17,13 @@ enum BQHTTPMethod {
 typealias BQSuccessClosure = (_ result: Any) -> Void
 typealias BQFailedClosure = (_ error: String, _ desc: String) -> Void
 
-// 超时时间
-private let timeOut: TimeInterval = 20
-
-/*
- extension BQAPI {
-     struct Upload {
-         static let authInfo = APIItem("ukeywechat/lilun/oss/sts", d: "获取上传认证信息", m: .get)
-     }
- }
- */
-/// 接口实例管理对象
-struct BQAPI {
-    /// 项目的域名
-    static var DOMAIN = "http://js.exc360.com/"
-    
-    /// 网络请求
-    static public func request(url: String, method: BQHTTPMethod = .get, parameters: [String: Any]? = nil, headers: [String: String]? = nil, encoding: ParameterEncoding = URLEncoding.default) -> BQRequest {
-        return BQNetWorking.shared.request(url: url, method: method, parameters: parameters, headers: headers, encoding: encoding)
-    }
+protocol BQAPIProtocol {
+    var url: String { get}
+    var desc: String { get }
+    var method: BQHTTPMethod { get }
 }
 
-/// 接口实例
-struct APIItem {
-    /// 域名 + 路径
-    var url: String { BQAPI.DOMAIN + path }
-    /// 接口描述
-    let desc: String
-    /// 请求方式
-    var method: BQHTTPMethod
-    /// url的path
-    private let path: String
-
-    init(_ urlPath: String, d: String, m: BQHTTPMethod = .get) {
-        path = urlPath
-        desc = d
-        method = m
-    }
-
-    init(_ path: String, m: BQHTTPMethod) {
-        self.init(path, d: path, m: m)
-    }
-    
+extension BQAPIProtocol {
     /// 开始网络请求
     /// - Parameters:
     ///   - parameters: 参数
@@ -72,6 +37,65 @@ struct APIItem {
     }
 }
 
+/**
+接口实例管理类
+ - 使用方式1:
+```
+let url = "https://api.xxx.com/home/banner_list"
+BQAPI.request(url: url).success { result in
+    print("类型:\(type(of: result)) 结果:\(result)")
+}.failed { errStr, desc in
+    print("接口描述: \(desc), 错误信息: \(errStr)")
+}
+```
+ - 使用方式2:
+```
+//定义模块接口
+extension BQAPI {
+  struct Home {
+      static let bannerList = APIItem("home/banner_list", d: "获取上传认证信息", m: .get)
+  }
+}
+//调用接口
+BQAPI.Home.bannerList.request().success { result in
+    print("类型:\(type(of: result)) 结果:\(result)")
+}.failed { errStr, desc in
+    print("接口描述: \(desc), 错误信息: \(errStr)")
+}
+```
+ */
+struct BQAPI {
+    /// 项目的域名
+    static let domain = "http://js.exc360.com/"
+    // 超时时间
+    static let timeOut: TimeInterval = 20
+    /// 网络请求
+    static public func request(url: String, method: BQHTTPMethod = .get, parameters: [String: Any]? = nil, headers: [String: String]? = nil, encoding: ParameterEncoding = URLEncoding.default) -> BQRequest {
+        return BQNetWorking.shared.request(url: url, method: method, parameters: parameters, headers: headers, encoding: encoding)
+    }
+}
+
+/// 接口实例
+struct APIItem: BQAPIProtocol {
+    /// 路径
+    let url: String
+    /// 接口描述
+    let desc: String
+    /// 请求方式
+    let method: BQHTTPMethod
+
+    init(_ urlPath: String, d: String, m: BQHTTPMethod = .get) {
+        url = urlPath
+        desc = d
+        method = m
+    }
+
+    init(_ path: String, m: BQHTTPMethod) {
+        self.init(path, d: path, m: m)
+    }
+
+}
+
 final class BQNetWorking {
     public static let shared = BQNetWorking()
     private var sessionManager: Alamofire.Session!
@@ -79,8 +103,8 @@ final class BQNetWorking {
     
     private init() {
         let config = URLSessionConfiguration.af.default
-        config.timeoutIntervalForRequest = timeOut
-        config.timeoutIntervalForResource = timeOut
+        config.timeoutIntervalForRequest = BQAPI.timeOut
+        config.timeoutIntervalForResource = BQAPI.timeOut
         sessionManager = Alamofire.Session(configuration: config)
     }
     
@@ -95,8 +119,8 @@ final class BQNetWorking {
         }
     }
     
-    public func request(_ item: APIItem, parameters: [String: Any]? = nil, headers: [String: String]? = nil, encoding: ParameterEncoding = URLEncoding.default) -> BQRequest {
-        return request(url: item.url, method: item.method, parameters: parameters, headers: headers, encoding: encoding)
+    public func request(_ item: BQAPIProtocol, parameters: [String: Any]? = nil, headers: [String: String]? = nil, encoding: ParameterEncoding = URLEncoding.default) -> BQRequest {
+        return request(url: BQAPI.domain + item.url, method: item.method, parameters: parameters, headers: headers, encoding: encoding)
     }
     
     public func request(url: String, method: BQHTTPMethod = .get, parameters: [String: Any]? = nil, headers: [String: String]? = nil, encoding: ParameterEncoding = URLEncoding.default) -> BQRequest {
@@ -124,6 +148,9 @@ final class BQNetWorking {
 }
 
 
+/**
+ 网络请求对象，使用点语法配置成功和失败回调
+ */
 final class BQRequest {
     
     var request: Alamofire.Request?
