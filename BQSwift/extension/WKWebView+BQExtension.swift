@@ -31,6 +31,7 @@ extension WKWebView {
     func imgAutoFit(space: CGFloat = 10) {
         let imgJs = String(format: "function imgAutoFit() { var imgs = document.getElementsByTagName('img'); for (var i = 0; i < imgs.length; ++i) { var img = imgs[i]; img.style.maxWidth = %f; } }", space)
         self.addJs(js: imgJs, time: .atDocumentEnd)
+        
     }
     
     /// 注入js代码

@@ -20,7 +20,6 @@ class BQDrawView: UIView {
     // 线宽
     public var lineW: CGFloat = 4.0 {
         didSet {
-            BQLog("---")
             drawLayer.lineWidth = lineW
         }
     }
@@ -28,13 +27,13 @@ class BQDrawView: UIView {
     //线条颜色
     public var lineColor: UIColor = .black {
         didSet {
-            BQLog("===")
             drawLayer.strokeColor = lineColor.cgColor
         }
     }
     
     private var hasDraw = false // 已经作画
     private var isOut = false // 超出界限
+    
     //MARK: - *** Public method
 
     public func showDottedBorad(width: CGFloat = 2.0, color: UIColor = .lightGray) {

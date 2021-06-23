@@ -52,17 +52,22 @@ extension UITableView {
     
     @objc func re_layoutSubviews() {
         self.re_layoutSubviews()
-        let emptyViewTag = 10231343
-        self.viewWithTag(emptyViewTag)?.removeFromSuperview()
-        
         if let delegate = self.emptyDelegate {
             if delegate.showEmptyView(tableView: self) {
+                
                 let emptyView = delegate.configEmptyView(tableView: self)
-                emptyView.tag = emptyViewTag
-                self.addSubview(emptyView)
+                let emptyViewTag = 10231343
+                
+                if let v = self.viewWithTag(emptyViewTag), v != emptyView {
+                    v.removeFromSuperview()
+                }
+                
+                if emptyView.superview == nil {
+                    emptyView.tag = emptyViewTag
+                    self.addSubview(emptyView)
+                }
             }
         }
-        
     }
     
     //MARK:- ***** Associated Object *****

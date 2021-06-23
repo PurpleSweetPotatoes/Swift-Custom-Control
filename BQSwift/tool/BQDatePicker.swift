@@ -51,6 +51,7 @@ class BQDatePicker: UIView {
             numopt = options.convenToArr()
         }
     }
+    
     public var currentTitle: String {
         didSet {
             if let lab = centerLab {

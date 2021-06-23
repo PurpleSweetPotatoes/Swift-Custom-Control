@@ -15,7 +15,7 @@ enum BQHTTPMethod {
 }
 
 typealias BQSuccessClosure = (_ result: Any) -> Void
-typealias BQFailedClosure = (_ error: String, _ desc: String) -> Void
+typealias BQFailedClosure = (_ error: BQRequestError) -> Void
 
 protocol BQAPIProtocol {
     var url: String { get}
@@ -23,17 +23,14 @@ protocol BQAPIProtocol {
     var method: BQHTTPMethod { get }
 }
 
-extension BQAPIProtocol {
-    /// 开始网络请求
-    /// - Parameters:
-    ///   - parameters: 参数
-    ///   - headers: 头部参数
-    /// - Returns: 网络请求对象
-    @discardableResult
-    func request(_ parameters: [String: Any]? = nil, headers: [String: String]? = nil) -> BQRequest {
-        let task = BQNetWorking.shared.request(self, parameters: parameters, headers: headers)
-        task.desc = desc
-        return task
+struct BQRequestError {
+    let code: Int
+    let descrption: String
+    let itemDesc: String
+    init(_ c: Int, d: String, itemD: String) {
+        code = c
+        descrption = d
+        itemDesc = itemD
     }
 }
 
@@ -164,7 +161,7 @@ final class BQRequest {
         switch response.result {
         case .failure(let error):
             if let closure = failedHandler {
-                closure(error.localizedDescription, desc)
+                closure(BQRequestError(error.responseCode ?? 0, d: error.localizedDescription, itemD: desc))
             }
         case .success(let result):
             if let closure = successHandler {
@@ -193,8 +190,25 @@ final class BQRequest {
     }
 }
 
+// MARK: - extension 部分
+
 extension BQRequest: Equatable {
     static func == (lhs: BQRequest, rhs: BQRequest) -> Bool {
         return lhs.request?.id == rhs.request?.id
+    }
+}
+
+
+extension BQAPIProtocol {
+    /// 开始网络请求
+    /// - Parameters:
+    ///   - parameters: 参数
+    ///   - headers: 头部参数
+    /// - Returns: 网络请求对象
+    @discardableResult
+    func request(_ parameters: [String: Any]? = nil, headers: [String: String]? = nil) -> BQRequest {
+        let task = BQNetWorking.shared.request(self, parameters: parameters, headers: headers)
+        task.desc = desc
+        return task
     }
 }

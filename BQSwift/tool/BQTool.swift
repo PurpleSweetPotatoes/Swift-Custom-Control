@@ -12,6 +12,8 @@ import UIKit
 
 struct BQTool {
     
+    static private var sapceName = ""
+    
     //MARK:- ***** 计算方法耗时 *****
     static func getFuntionUseTime(function:()->()) {
         let start = CACurrentMediaTime()
@@ -35,12 +37,12 @@ struct BQTool {
     }
     
     static func currentSapceName() -> String {
-        if sapceName == nil {
+        if sapceName == "" {
             var arrSapce = AppDelegate.classForCoder().description().split(separator: ".")
             arrSapce.removeLast()
             sapceName = arrSapce.joined()
         }
-        return sapceName!
+        return sapceName
     }
     
     static func loadVc(vcName:String, spaceName: String? = nil) -> UIViewController? {
