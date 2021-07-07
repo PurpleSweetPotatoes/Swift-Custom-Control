@@ -146,7 +146,7 @@ class BQDatePicker: UIView {
 
     //MARK: - *** Event Action
     @objc private func backBtnClick() {
-        BQLog("返回")
+        BQLogger.log("返回")
         if let delegate = delegate {
             delegate.datePickerCancel(self)
         }
@@ -154,7 +154,7 @@ class BQDatePicker: UIView {
     }
     
     @objc private func sureBtnClick() {
-        BQLog("确定")
+        BQLogger.log("确定")
         hide()
         
         if let delegate = delegate {

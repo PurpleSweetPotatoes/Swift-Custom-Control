@@ -12,8 +12,7 @@ import UIKit
  
 class BQNavgationController: UINavigationController, UINavigationControllerDelegate, UIGestureRecognizerDelegate {
  
-    // Current child view controller, but not root view controller
-    private var currentNotRootVC: UIViewController?
+    private var panGestureVC: UIViewController?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,26 +21,45 @@ class BQNavgationController: UINavigationController, UINavigationControllerDeleg
     }
     
     override func pushViewController(_ viewController: UIViewController, animated: Bool) {
-        if viewControllers.count == 1 {
-            viewController.hidesBottomBarWhenPushed = true
-        }
+        
+        if viewControllers.count == 1 { viewController.hidesBottomBarWhenPushed = true }
+        
         super.pushViewController(viewController, animated: animated)
     }
     
     // MARK: - UINavigationControllerDelegate
-    
     func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
-        
-        currentNotRootVC = viewControllers.count <= 1 ? nil : viewController
+        panGestureVC = viewControllers.count <= 1 ? nil : viewController
     }
     
     // MARK: - UIGestureRecognizerDelegate
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         if interactivePopGestureRecognizer == gestureRecognizer {
             // Begin to pop only when top view controller is current child view controller but not root view controller
-            return currentNotRootVC == topViewController
+            if let panVc = panGestureVC, panVc == topViewController {
+                return panVc.navGestureBack
+            }
         }
         return true
     }
- 
+}
+
+extension UIViewController {
+    private struct AssociatedKeys {
+        static var navBack: Void?
+    }
+    
+    open var navGestureBack: Bool {
+        get {
+            if let back = objc_getAssociatedObject(self, &AssociatedKeys.navBack) as? Bool {
+                return back
+            }
+            return true
+        }
+        set {
+            if let nav = self.navigationController, nav is BQNavgationController {
+                objc_setAssociatedObject(self, &AssociatedKeys.navBack, newValue, .OBJC_ASSOCIATION_ASSIGN)
+            }
+        }
+    }
 }

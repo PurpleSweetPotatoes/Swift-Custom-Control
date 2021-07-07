@@ -10,30 +10,26 @@
 
 import UIKit
 
+private let LoggerQueue = DispatchQueue(label: "com.bq.Logger.queue")
+
 public struct BQLogger {
+    
     static private var crashHandler: ((NSException) -> Void?)?
     static private var preCrashHandler: ((NSException) -> Void?)?
     
-    static fileprivate var canLog = false
+    static fileprivate var canLog = true
     static fileprivate var canSave = false
     static private let dateFormat = DateFormatter()
-    
-    public static func start() {
-        BQLogger.canLog = true
-    }
-    
     
     /// 开启本地日志记录
     /// - Parameter handle: 文件超过阈值时回调
     public static func cleanLogInfoHandle(handle: (String) -> Void) {
-        
         
     }
     
     /// 开启crash日志
     /// - Parameter handle: 获取到crash日志后回调
     public static func loadCrashInfo(handle: (String) -> Void) {
-        BQLogger.canSave = true
         BQLogger.preCrashHandler = NSGetUncaughtExceptionHandler()
         let crashPath = self.crashFilePath()
         
@@ -58,7 +54,7 @@ public struct BQLogger {
     
     // MARK: - private
     fileprivate static func currentTime() -> String {
-        dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss.SSSS"
         return dateFormat.string(from: Date())
     }
     
@@ -73,15 +69,29 @@ public struct BQLogger {
     }
 }
 
-public func BQLog<T>(_ messsage : T, file : String = #file, funcName : String = #function, lineNum : Int = #line) {
-    if BQLogger.canLog || BQLogger.canSave {
-        let fileName = String(file.split(separator: "/").last!).split(separator: ".").first!
-        let output = "\(BQLogger.currentTime()) \(funcName) at \(fileName) \(lineNum) line:\n \(messsage)"
-        if BQLogger.canLog {
-            print(output)
-        }
-        if BQLogger.canSave {
-            
+extension BQLogger {
+    public static func log<T>(_ messsage : T, file : String = #file, funcName : String = #function, lineNum : Int = #line) {
+        printInfo(type: "", messsage: messsage, file: file, funcName: funcName, lineNum: lineNum)
+    }
+    
+    public static func waring<T>(_ messsage : T, file : String = #file, funcName : String = #function, lineNum : Int = #line) {
+        printInfo(type: "⚠️ 警告:", messsage:messsage, file: file, funcName: funcName, lineNum: lineNum)
+    }
+    
+    public static func error<T>(_ messsage : T, file : String = #file, funcName : String = #function, lineNum : Int = #line) {
+        printInfo(type: "❌ 错误:", messsage: messsage,file: file, funcName: funcName, lineNum: lineNum)
+    }
+    
+    private static func printInfo<T>(type: String, messsage : T, file : String = #file, funcName : String = #function, lineNum : Int = #line) {
+        if canLog {
+            LoggerQueue.async {
+                let fileName = String(file.split(separator: "/").last!).split(separator: ".").first!
+                var output = "\(BQLogger.currentTime()) \(funcName) at \(fileName) \(lineNum) line: \(messsage)"
+                if type.count > 0 {
+                    output = "\(type) \(output)"
+                }
+                print(output)
+            }
         }
     }
 }

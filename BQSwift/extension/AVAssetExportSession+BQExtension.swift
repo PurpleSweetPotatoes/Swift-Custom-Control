@@ -137,6 +137,7 @@ extension AVAssetExportSession {
         session.shouldOptimizeForNetworkUse = true
         let fileType = type.avFileType()
         if session.supportedFileTypes.contains(fileType) {
+            session.outputFileType = fileType
             let outFilePath = "\(NSTemporaryDirectory())\(UUID().uuidString).\(type.rawValue)"
             if FileManager.default.fileExists(atPath: outFilePath) {
                 try? FileManager.default.removeItem(atPath: outFilePath)

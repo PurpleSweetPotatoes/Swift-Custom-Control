@@ -228,7 +228,7 @@ extension UIImage {
                     
                     if let prodata = cgimg.dataProvider {
                         let data = prodata.data!
-                        BQLog("\(data)")   
+                        BQLogger.log("\(data)")   
                     }
                     return UIImage(cgImage: cgimg)
                 }

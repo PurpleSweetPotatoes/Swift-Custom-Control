@@ -166,6 +166,10 @@ extension String {
     }
 }
 
+public func NSDocumentPath() -> String {
+    return "\(NSHomeDirectory())/Documents"
+}
+
 extension Character {
     func toInt() -> Int
     {

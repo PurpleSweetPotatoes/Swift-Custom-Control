@@ -96,14 +96,14 @@ class BQPlayerSliderView: UIView {
         if let dg = delegate {
             dg.sliderEndChange()
         }
-        BQLog("点击:\(point.x)")
+        BQLogger.log("点击:\(point.x)")
     }
     
     @objc private func panGestureAction(sender: UIPanGestureRecognizer)  {
         if !canSlider || maxValue == 0 {return}
         
         let point = sender.location(in: self)
-        BQLog("滑动:\(point.x)")
+        BQLogger.log("滑动:\(point.x)")
         changeWidth(layer: sliderLayer, width: point.x)
         
         if let dg = delegate {

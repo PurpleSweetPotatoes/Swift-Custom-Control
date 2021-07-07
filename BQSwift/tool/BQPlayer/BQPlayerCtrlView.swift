@@ -130,7 +130,7 @@ class BQPlayerCtrlView: UIView {
     
     //MARK: - *** Event Action
     @objc private func playBtnClick(sender: UIButton) {
-        BQLog("播放按钮点击")
+        BQLogger.log("播放按钮点击")
         if let player = playerV {
             if !sender.isSelected {
                 player.play()

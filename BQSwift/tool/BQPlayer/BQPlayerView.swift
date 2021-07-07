@@ -158,7 +158,7 @@ class BQPlayerView: UIView {
     
     //MARK: - *** Life cycle
     deinit {
-        BQLog("播放器释放")
+        BQLogger.log("播放器释放")
         
         for observer in kvoList {
             if let kvo = observer {
@@ -245,7 +245,7 @@ class BQPlayerView: UIView {
             playBufferReady()
             if let item = player.currentItem {
                 if item.duration.seconds.isNaN {
-                    BQLog("获取总时长失败")
+                    BQLogger.log("获取总时长失败")
                     return
                 }
                 let times = Int(item.duration.seconds)
@@ -267,7 +267,7 @@ class BQPlayerView: UIView {
     }
     
     @objc private func playerIsEnd() {
-        BQLog("播放完毕")
+        BQLogger.log("播放完毕")
         status = .stop
         if let dele = delegate {
             dele.playItemDidEnd(self)
@@ -277,7 +277,7 @@ class BQPlayerView: UIView {
     private func playBufferEmpty() {
         
         if let item = player.currentItem {
-            BQLog("正在加载中....\(item.isPlaybackBufferEmpty)")
+            BQLogger.log("正在加载中....\(item.isPlaybackBufferEmpty)")
         }
     }
     
