@@ -26,7 +26,7 @@ extension DispatchQueue {
     }
     
     @discardableResult
-    class func delay(_ time:TimeInterval, task:@escaping ()->()) -> TaskBlock? {
+    class func after(_ time:TimeInterval, task:@escaping ()->()) -> TaskBlock? {
         func dispatch_later(block:@escaping ()->()) {
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + time, execute: block)
         }

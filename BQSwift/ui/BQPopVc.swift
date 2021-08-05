@@ -70,7 +70,7 @@ open class BQPopVc: UIViewController {
     // MARK: - private method
     
     private func dismissSelf() {
-        DispatchQueue.delay(0.2) {
+        DispatchQueue.after(0.2) {
             self.dismiss(animated: false) {[weak self] in
                 self?.didDisMiss()
             }
@@ -94,7 +94,7 @@ open class BQPopVc: UIViewController {
                 self.dismissSelf()
             }
         } else {
-            DispatchQueue.delay(hideTime) {
+            DispatchQueue.after(hideTime) {
                 self.dismissSelf()
             }
         }

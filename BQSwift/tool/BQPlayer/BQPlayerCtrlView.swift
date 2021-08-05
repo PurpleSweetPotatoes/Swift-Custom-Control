@@ -161,7 +161,7 @@ class BQPlayerCtrlView: UIView {
             DispatchQueue.cancel(task: block)
         }
         if isPlaying {
-            hideBlock = DispatchQueue.delay(4) { [weak self] in
+            hideBlock = DispatchQueue.after(4) { [weak self] in
                 self?.hide()
             }
         }

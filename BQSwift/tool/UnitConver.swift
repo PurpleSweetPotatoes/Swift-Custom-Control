@@ -51,6 +51,8 @@ extension UnitConver {
             num = Double(self as! String)
         case is Int:
             num = Double(self as! Int)
+        case is UInt:
+            num = Double(self as! UInt)
         case is Double:
             num = self as? Double
         case is Float:
@@ -68,3 +70,4 @@ extension String : UnitConver { }
 extension Double : UnitConver { }
 extension Float : UnitConver { }
 extension Int : UnitConver {}
+extension UInt : UnitConver {}

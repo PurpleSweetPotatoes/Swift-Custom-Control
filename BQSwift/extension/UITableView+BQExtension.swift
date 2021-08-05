@@ -151,3 +151,21 @@ extension UITableViewCell {
     }
     
 }
+
+
+#if canImport(MJRefresh)
+import MJRefresh
+
+extension UITableView {
+    func addHeaderRefresh(block:@escaping VoidBlock) {
+        let head = MJRefreshNormalHeader(refreshingBlock: block)
+        self.mj_header = head
+    }
+    
+    func addFooterRefresh(block:@escaping VoidBlock) {
+        let footer = MJRefreshAutoNormalFooter(refreshingBlock: block)
+        self.mj_footer = footer
+    }
+}
+
+#endif

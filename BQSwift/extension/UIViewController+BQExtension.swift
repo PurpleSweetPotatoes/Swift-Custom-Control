@@ -22,6 +22,10 @@ extension UIViewController {
         }
     }
     
+    var statusHeight: CGFloat {
+        get { return UIApplication.shared.statusBarFrame.height }
+    }
+    
     var tabBarSizeH: CGFloat {
         get {
             return self.tabBarController?.tabBar.sizeH ?? 0
