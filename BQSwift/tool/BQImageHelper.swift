@@ -14,8 +14,28 @@ import UIKit
 import Kingfisher
 
 extension UIImageView {
-    func kfImage(_ url: String, holderImg: UIImage? = nil, completeHandler: ((Result<UIImage, BQError>) -> Void)? = nil) {
-        kf.setImage(with: URL(string: url), placeholder: holderImg) { res in
+    func kfImage(_ url: String, holderImg: UIImage? = nil, needProgress: Bool = false, completeHandler: ((Result<UIImage, BQError>) -> Void)? = nil) {
+        let proVTag = 10843
+        if needProgress {
+            if let v = viewWithTag(proVTag) as? BQProgressView {
+                v.isHidden = false
+                v.setProgressNum(recive: 0, total: 0)
+            } else {
+                let v = BQProgressView(frame: CGRect(x: (sizeW - 30) * 0.5, y: (sizeH - 30) * 0.5, width: 30, height: 30))
+                v.tag = proVTag
+                addSubview(v)
+            }
+        }
+        
+        kf.setImage(with: URL(string: url), placeholder: holderImg) { [weak self] recSize, totalSize in
+            if let v = self?.viewWithTag(proVTag) as? BQProgressView {
+                BQLogger.log("进度更新\(needProgress): 接收\(recSize) 大小\(totalSize)")
+                v.setProgressNum(recive: Int(recSize), total: Int(totalSize))
+            }
+        } completionHandler: {[weak self] res in
+            if let v = self?.viewWithTag(proVTag) {
+                v.isHidden = true
+            }
             if let handle = completeHandler {
                 switch res {
                 case .success(let result):
@@ -37,16 +57,25 @@ extension UIImageView {
         }
     }
     
-    static func cacheSize() {
+    static func clearCache(_ handle: VoidBlock? = nil) {
+        ImageCache.default.clearCache {
+            if let block = handle {
+                block()
+            }
+        }
+    }
+    
+    static func cacheSize(_ handle:@escaping StrBlock) {
         ImageCache.default.calculateDiskStorageSize { res in
             switch res {
             case .success(let re):
-                BQLogger.log(re.toDiskSize())
+                handle(re.toDiskSize())
             break
-            case .failure(let err):
-            BQLogger.log(err)
+            case .failure(_):
+                handle(nil)
             break
             }
+            
         }
     }
     

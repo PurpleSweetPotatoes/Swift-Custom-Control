@@ -72,8 +72,7 @@ BQAPI.Home.bannerList.request().success { result in
  */
 struct BQAPI {
     /// 项目的域名,针对BQAPIItem使用
-    static let domain = "http://47.105.91.34:8080/"
-//    static let domain = "http://192.168.31.174:8080/"
+    static let domain = "http://xxx.xxx.xxx.xxx/api"
     // 超时时间
     static let timeOut: TimeInterval = 20
     /// 网络请求

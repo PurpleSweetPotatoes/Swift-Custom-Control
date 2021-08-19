@@ -10,8 +10,6 @@
 
 import UIKit
 
-typealias VoidBlock = () -> Void
-
 struct BQTool {
     
     static private var sapceName = ""

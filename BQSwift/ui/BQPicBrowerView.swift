@@ -11,8 +11,8 @@
 import UIKit
 
 protocol BQPicBrowerViewDelegate: NSObjectProtocol {
-    func didShowImgV(imgV: UIImageView, actView:UIActivityIndicatorView, index: Int)
-    func willShowImgV(imgV: UIImageView, actView:UIActivityIndicatorView, index: Int)
+    func didShowImgV(imgV: UIImageView, index: Int)
+    func willShowImgV(imgV: UIImageView, index: Int)
     func changeCurrentIndex(index: Int)
     func scrollerToFront()
     func scrollerToNext()
@@ -20,6 +20,7 @@ protocol BQPicBrowerViewDelegate: NSObjectProtocol {
 
 extension BQPicBrowerViewDelegate {
     func willShowImgV(imgV: UIImageView, index: Int){}
+    func changeCurrentIndex(index: Int){}
     func scrollerToFront(){}
     func scrollerToNext(){}
 }
@@ -109,12 +110,11 @@ extension BQPicBrowerView: UICollectionViewDelegate, UICollectionViewDataSource 
         cell.photoView.zoomNormal()
         if let call = delegate {
             let imgV = cell.photoView.imageView
-            let actiV = cell.activeView!
             
             if isDid {
-                call.didShowImgV(imgV: imgV, actView: actiV, index: cell.row)
+                call.didShowImgV(imgV: imgV, index: cell.row)
             } else {
-                call.willShowImgV(imgV: imgV, actView: actiV, index: cell.row)
+                call.willShowImgV(imgV: imgV, index: cell.row)
             }
         }
     }
@@ -153,7 +153,6 @@ extension BQPicBrowerView: UICollectionViewDelegate, UICollectionViewDataSource 
 
 class PicCollectionCell: UICollectionViewCell {
     fileprivate var photoView: BQPhotoView!
-    fileprivate var activeView: UIActivityIndicatorView!
     
     var row: Int = 0
     override init(frame: CGRect) {
@@ -161,11 +160,6 @@ class PicCollectionCell: UICollectionViewCell {
         photoView = BQPhotoView(frame:CGRect(origin: CGPoint.zero, size: frame.size))
         photoView.contentMode = .scaleAspectFit
         contentView.addSubview(photoView)
-        
-        activeView = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 40, height: 40));
-        activeView.center = photoView.center
-        activeView.isHidden = true
-        contentView.addSubview(activeView)
     }
     
     required init?(coder aDecoder: NSCoder) {

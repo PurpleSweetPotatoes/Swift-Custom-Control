@@ -33,11 +33,11 @@ extension UnitConver {
             let unit = 1024.0
             
             if value >= unit * unit {
-                return String(format:"%.1fM",value / unit / unit)
+                return String(format:"%.1f M",value / unit / unit)
             } else if value >= unit {
-                return String(format:"%.1fKB",value / unit)
+                return String(format:"%.1f KB",value / unit)
             } else {
-                return String(format:"%.0fB",value)
+                return String(format:"%.0f B",value)
             }
         } else {
             return ""
