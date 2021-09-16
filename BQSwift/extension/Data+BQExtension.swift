@@ -1,17 +1,15 @@
 // *******************************************
-//  File Name:      Data+BQExtension.swift       
+//  File Name:      Data+BQExtension.swift
 //  Author:         MrBai
 //  Created Date:   2019/8/15 9:18 AM
-//    
+//
 //  Copyright © 2019 baiqiang
 //  All rights reserved
 // *******************************************
-    
 
 import Foundation
 
 extension Data {
-    
     public func toDic() -> Any {
         var result: Any = ""
         do {
@@ -21,27 +19,28 @@ extension Data {
         }
         return result
     }
-    
-    //MARK:- ***** 钥匙串保存 *****
-    //if want to use this method should open keychain sharing
+
+    // MARK: - ***** 钥匙串保存 *****
+
+    // if want to use this method should open keychain sharing
     @discardableResult
-    public func saveKeychain(data:Data) -> Bool {
+    public func saveKeychain(data: Data) -> Bool {
         var keychainQuery = type(of: self).getkeychain()
         SecItemDelete(keychainQuery as CFDictionary)
         keychainQuery[kSecValueData as String] = data as AnyObject?
         let statu = SecItemAdd(keychainQuery as CFDictionary, nil)
         return statu == noErr
     }
-    
+
     @discardableResult
     static func deleteKeyChain() -> Bool {
-        let keychainQuery = self.getkeychain()
+        let keychainQuery = getkeychain()
         let statu = SecItemDelete(keychainQuery as CFDictionary)
         return statu == noErr
     }
-    
+
     static func loadKeychain() -> Data? {
-        var keychainQuery = self.getkeychain()
+        var keychainQuery = getkeychain()
         keychainQuery[kSecReturnData as String] = kCFBooleanTrue as AnyObject
         keychainQuery[kSecMatchLimit as String] = kSecMatchLimitOne as AnyObject
         var result: AnyObject?
@@ -53,10 +52,11 @@ extension Data {
         }
         return nil
     }
-    
-    //MARK:- ***** private Method *****
-    private static func getkeychain() -> Dictionary<String,AnyObject> {
+
+    // MARK: - ***** private Method *****
+
+    private static func getkeychain() -> [String: AnyObject] {
         let serveice = Bundle.main.bundleIdentifier!
-        return Dictionary(dictionaryLiteral: (kSecClass as String,kSecClassGenericPassword as AnyObject),(kSecAttrService as String ,serveice as AnyObject),(kSecAttrAccount as String,serveice as AnyObject),(kSecAttrAccessible as String,kSecAttrAccessibleAfterFirstUnlock as AnyObject))
+        return Dictionary(dictionaryLiteral: (kSecClass as String, kSecClassGenericPassword as AnyObject), (kSecAttrService as String, serveice as AnyObject), (kSecAttrAccount as String, serveice as AnyObject), (kSecAttrAccessible as String, kSecAttrAccessibleAfterFirstUnlock as AnyObject))
     }
 }

@@ -7,35 +7,34 @@
 //  All rights reserved
 // *******************************************
 
-
 import UIKit
 
 struct BQTool {
-    
-    static private var sapceName = ""
-    
-    //MARK:- ***** 计算方法耗时 *****
-    static func getFuntionUseTime(function:()->()) {
+    private static var sapceName = ""
+
+    // MARK: - ***** 计算方法耗时 *****
+
+    static func getFuntionUseTime(function: () -> Void) {
         let start = CACurrentMediaTime()
         function()
         let end = CACurrentMediaTime()
         print("耗时:\(end - start) s")
     }
-    
-    //MARK:- ***** 对象转json *****
-    static func jsonFromObject(obj:Any) -> String {
-        
+
+    // MARK: - ***** 对象转json *****
+
+    static func jsonFromObject(obj: Any) -> String {
         guard let data = try? JSONSerialization.data(withJSONObject: obj, options: .prettyPrinted) else {
             return String(describing: obj)
         }
-        
+
         if let result = String(data: data, encoding: .utf8) {
             return result
         }
-        
+
         return String(describing: obj)
     }
-    
+
     static func currentSapceName() -> String {
         if sapceName == "" {
             var arrSapce = AppDelegate.classForCoder().description().split(separator: ".")
@@ -44,23 +43,20 @@ struct BQTool {
         }
         return sapceName
     }
-    
-    static func loadVc(vcName:String, spaceName: String? = nil) -> UIViewController? {
-        
+
+    static func loadVc(vcName: String, spaceName: String? = nil) -> UIViewController? {
         var clsName = ""
-        
-        if let space = spaceName{
-            
+
+        if let space = spaceName {
             clsName = space + "." + vcName
-            
+
         } else {
-            
-            clsName = self.currentSapceName() + "." + vcName
+            clsName = currentSapceName() + "." + vcName
         }
-        
+
         let cls = NSClassFromString(clsName) as? UIViewController.Type
         let vc = cls?.init()
-        
+
         if let valueVc = vc {
             return valueVc
         } else {
@@ -68,12 +64,12 @@ struct BQTool {
         }
     }
 
-    ///获取设备型号
+    /// 获取设备型号
     static var modelName: String {
         var systemInfo = utsname()
         uname(&systemInfo)
         let identifier = withUnsafePointer(to: &systemInfo.machine.0) { ptr in
-            return String(cString: ptr)
+            String(cString: ptr)
         }
         switch identifier {
         case "iPhone6,1", "iPhone6,2":
@@ -132,27 +128,27 @@ struct BQTool {
             return identifier
         }
     }
-    
+
     static var appName: String? {
         return Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String
     }
-    
+
     static var identifier: String? {
         return Bundle.main.bundleIdentifier
     }
-    
+
     static var appVersion: String? {
         return Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
     }
-    
+
     static var systemVersion: String {
         return UIDevice.current.systemVersion
     }
-    
+
     static var uuidIdentifier: String? {
         return UIDevice.current.identifierForVendor?.uuidString
     }
-    
+
     static func goPermissionSettings() {
         if let settingsUrl = URL(string: UIApplication.openSettingsURLString) {
             if #available(iOS 10.0, *) {
@@ -162,37 +158,36 @@ struct BQTool {
             }
         }
     }
-    
+
     static func address(_ pt: UnsafeRawPointer) -> String {
         return String(format: "%p", Int(bitPattern: pt))
     }
-    
+
     static func random(_ range: Range<Int>) -> Int {
         let count = UInt32(range.endIndex - range.startIndex)
         return Int(arc4random_uniform(count)) + range.startIndex
     }
-    
+
     /// IP地址相关(第一个为外网ip)
     static func getIFAddresses() -> [String] {
         var addresses = [String]()
-        
+
         // Get list of all interfaces on the local machine:
-        var ifaddr : UnsafeMutablePointer<ifaddrs>? = nil
+        var ifaddr: UnsafeMutablePointer<ifaddrs>?
         if getifaddrs(&ifaddr) == 0 {
-            
             var ptr = ifaddr
             while ptr != nil {
                 let flags = Int32((ptr?.pointee.ifa_flags)!)
                 var addr = ptr?.pointee.ifa_addr.pointee
-                
+
                 // Check for running IPv4, IPv6 interfaces. Skip the loopback interface.
-                if (flags & (IFF_UP|IFF_RUNNING|IFF_LOOPBACK)) == (IFF_UP|IFF_RUNNING) {
+                if (flags & (IFF_UP | IFF_RUNNING | IFF_LOOPBACK)) == (IFF_UP | IFF_RUNNING) {
                     if addr?.sa_family == UInt8(AF_INET) || addr?.sa_family == UInt8(AF_INET6) {
-                        
                         // Convert interface address to a human readable string:
                         var hostname = [CChar](repeating: 0, count: Int(NI_MAXHOST))
-                        if (getnameinfo(&addr!, socklen_t((addr?.sa_len)!), &hostname, socklen_t(hostname.count),
-                                        nil, socklen_t(0), NI_NUMERICHOST) == 0) {
+                        if getnameinfo(&addr!, socklen_t((addr?.sa_len)!), &hostname, socklen_t(hostname.count),
+                                       nil, socklen_t(0), NI_NUMERICHOST) == 0
+                        {
                             if let address = String(validatingUTF8: hostname) {
                                 addresses.append(address)
                             }
@@ -201,7 +196,7 @@ struct BQTool {
                 }
                 ptr = ptr?.pointee.ifa_next
             }
-            
+
             freeifaddrs(ifaddr)
         }
         return addresses

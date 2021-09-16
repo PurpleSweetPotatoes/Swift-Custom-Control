@@ -1,46 +1,44 @@
 // *******************************************
-//  File Name:      BQSignatureView.swift       
+//  File Name:      BQSignatureView.swift
 //  Author:         MrBai
 //  Created Date:   2021/6/4 3:39 PM
-//    
+//
 //  Copyright © 2021 ___ORGANIZATIONNAME___
 //  All rights reserved
 // *******************************************
-    
 
 import UIKit
 
 class BQSignatureView: UIView {
+    // MARK: Lifecycle
 
+    // MARK: - *** Ivars
 
-    //MARK: - *** Ivars
+    // MARK: - *** Public method
 
-    //MARK: - *** Public method
+    // MARK: - *** Life cycle
 
-    //MARK: - *** Life cycle
-    
-    public override init(frame: CGRect) {
+    override public init(frame: CGRect) {
         super.init(frame: frame)
         configUI()
     }
-    
-    required init?(coder aDecoder: NSCoder) {
+
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    //MARK: - *** NetWork method
+    // MARK: Private
 
-    //MARK: - *** Event Action
+    // MARK: - *** NetWork method
 
-    //MARK: - *** Delegate
+    // MARK: - *** Event Action
 
-    //MARK: - *** Instance method
+    // MARK: - *** Delegate
 
-    //MARK: - *** UI method
+    // MARK: - *** Instance method
 
-    private func configUI() {
-        
-    }
-    
+    // MARK: - *** UI method
 
+    private func configUI() {}
 }

@@ -1,12 +1,11 @@
 // *******************************************
-//  File Name:      BQWeakProxy.swift       
+//  File Name:      BQWeakProxy.swift
 //  Author:         MrBai
 //  Created Date:   2019/8/15 3:07 PM
-//    
+//
 //  Copyright © 2019 baiqiang
 //  All rights reserved
 // *******************************************
-    
 
 import UIKit
 
@@ -16,7 +15,8 @@ class BQWeakProxy: NSObject {
         self.target = target
         super.init()
     }
-    override func forwardingTarget(for aSelector: Selector!) -> Any? {
+
+    override func forwardingTarget(for _: Selector!) -> Any? {
         return target
     }
 }

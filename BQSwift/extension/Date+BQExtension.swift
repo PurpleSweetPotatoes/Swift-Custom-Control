@@ -1,26 +1,22 @@
 // *******************************************
-//  File Name:      Date+BQExtension.swift       
+//  File Name:      Date+BQExtension.swift
 //  Author:         MrBai
 //  Created Date:   2019/8/19 11:40 AM
-//    
+//
 //  Copyright © 2019 baiqiang
 //  All rights reserved
 // *******************************************
-    
 
 import UIKit
 
 private let _dateFormatter = DateFormatter()
 
 extension Date {
-
     /// 时间戳
     var timeStamp: String {
-        get {
-            return String(format: "%.lf", self.timeIntervalSince1970)
-        }
+        return String(format: "%.lf", timeIntervalSince1970)
     }
-    
+
     /// 格式化日期
     ///
     /// - Parameters:
@@ -34,10 +30,9 @@ extension Date {
         }
         return _dateFormatter.string(from: self)
     }
-    
+
     /// 时间组件
     func components() -> DateComponents {
-        return Calendar.current.dateComponents([.year,.month,.day,.hour,.minute,.second,.weekday], from: self)
+        return Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second, .weekday], from: self)
     }
-    
 }

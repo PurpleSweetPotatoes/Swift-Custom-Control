@@ -1,15 +1,13 @@
 // *******************************************
-//  File Name:      CALayer+BQExtension.swift       
+//  File Name:      CALayer+BQExtension.swift
 //  Author:         MrBai
 //  Created Date:   2019/8/15 9:08 AM
-//    
+//
 //  Copyright © 2019 baiqiang
 //  All rights reserved
 // *******************************************
-    
 
 import UIKit
-
 
 public enum GradientPostion: Int {
     case leftTop, rightTop, leftBottom, rightBottom
@@ -27,64 +25,62 @@ public enum GradientPostion: Int {
     }
 }
 
-extension CALayer {
-    
-    public class func lineLayer(frame: CGRect, color: UIColor = UIColor.groupTableViewBackground) -> CAShapeLayer {
+public extension CALayer {
+    class func lineLayer(frame: CGRect, color: UIColor = UIColor.groupTableViewBackground) -> CAShapeLayer {
         let line = CAShapeLayer()
         line.frame = frame
         line.backgroundColor = color.cgColor
         return line
     }
-    
-    public class func gradientLayer(frame: CGRect, start: GradientPostion = .leftTop, end: GradientPostion = .leftBottom, colors: [CGColor], locations: [NSNumber]? = nil) -> CAGradientLayer {
+
+    class func gradientLayer(frame: CGRect, start: GradientPostion = .leftTop, end: GradientPostion = .leftBottom, colors: [CGColor], locations: [NSNumber]? = nil) -> CAGradientLayer {
         let gradLayer = CAGradientLayer()
         gradLayer.frame = frame
         gradLayer.colors = colors
         gradLayer.locations = locations
         gradLayer.startPoint = start.convenPoint()
         gradLayer.endPoint = end.convenPoint()
-        
+
         return gradLayer
     }
-    
-    public var origin: CGPoint {
-        get { return self.frame.origin }
-        set { self.frame.origin = newValue }
+
+    var origin: CGPoint {
+        get { return frame.origin }
+        set { frame.origin = newValue }
     }
-    
-    public var top : CGFloat {
-        get { return self.frame.origin.y }
-        set { self.frame.origin = CGPoint(x: self.frame.origin.x, y: newValue) }
+
+    var top: CGFloat {
+        get { return frame.origin.y }
+        set { frame.origin = CGPoint(x: frame.origin.x, y: newValue) }
     }
-    
-    public var left : CGFloat {
-        get { return self.frame.origin.x }
-        set { self.frame.origin = CGPoint(x: newValue, y: self.frame.origin.y) }
+
+    var left: CGFloat {
+        get { return frame.origin.x }
+        set { frame.origin = CGPoint(x: newValue, y: frame.origin.y) }
     }
-    
-    public var bottom : CGFloat {
-        get { return self.frame.origin.y + self.frame.height}
-        set { self.top = newValue - self.frame.height }
+
+    var bottom: CGFloat {
+        get { return frame.origin.y + frame.height }
+        set { top = newValue - frame.height }
     }
-    
-    public var right : CGFloat {
-        get { return self.frame.origin.x  + self.frame.width}
-        set { self.left = newValue - self.frame.width }
+
+    var right: CGFloat {
+        get { return frame.origin.x + frame.width }
+        set { left = newValue - frame.width }
     }
-    
-    public var size: CGSize {
-        get { return self.bounds.size }
-        set { self.bounds.size = newValue }
+
+    var size: CGSize {
+        get { return bounds.size }
+        set { bounds.size = newValue }
     }
-    
-    public var sizeW : CGFloat {
-        get { return self.frame.width}
-        set { self.frame.size = CGSize(width: newValue, height: self.frame.height) }
+
+    var sizeW: CGFloat {
+        get { return frame.width }
+        set { frame.size = CGSize(width: newValue, height: frame.height) }
     }
-    
-    public var sizeH : CGFloat {
-        get { return self.frame.height}
-        set { self.frame.size = CGSize(width: self.frame.width, height: newValue) }
+
+    var sizeH: CGFloat {
+        get { return frame.height }
+        set { frame.size = CGSize(width: frame.width, height: newValue) }
     }
-    
 }

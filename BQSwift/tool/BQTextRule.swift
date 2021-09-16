@@ -1,12 +1,11 @@
 // *******************************************
-//  File Name:      BQTextRule.swift       
+//  File Name:      BQTextRule.swift
 //  Author:         MrBai
 //  Created Date:   2020/5/14 4:10 PM
-//    
+//
 //  Copyright © 2020 baiqiang
 //  All rights reserved
 // *******************************************
-    
 
 import UIKit
 
@@ -25,15 +24,14 @@ enum BQTextType: Int {
     case price
 }
 
-
 struct BQTextRule {
     var type: BQTextType
     var maxLength: UInt
-    var precision: (UInt,UInt)?
+    var precision: (UInt, UInt)?
     var upText: Bool
     var clearSpace: Bool
-    
-    init(type: BQTextType = .normal, maxLength: UInt = 1000, precision: (UInt,UInt)? = nil, upText: Bool = false, clearSpace: Bool = false) {
+
+    init(type: BQTextType = .normal, maxLength: UInt = 1000, precision: (UInt, UInt)? = nil, upText: Bool = false, clearSpace: Bool = false) {
         self.type = type
         self.maxLength = maxLength
         self.precision = precision
@@ -43,51 +41,49 @@ struct BQTextRule {
 }
 
 extension UITextField {
-    
     @objc func tfValueDidChange() {
-        guard self.markedTextRange == nil, var content = self.text , let rule = self.rule else {
+        guard markedTextRange == nil, var content = text, let rule = self.rule else {
             return
         }
-        
+
         switch rule.type {
-            case .num:
-                content = content.deleteCharset(regular: "[^0-9]")
-            case .char:
-                content = content.deleteCharset(regular: "[^a-zA-Z]")
-            case .numChar:
-                content = content.deleteCharset(regular: "[^a-zA-Z0-9]")
-            case .chinese:
-                content = content.deleteCharset(regular: "[^\\u4e00-\\u9fa5]")
-            case .price:
-                content = content.deleteCharset(regular: "[^0-9\\.]")
-                if let (left, right) = rule.precision {
-                    self.text = self.reservePrice(content: content, left: left, right: right)
-                    return
-                }
-            default:
-                break
+        case .num:
+            content = content.deleteCharset(regular: "[^0-9]")
+        case .char:
+            content = content.deleteCharset(regular: "[^a-zA-Z]")
+        case .numChar:
+            content = content.deleteCharset(regular: "[^a-zA-Z0-9]")
+        case .chinese:
+            content = content.deleteCharset(regular: "[^\\u4e00-\\u9fa5]")
+        case .price:
+            content = content.deleteCharset(regular: "[^0-9\\.]")
+            if let (left, right) = rule.precision {
+                text = reservePrice(content: content, left: left, right: right)
+                return
+            }
+        default:
+            break
         }
-        
+
         if rule.clearSpace {
             content = content.replacingOccurrences(of: " ", with: "")
         }
-        
+
         if rule.upText {
             content = content.uppercased()
         }
-        
+
         if content.count > rule.maxLength {
-            content = content[NSRange(location: 0, length:Int(rule.maxLength))]
+            content = content[NSRange(location: 0, length: Int(rule.maxLength))]
         }
-        self.text = content
+        text = content
     }
-    
+
     func reservePrice(content: String, left: UInt, right: UInt) -> String {
-        
         if content.hasPrefix(".") {
             return "0."
         }
-        
+
         let arr = content.utf8CString
         var outArr = [CChar]()
         var hasPoint = false
@@ -95,21 +91,21 @@ extension UITextField {
         var rightNum = 0
 
         for char in arr {
-            if char >= 48 && char <= 57 {
-                if (!hasPoint && leftNum < left) { //实部
-                    if outArr.count == 0 && char == 48 {
+            if char >= 48, char <= 57 {
+                if !hasPoint, leftNum < left { // 实部
+                    if outArr.count == 0, char == 48 {
                         continue
                     }
                     leftNum += 1
                     outArr.append(char)
-                } else if (hasPoint && rightNum < right) {//虚部
+                } else if hasPoint, rightNum < right { // 虚部
                     rightNum += 1
                     outArr.append(char)
                     if rightNum == right {
                         break
                     }
                 }
-            } else if char == 46 { //小数点
+            } else if char == 46 { // 小数点
                 hasPoint = true
                 if outArr.count == 0 {
                     outArr.append(48)
@@ -117,40 +113,39 @@ extension UITextField {
                 outArr.append(char)
             }
         }
-        
+
         // 添加结束符
         outArr.append(0)
         return String(cString: outArr)
     }
-    
-    private struct AssociatedKeys {
+
+    private enum AssociatedKeys {
         static var ruleKey: Void?
     }
-    
+
     var rule: BQTextRule? {
         get {
             return objc_getAssociatedObject(self, &AssociatedKeys.ruleKey) as? BQTextRule
         }
         set {
             if let _ = self.rule {
-                self.removeTarget(self, action: #selector(UITextField.tfValueDidChange), for: .editingChanged)
+                removeTarget(self, action: #selector(UITextField.tfValueDidChange), for: .editingChanged)
             }
 
             if let rule = newValue {
                 if let _ = rule.precision, rule.type == .price {
-                    self.keyboardType = .decimalPad
+                    keyboardType = .decimalPad
                 } else if rule.type == .num {
-                    self.keyboardType = .numberPad
+                    keyboardType = .numberPad
                 } else if rule.type == .char {
-                    self.keyboardType = .asciiCapable
+                    keyboardType = .asciiCapable
                 } else {
-                    self.keyboardType = .default
+                    keyboardType = .default
                 }
-                
-                self.addTarget(self, action: #selector(UITextField.tfValueDidChange), for: .editingChanged)
+
+                addTarget(self, action: #selector(UITextField.tfValueDidChange), for: .editingChanged)
                 objc_setAssociatedObject(self, &AssociatedKeys.ruleKey, rule, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             }
         }
     }
 }
-
