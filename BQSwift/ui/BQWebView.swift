@@ -22,7 +22,19 @@ class BQWebView: WKWebView {
     var titleObserve: NSKeyValueObservation?
 
     // MARK: - *** Public method
-
+    
+    init(frame: CGRect) {
+        super.init(frame: frame, configuration: WKWebViewConfiguration())
+    }
+    
+    override init(frame: CGRect, configuration: WKWebViewConfiguration) {
+        super.init(frame: frame, configuration: configuration)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     public func addScriptHandle(name: String, hanlde: @escaping ScriptBlock) {
         configuration.userContentController.add(scriptObjc, name: name)
         scriptObjc.msgBlocks[name] = hanlde
@@ -142,10 +154,12 @@ class WebScriptObjc: NSObject, WKScriptMessageHandler {
 extension WKWebView {
     @discardableResult
     func load(_ urlStr: String) -> WKNavigation? {
-        if let url = URL(string: urlStr) {
+        if urlStr.hasPrefix("http"), let url = URL(string: urlStr) {
             return load(URLRequest(url: url))
+        } else {
+            let url = URL(fileURLWithPath: urlStr)
+            return loadFileURL(url, allowingReadAccessTo: url)
         }
-        return nil
     }
 
     /// 文本大小自适应

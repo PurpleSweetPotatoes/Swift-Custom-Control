@@ -9,6 +9,8 @@
 
 import UIKit
 
+
+/// 输入内容
 enum BQTextType: Int {
     /// 无规则
     case normal
@@ -128,10 +130,13 @@ extension UITextField {
             return objc_getAssociatedObject(self, &AssociatedKeys.ruleKey) as? BQTextRule
         }
         set {
-            if let _ = self.rule {
+            
+            if newValue == nil && rule != nil {
                 removeTarget(self, action: #selector(UITextField.tfValueDidChange), for: .editingChanged)
+            } else if rule == nil && newValue != nil {
+                addTarget(self, action: #selector(UITextField.tfValueDidChange), for: .editingChanged)
             }
-
+            
             if let rule = newValue {
                 if let _ = rule.precision, rule.type == .price {
                     keyboardType = .decimalPad
@@ -142,10 +147,10 @@ extension UITextField {
                 } else {
                     keyboardType = .default
                 }
-
-                addTarget(self, action: #selector(UITextField.tfValueDidChange), for: .editingChanged)
-                objc_setAssociatedObject(self, &AssociatedKeys.ruleKey, rule, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             }
+
+            objc_setAssociatedObject(self, &AssociatedKeys.ruleKey, rule, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+
         }
     }
 }

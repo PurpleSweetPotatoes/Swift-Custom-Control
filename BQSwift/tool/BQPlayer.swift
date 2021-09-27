@@ -40,7 +40,15 @@ protocol BQPlayerDelegate: NSObjectProtocol {
 }
 
 class BQPlayer: AVPlayer {
-    public var bqStatus: BQPlayerStatus = .none
+    public var bqStatus: BQPlayerStatus = .none {
+        didSet {
+            var total: Double?
+            if let item = currentItem, item.duration.seconds.isNormal {
+                total = item.duration.seconds
+            }
+            delegate?.bqPlayerStatusChange(status: bqStatus, totalTime: total)
+        }
+    }
 
     public weak var delegate: BQPlayerDelegate?
 
@@ -49,7 +57,7 @@ class BQPlayer: AVPlayer {
     private var playerStatusKvo: NSKeyValueObservation?
 
     /// 时间改变回调间隔 value/timescale = seconds，默认1s回调一次
-    public var hookTime: CMTime! {
+    public var hookTime: CMTime = CMTime.zero {
         willSet {
             if let kv = timeKvo {
                 removeTimeObserver(kv)
@@ -58,14 +66,35 @@ class BQPlayer: AVPlayer {
         didSet {
             timeKvo = addPeriodicTimeObserver(forInterval: hookTime, queue: nil) { [weak self] time in
                 if let weakSelf = self {
+                    BQLogger.log("内部回调时间改变\(time.seconds)")
                     weakSelf.delegate?.bqPlayerTimeChange(time: time.seconds)
+                    if let item = weakSelf.currentItem, weakSelf.currentTime().seconds == item.duration.seconds {
+                        weakSelf.bqStatus = .stop
+                    }
                 }
             }
         }
     }
 
+    override func play() {
+        if hookTime == CMTime.zero {
+            hookTime = CMTime(value: 1, timescale: 1)
+        }
+        super.play()
+    }
+    
+    public func replay() {
+        if currentItem != nil {
+            seek(to: CMTime.zero)
+            play()
+        }
+    }
+    
     deinit {
         cleanObserver()
+        if let kv = timeKvo {
+            removeTimeObserver(kv)
+        }
     }
 
     override init() {
@@ -74,8 +103,6 @@ class BQPlayer: AVPlayer {
         playerStatusKvo = observe(\.timeControlStatus, options: [.new]) { [weak self] _, _ in
             self?.bqPlayStatusChange()
         }
-        NotificationCenter.default.addObserver(self, selector: #selector(playerIsEnd), name: .AVPlayerItemDidPlayToEndTime, object: nil)
-        hookTime = CMTime(value: 1, timescale: 1)
     }
 
     override init(url URL: URL) {
@@ -89,7 +116,7 @@ class BQPlayer: AVPlayer {
 
     override func replaceCurrentItem(with item: AVPlayerItem?) {
         cleanObserver()
-        bqStatus = .none
+        self.bqStatus = .none
         super.replaceCurrentItem(with: item)
         addObserverInfo()
     }
@@ -101,10 +128,6 @@ class BQPlayer: AVPlayer {
             }
         }
         kvoList.removeAll()
-
-        if let kv = timeKvo {
-            removeTimeObserver(kv)
-        }
     }
 
     private func addObserverInfo() {
@@ -131,27 +154,25 @@ class BQPlayer: AVPlayer {
 
     private func bqPlayStatusChange() {
         if timeControlStatus == .playing {
-            bqStatus = .playing
+            self.bqStatus = .playing
         } else if timeControlStatus == .paused {
-            bqStatus = .puased
+            if let item = currentItem, bqStatus != .stop, currentTime().seconds == item.duration.seconds {
+                self.bqStatus = .stop
+            } else {
+                self.bqStatus = .puased
+            }
         } else {
-            bqStatus = .wait
+            self.bqStatus = .wait
         }
-        delegate?.bqPlayerStatusChange(status: bqStatus, totalTime: nil)
     }
 
     private func itemStatusChange() {
-        if let item = currentItem {
-            var total: Double?
+        if let _ = currentItem {
             if status == .readyToPlay {
-                bqStatus = .ready
-                if item.duration.seconds.isNormal {
-                    total = item.duration.seconds
-                }
+                self.bqStatus = .ready
             } else if status == .failed {
-                bqStatus = .fail
+                self.bqStatus = .fail
             }
-            delegate?.bqPlayerStatusChange(status: bqStatus, totalTime: total)
         }
     }
 
@@ -164,14 +185,6 @@ class BQPlayer: AVPlayer {
             total = start + duration
         }
         delegate?.bqPlayerBufferChange(value: total)
-    }
-
-    @objc private func playerIsEnd() {
-        BQLogger.log("播放完毕")
-        bqStatus = .stop
-        if let dele = delegate {
-            dele.bqPlayerStatusChange(status: bqStatus, totalTime: nil)
-        }
     }
 }
 

@@ -11,57 +11,95 @@ import UIKit
 
 private let LoggerQueue = DispatchQueue(label: "com.bq.Logger.queue")
 
-public enum BQLogger {
-    private static var crashHandler: ((NSException) -> Void?)?
-    private static var preCrashHandler: ((NSException) -> Void?)?
+typealias CrashBlock = (NSException) -> Void?
 
-    fileprivate static var canLog = true
-    fileprivate static var canSave = false
-    private static let dateFormat = DateFormatter()
+// MARK: - BQLogger
+
+public enum BQLogger {
+    // MARK: Internal
 
     /// 开启本地日志记录
     /// - Parameter handle: 文件超过阈值时回调
-    public static func cleanLogInfoHandle(handle _: (String) -> Void) {}
+    static func cleanLogInfoHandle(handle _: (String) -> Void) {}
 
-    /// 开启crash日志
+    /// 开启crash日志，无回调存放于本地使用
+    /// loadCrashInfo获取
     /// - Parameter handle: 获取到crash日志后回调
-    public static func loadCrashInfo(handle: (String) -> Void) {
+    static func startCrashIntercept(_ handle: CrashBlock? = nil) {
         BQLogger.preCrashHandler = NSGetUncaughtExceptionHandler()
-        let crashPath = crashFilePath()
-
-        if let crashInfo = try? String(contentsOfFile: crashPath), crashInfo.count > 0 {
-            handle(crashInfo)
-            try? "".write(toFile: crashPath, atomically: true, encoding: .utf8)
-        }
-
+        crashHandler = handle
         NSSetUncaughtExceptionHandler { exception in
-            let disPlayName = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName")!
-            let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString")!
-            let callStack = exception.callStackSymbols.joined(separator: "\n")
-
-            let content = "**********   \(BQLogger.currentTime())    **********\ndisName:\(disPlayName)\t version:\(appVersion)\t system:\(UIDevice.current.systemVersion)\n\(exception.name) \(exception.reason ?? "")\ncallStackSymbols:\n\(callStack)"
-            try? content.write(toFile: BQLogger.crashFilePath(), atomically: true, encoding: .utf8)
+            if let block = BQLogger.crashHandler {
+                block(exception)
+            } else {
+                let callStack = exception.callStackSymbols.joined(separator: "\n")
+                let content = "**********   \(BQLogger.currentTime())    **********\ndisName:\(AppInfo.name)\t version:\(AppInfo.version)\t system:\(UIDevice.current.systemVersion)\n\(exception.name) \(exception.reason ?? "")\ncallStackSymbols:\n\(callStack)"
+                try? content.write(toFile: BQLogger.crashFilePath(), atomically: true, encoding: .utf8)
+            }
 
             if let preHand = BQLogger.preCrashHandler {
                 preHand(exception)
             }
         }
     }
+    
+    static func loadCrashInfo(clean: Bool = false) -> String? {
+        let outStr = try? String(contentsOfFile: crashFilePath())
+        if clean {
+            try? "".write(toFile: BQLogger.crashFilePath(), atomically: true, encoding: .utf8)
+        }
+        if let str = outStr, str.count == 0 {
+            return nil
+        }
+        return outStr
+    }
+    
+    static func showInfo(_ info: String) {
+        
+        let sv = UIView(frame: UIScreen.main.bounds)
+        sv.backgroundColor = UIColor(white: 0, alpha: 0.7)
+        UIApplication.shared.keyWindow?.addSubview(sv)
+        
+        let bv = UILabel(frame: CGRect(x: 0, y: sv.sizeH - 50, width: sv.sizeW, height: 50), font: .systemFont(ofSize: 16), text: "返回", textColor: .white, alignment: .center)
+        bv.isUserInteractionEnabled = true
+        bv.addTapGes { v in
+            v.superview?.removeFromSuperview()
+        }
+        sv.addSubview(bv)
+        
+        let iv = UITextView.init(frame: CGRect(x: 0, y: UIApplication.shared.statusBarFrame.height, width: sv.sizeW, height: sv.sizeH - bv.sizeH - AppInfo.statusHeight))
+        iv.font = .systemFont(ofSize: 14)
+        iv.backgroundColor = .clear
+        iv.textColor = bv.textColor
+        iv.isEditable = false
+        iv.text = info
+        sv.addSubview(iv)
+    }
 
-    // MARK: - private
+    // MARK: Fileprivate
+
+    fileprivate static var canLog = true
+    fileprivate static var canSave = false
 
     fileprivate static func currentTime() -> String {
         dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss.SSSS"
         return dateFormat.string(from: Date())
     }
 
+    // MARK: Private
+
+    private static var crashHandler: CrashBlock?
+    private static var preCrashHandler: CrashBlock?
+
+    private static let dateFormat = DateFormatter()
+
     private static func crashFilePath() -> String {
-        let document = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!
+        let document = NSDocumentPath()
         return document.appending("/BQCrashInfo.log")
     }
 
     private static func logFilePath() -> String {
-        let document = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!
+        let document = NSDocumentPath()
         return document.appending("/BQlogInfo.log")
     }
 }
@@ -84,7 +122,7 @@ public extension BQLogger {
             LoggerQueue.async {
                 let fileName = String(file.split(separator: "/").last!).split(separator: ".").first!
                 var output = "\(BQLogger.currentTime()) \(funcName) at \(fileName) \(lineNum) line: \(messsage)"
-                if type.count > 0 {
+                if !type.isEmpty {
                     output = "\(type) \(output)"
                 }
                 print(output)

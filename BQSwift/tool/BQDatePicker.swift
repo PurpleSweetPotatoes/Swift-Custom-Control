@@ -55,8 +55,7 @@ class BQDatePicker: UIView {
 
     // MARK: - *** Life cycle
 
-    private init(frame: CGRect, title: String, opt: DatePickerOptions) {
-        options = opt
+    private init(frame: CGRect, title: String) {
         currentTitle = title
         super.init(frame: frame)
         isHidden = true
@@ -74,7 +73,7 @@ class BQDatePicker: UIView {
 
     public var delegate: BQDatePickerDelegate?
 
-    public var options: DatePickerOptions {
+    public var options: DatePickerOptions = .year {
         didSet {
             numopt = options.convenToArr()
         }
@@ -98,7 +97,8 @@ class BQDatePicker: UIView {
     public static func config(disTitle: String = "请选择时间", options: DatePickerOptions = [.year, .month, .day], supV: UIView? = nil) -> BQDatePicker {
         let supView: UIView! = supV ?? UIApplication.shared.keyWindow
 
-        let pickerV = BQDatePicker(frame: supView.bounds, title: disTitle, opt: options)
+        let pickerV = BQDatePicker(frame: supView.bounds, title: disTitle)
+        pickerV.options = options
         supView.addSubview(pickerV)
 
         return pickerV

@@ -46,18 +46,9 @@ import UIKit
             }
         }
 
-        static func prefetchLoadImgUrl(urls: [String]) {
-            DispatchQueue.global().async {
-                let semaphore = DispatchSemaphore(value: 0)
-                for url in urls {
-                    if let res = URL(string: url) {
-                        KingfisherManager.shared.retrieveImage(with: res) { _ in
-                            semaphore.signal()
-                        }
-                        semaphore.wait()
-                    }
-                }
-            }
+        static func prefetchLoadImgUrl(urls: [URL]) {
+            let preFetcher = ImagePrefetcher(urls: urls)
+            preFetcher.start()
         }
 
         static func clearCache(_ handle: VoidBlock? = nil) {

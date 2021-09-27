@@ -12,13 +12,13 @@ import UIKit
 extension UIViewController {
     var navBarBottom: CGFloat {
         if let nvc = navigationController {
-            return nvc.navigationBar.bounds.height + UIApplication.shared.statusBarFrame.height
+            return nvc.navigationBar.bounds.height + AppInfo.statusHeight
         } else {
             return 0
         }
     }
 
-    var statusHeight: CGFloat { return UIApplication.shared.statusBarFrame.height }
+    var statusHeight: CGFloat { return AppInfo.statusHeight }
 
     var tabBarSizeH: CGFloat {
         return tabBarController?.tabBar.sizeH ?? 0

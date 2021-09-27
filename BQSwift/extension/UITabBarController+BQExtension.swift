@@ -9,19 +9,21 @@
 
 import UIKit
 
-enum TabBarVcInfo: String {
-    case name
-    case title
-    case selectImg
-    case normalImg
+// MARK: - TabBarVcModel
+
+struct TabBarVcModel {
+    var name: String = ""
+    var title: String = ""
+    var selectImg: String = ""
+    var normalImg: String = ""
 }
 
-public extension UITabBarController {
+extension UITabBarController {
     /// 快捷创建tabbarVc方式
     ///
     /// - Parameter arr: 数组嵌套字典 vcName: selectImg: normalImg:
     /// - Returns: 返回tabbarVc
-    class func createVc(arr: [[String: String]], needNav: Bool = true) -> UITabBarController {
+    static func createVc(arr: [TabBarVcModel], needNav: Bool = true) -> UITabBarController {
         let tabbarVc = UITabBarController()
 
         tabbarVc.configVcs(arr: arr, needNav: needNav)
@@ -29,21 +31,17 @@ public extension UITabBarController {
         return tabbarVc
     }
 
-    func configVcs(arr: [[String: String]], needNav: Bool = true) {
-        if arr.count == 0 {
+    func configVcs(arr: [TabBarVcModel], needNav: Bool = true) {
+        if arr.isEmpty {
             return
         }
 
         var vcArr: [UIViewController] = []
         for vcInfo in arr {
-            guard let vcName = vcInfo[TabBarVcInfo.name.rawValue], let selectImg = vcInfo[TabBarVcInfo.selectImg.rawValue], let normalImg = vcInfo[TabBarVcInfo.normalImg.rawValue], let title = vcInfo[TabBarVcInfo.title.rawValue] else {
-                continue
-            }
-
-            if let vc = BQTool.loadVc(vcName: vcName) {
-                let tabbarItem = UITabBarItem(title: title, image: UIImage.orginImg(name: normalImg), selectedImage: UIImage.orginImg(name: selectImg))
+            if let vc = BQTool.loadVc(vcName: vcInfo.name) {
+                let tabbarItem = UITabBarItem(title: title, image: UIImage.orginImg(name: vcInfo.normalImg), selectedImage: UIImage.orginImg(name: vcInfo.selectImg))
                 vc.tabBarItem = tabbarItem
-                vc.title = title
+                vc.title = vcInfo.title
 
                 if needNav {
                     let navVc = BQNavgationController(rootViewController: vc)

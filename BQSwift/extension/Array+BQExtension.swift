@@ -10,12 +10,11 @@
 import UIKit
 
 public extension Array where Element: Equatable {
-    @discardableResult
-    mutating func safeRemove(ele objc: Element) -> Element? {
+    
+    mutating func safeRemove(ele objc: Element) {
         if let i = firstIndex(of: objc) {
-            return remove(at: i)
+            remove(at: i)
         }
-        return nil
     }
 
     func random() -> Array {
@@ -44,5 +43,17 @@ public extension Array where Element: Equatable {
                 self[i] = newValue[index]
             }
         }
+    }
+}
+
+// MARK: - *** 数组排序
+
+extension Array where Element == String {
+    func toString() -> String {
+        if count == 0 {
+            return ""
+        }
+        let arr = sorted { $0 < $1 }
+        return "[\(arr.joined(separator: ","))]"
     }
 }
