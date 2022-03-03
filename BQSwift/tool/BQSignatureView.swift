@@ -40,5 +40,5 @@ class BQSignatureView: UIView {
 
     // MARK: - *** UI method
 
-    private func configUI() {}
+    func configUI() {}
 }

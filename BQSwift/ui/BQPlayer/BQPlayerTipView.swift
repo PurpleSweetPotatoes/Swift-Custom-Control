@@ -69,7 +69,7 @@ class BQPlayerTipView: UIView {
         super.init(frame: frame)
         configUI()
         backgroundColor = UIColor(white: 0, alpha: 0.6)
-        setCorner(readius: 4)
+        corner(4)
         isUserInteractionEnabled = false
     }
 
@@ -90,7 +90,7 @@ class BQPlayerTipView: UIView {
 
     // MARK: - *** UI method
 
-    private func configUI() {
+    func configUI() {
         addSubview(imgV)
         addSubview(tipLab)
         addSubview(slider)

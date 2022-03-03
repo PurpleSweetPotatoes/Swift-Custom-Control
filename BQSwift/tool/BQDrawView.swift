@@ -104,7 +104,7 @@ class BQDrawView: UIView {
 
     // MARK: - *** UI method
 
-    private func configUI() {
+    func configUI() {
         dottedLayer.isHidden = true
         dottedLayer.fillColor = UIColor.clear.cgColor
         dottedLayer.lineDashPattern = [8, 5]

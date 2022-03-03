@@ -10,7 +10,8 @@
 import UIKit
 
 typealias VoidBlock = () -> Void
-typealias ImgBlock = (_ img: UIImage?) -> Void
-typealias StrBlock = (_ str: String?) -> Void
+typealias ImgBlock = (_ img: UIImage) -> Void
+typealias StrBlock = (_ str: String) -> Void
 typealias FloatBlock = (_ num: CGFloat) -> Void
 typealias IntBlock = (_ num: Int) -> Void
+

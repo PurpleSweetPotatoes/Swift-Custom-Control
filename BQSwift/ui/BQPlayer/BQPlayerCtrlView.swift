@@ -20,7 +20,7 @@ class BQPlayerCtrlView: UIView {
     public let playBtn = UIButton(type: .custom)
     public let fullBtn = UIButton(type: .custom)
     public weak var playerV: BQPlayerView?
-    public var voiceSlider: UISlider!
+    public var voiceSlider: UISlider?
     public var isPlaying: Bool = false {
         didSet {
             playBtn.isSelected = isPlaying
@@ -56,6 +56,12 @@ class BQPlayerCtrlView: UIView {
 
     public func setTopTitle(str: String) {
         topLab.text = str
+        topLab.isHidden = str.count == 0
+    }
+    
+    public func resetStatus() {
+        setCurrentTime(0)
+        setDuration(0)
     }
 
     public func adjustSubView() {
@@ -108,7 +114,7 @@ class BQPlayerCtrlView: UIView {
     // MARK: - *** Life cycle
 
     deinit {
-        if let v = voiceSlider.superview, let _ = v.superview {
+        if let v = voiceSlider?.superview, let _ = v.superview {
             v.removeFromSuperview()
         }
     }
@@ -171,7 +177,7 @@ class BQPlayerCtrlView: UIView {
         volumeV.alpha = 0.0001
         for subV in volumeV.subviews {
             if NSStringFromClass(subV.classForCoder) == "MPVolumeSlider" {
-                voiceSlider = subV as! UISlider
+                voiceSlider = subV as? UISlider
                 break
             }
         }
@@ -180,7 +186,7 @@ class BQPlayerCtrlView: UIView {
 
     // MARK: - *** UI method
 
-    private func configUI() {
+    func configUI() {
         configTopView()
         configBottomView()
         addSubview(tipV)
@@ -194,8 +200,8 @@ class BQPlayerCtrlView: UIView {
         topLab.textAlignment = .center
         topLab.textColor = .white
         topLab.font = .systemFont(ofSize: 15)
-        topLab.text = "测试标题"
         topLab.backgroundColor = UIColor(white: 0, alpha: 0.3)
+        topLab.isHidden = true
         addSubview(topLab)
     }
 
@@ -296,7 +302,7 @@ extension BQPlayerCtrlView {
                     tipV.config(.bright, maxV: 1.0)
                     _showValue = UIScreen.main.brightness
                 } else { // 音量
-                    _showValue = CGFloat(voiceSlider.value)
+                    _showValue = CGFloat(voiceSlider?.value ?? 0)
                     tipV.config(.voice, maxV: 1.0)
                 }
             } else {
@@ -324,7 +330,7 @@ extension BQPlayerCtrlView {
                     if isLeft { // 亮度
                         UIScreen.main.brightness = disValue
                     } else { // 音量
-                        voiceSlider.value = Float(disValue)
+                        voiceSlider?.value = Float(disValue)
                     }
                 }
 

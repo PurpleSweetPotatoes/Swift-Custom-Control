@@ -123,7 +123,7 @@ public final class BQTextView: UITextView {
 
     // MARK: - UI method
 
-    private func configUI() {
+    func configUI() {
         font = UIFont.systemFont(ofSize: 15)
         placeLab.font = font
         placeLab.sizeW = sizeW

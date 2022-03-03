@@ -152,6 +152,7 @@ class WebScriptObjc: NSObject, WKScriptMessageHandler {
 }
 
 extension WKWebView {
+    
     @discardableResult
     func load(_ urlStr: String) -> WKNavigation? {
         if urlStr.hasPrefix("http"), let url = URL(string: urlStr) {
@@ -164,15 +165,40 @@ extension WKWebView {
 
     /// 文本大小自适应
     func textAutoFit() {
-        let textJs = "var meta = document.createElement('meta'); meta.setAttribute('name', 'viewport'); meta.setAttribute('content', 'width=device-width'); document.getElementsByTagName('head')[0].appendChild(meta);"
+        let textJs = """
+        var meta = document.createElement('meta');
+        meta.setAttribute('name', 'viewport');
+        meta.setAttribute('content', 'width=device-width');
+        document.getElementsByTagName('head')[0].appendChild(meta);
+        """
         addJs(js: textJs, time: .atDocumentEnd)
     }
 
     /// 图片宽度自适应
     /// - Parameter space: 图片与父视图的左右间距
     func imgAutoFit(space: CGFloat = 10) {
-        let imgJs = String(format: "function imgAutoFit() { var imgs = document.getElementsByTagName('img'); for (var i = 0; i < imgs.length; ++i) { var img = imgs[i]; img.style.maxWidth = %f; } }", space)
+        let imgJs = String(format: """
+            function imgAutoFit() {
+                var imgs = document.getElementsByTagName('img');
+                for (var i = 0; i < imgs.length; ++i) {
+                    var img = imgs[i];
+                    img.style.maxWidth = %f;
+                }
+            }
+        """, space)
         addJs(js: imgJs, time: .atDocumentEnd)
+    }
+    
+    /// 配置cookies
+    /// - Parameter cookies: cookies字典
+    func configCookie(cookies: Dictionary<String, String>) {
+        var cookie = ""
+        for (v, k) in cookie.enumerated() {
+            cookie.append("document.cookie='\(k)=\(v)';")
+        }
+        if cookie.count > 0 {
+            addJs(js: cookie, time: .atDocumentStart)
+        }
     }
 
     /// 注入js代码

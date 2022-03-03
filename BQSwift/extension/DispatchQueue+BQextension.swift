@@ -14,7 +14,7 @@ typealias TaskBlock = (_ cancel: Bool) -> Void
 extension DispatchQueue {
     private static var _onceTracker = [String]()
 
-    public class func once(token: String, block: () -> Void) {
+    public static func once(token: String, block: () -> Void) {
         objc_sync_enter(self)
         if !_onceTracker.contains(token) {
             _onceTracker.append(token)
@@ -24,7 +24,7 @@ extension DispatchQueue {
     }
 
     @discardableResult
-    class func after(_ time: TimeInterval, task: @escaping () -> Void) -> TaskBlock? {
+    static func after(_ time: TimeInterval, task: @escaping () -> Void) -> TaskBlock? {
         func dispatch_later(block: @escaping () -> Void) {
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + time, execute: block)
         }
@@ -43,10 +43,11 @@ extension DispatchQueue {
                 closure(false)
             }
         }
+        
         return result
     }
 
-    class func cancel(task: TaskBlock?) {
+    static func cancel(task: TaskBlock?) {
         task?(true)
     }
 }

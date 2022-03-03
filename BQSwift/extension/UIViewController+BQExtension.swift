@@ -24,11 +24,16 @@ extension UIViewController {
         return tabBarController?.tabBar.sizeH ?? 0
     }
 
-    class func currentVc() -> UIViewController? {
+    static func currentVc() -> UIViewController? {
         var vc = UIApplication.shared.keyWindow?.rootViewController
         while let presentVc = vc?.presentedViewController {
             vc = presentVc
         }
         return vc
+    }
+    
+    static func xibVc(bundle: Bundle? = nil) -> Self {
+        let name = String(className())
+        return self.init(nibName: name, bundle: bundle)
     }
 }

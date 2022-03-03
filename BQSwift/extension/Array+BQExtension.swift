@@ -57,3 +57,10 @@ extension Array where Element == String {
         return "[\(arr.joined(separator: ","))]"
     }
 }
+
+
+extension Collection {
+    subscript(safe index: Index) -> Element? {
+        return indices.contains(index) ? self[index] : nil
+    }
+}

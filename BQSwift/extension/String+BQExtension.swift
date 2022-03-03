@@ -9,12 +9,12 @@
 
 import Foundation
 
-infix operator =~: Regular
-precedencegroup Regular {
-    associativity: left
-    higherThan: AdditionPrecedence
-    lowerThan: MultiplicationPrecedence
-}
+//infix operator =~: Regular
+//precedencegroup Regular {
+//    associativity: left
+//    higherThan: AdditionPrecedence
+//    lowerThan: MultiplicationPrecedence
+//}
 
 private var Regular_Phone = "^(13|14|15|17|18)\\d{9}$"
 private var Regular_Email = "^([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})$"
@@ -31,19 +31,19 @@ public extension String {
     }
 
     func isEmail() -> Bool {
-        return self =~ Regular_Email
+        return self.reMatch(Regular_Email)
     }
 
     func isCard() -> Bool {
-        return self =~ Regular_CardId
+        return self.reMatch(Regular_CardId)
     }
 
     func isIPAddress() -> Bool {
-        return self =~ Regular_IPAdrress
+        return self.reMatch(Regular_IPAdrress)
     }
 
     func hasChinese() -> Bool {
-        return self =~ Regular_hasChinese
+        return self.reMatch(Regular_hasChinese)
     }
 
     /// 密码判断不包含空格和汉字
@@ -55,10 +55,20 @@ public extension String {
     }
 
     // 正则表达判断,lhs:字符串,rhs:正则式
-    internal static func =~ (lhs: String, rhs: String) -> Bool {
+//    internal static func =~ (lhs: String, rhs: String) -> Bool {
+//        do {
+//            let regex = try NSRegularExpression(pattern: rhs, options: .caseInsensitive)
+//            let matches = regex.matches(in: lhs, options: [], range: NSMakeRange(0, lhs.count))
+//            return matches.count > 0
+//        } catch {
+//            return false
+//        }
+//    }
+    
+    func reMatch(_ re: String) -> Bool {
         do {
-            let regex = try NSRegularExpression(pattern: rhs, options: .caseInsensitive)
-            let matches = regex.matches(in: lhs, options: [], range: NSMakeRange(0, lhs.count))
+            let regex = try NSRegularExpression(pattern: re, options: .caseInsensitive)
+            let matches = regex.matches(in: self, options: [], range: NSMakeRange(0, self.count))
             return matches.count > 0
         } catch {
             return false
@@ -86,12 +96,8 @@ public extension String {
     }
 
     func urlEncode() -> String? {
-        if hasChinese() {
-            var set = CharacterSet.urlQueryAllowed
-            set.insert(charactersIn: "#")
-            return addingPercentEncoding(withAllowedCharacters: set)
-        }
-        return self
+        let set = CharacterSet(charactersIn: "\"<>@[\\]^`{|}").inverted
+        return addingPercentEncoding(withAllowedCharacters: set)
     }
 
     func htmlAttributeStr(fontName: String = "Heiti SC", fontSize: Int = 14, colorHex: String = "000000") -> NSAttributedString? {
@@ -103,6 +109,26 @@ public extension String {
         } catch {
             return nil
         }
+    }
+    
+    var hexData: Data {
+        
+        var data = Data(capacity: self.count / 2)
+        
+        let regex = try! NSRegularExpression(pattern: "[0-9a-f]{1,2}", options: .caseInsensitive)
+        regex.enumerateMatches(in: self, range: NSMakeRange(0, utf16.count)) { match, flags, stop in
+            let byteString = (self as NSString).substring(with: match!.range)
+            var num = UInt8(byteString, radix: 16)!
+            data.append(&num, count: 1)
+        }
+
+//        guard data.count > 0 else { return nil }
+
+        return data
+    }
+    
+    static var documentPath : String {
+        return "\(NSHomeDirectory())/Documents"
     }
 
     /// 将中文字符串转换为拼音
@@ -157,10 +183,6 @@ public extension String {
             replaceSubrange(rangeIndex ... rangeIndex, with: String(newValue))
         }
     }
-}
-
-public func NSDocumentPath() -> String {
-    return "\(NSHomeDirectory())/Documents"
 }
 
 extension Character {

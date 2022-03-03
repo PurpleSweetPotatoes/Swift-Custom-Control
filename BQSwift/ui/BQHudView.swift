@@ -16,7 +16,7 @@ class BQHudView: UIView {
     private var infoFont = UIFont.systemFont(ofSize: 14)
 
     @discardableResult
-    public class func show(supView: UIView, animation _: Bool? = true, title: String? = nil) -> BQHudView {
+    public static func show(supView: UIView, animation _: Bool? = true, title: String? = nil) -> BQHudView {
         if let hudView = self.hudView(supView: supView) {
             hudView.removeFromSuperview()
         }
@@ -29,13 +29,13 @@ class BQHudView: UIView {
         return hudView
     }
 
-    public class func hide(supView: UIView, animation: Bool? = true) {
+    public static func hide(supView: UIView, animation: Bool? = true) {
         if let hudView = self.hudView(supView: supView) {
             hudView.hide(animation: animation)
         }
     }
 
-    public class func hudView(supView: UIView) -> BQHudView? {
+    public static func hudView(supView: UIView) -> BQHudView? {
         for view in supView.subviews.reversed() {
             if view is BQHudView {
                 return view as? BQHudView
@@ -45,7 +45,7 @@ class BQHudView: UIView {
         return nil
     }
 
-    public class func show(_ info: String, title: String? = nil) {
+    public static func show(_ info: String, title: String? = nil) {
         if info.count == 0 { return }
 
         let msgView = BQHudView(frame: UIScreen.main.bounds, info: info, title: title)
@@ -161,6 +161,6 @@ class BQHudView: UIView {
             sizeH = contentLab.sizeH + 40
             contentLab.center = CGPoint(x: sizeW * 0.5, y: 20 + contentLab.sizeH * 0.5)
         }
-        setCorner(readius: 8)
+        corner(8)
     }
 }

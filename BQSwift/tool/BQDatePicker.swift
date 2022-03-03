@@ -17,24 +17,21 @@ struct DatePickerOptions: OptionSet {
     public func convenToArr() -> [DatePickerOptions] {
         let arr: [DatePickerOptions] = [.year, .month, .day, .hour, .min, .second]
         var outArr = [DatePickerOptions]()
-        for type in arr {
-            if contains(type) {
-                outArr.append(type)
-            }
+        for type in arr where contains(type) {
+            outArr.append(type)
         }
+        
         return outArr
     }
 
     // MARK: Internal
-
-    static let year = DatePickerOptions(rawValue: 1 << 1)
-    static let month = DatePickerOptions(rawValue: 1 << 2)
-    static let day = DatePickerOptions(rawValue: 1 << 3)
-    static let hour = DatePickerOptions(rawValue: 1 << 4)
-    static let min = DatePickerOptions(rawValue: 1 << 5)
-    static let second = DatePickerOptions(rawValue: 1 << 6)
-
     let rawValue: UInt
+    static let year   = DatePickerOptions(rawValue: 1 << 1)
+    static let month  = DatePickerOptions(rawValue: 1 << 2)
+    static let day    = DatePickerOptions(rawValue: 1 << 3)
+    static let hour   = DatePickerOptions(rawValue: 1 << 4)
+    static let min    = DatePickerOptions(rawValue: 1 << 5)
+    static let second = DatePickerOptions(rawValue: 1 << 6)
 }
 
 // MARK: - BQDatePickerDelegate
@@ -129,15 +126,12 @@ class BQDatePicker: UIView {
         dateModel = date.components()
         startYear = dateModel.year! - 30
         pickView.reloadAllComponents()
-
+        
         if pickView.showsSelectionIndicator {
-            for subV in pickView.subviews {
-                if subV.frame.height <= 1 {
-                    subV.isHidden = false
-                    subV.backgroundColor = .gray
-                }
+            for subV in pickView.subviews where subV.frame.height <= 1 {
+                subV.isHidden = false
+                subV.backgroundColor = .gray
             }
-            pickView.showsSelectionIndicator = false
         }
 
         showCurrentTime()
@@ -208,7 +202,7 @@ class BQDatePicker: UIView {
 
     // MARK: - *** UI method
 
-    private func configUI() {
+    func configUI() {
         // 背景色
         bgView = UIView(frame: bounds)
         bgView.alpha = 0

@@ -48,7 +48,7 @@ extension UIViewController {
         static var navBack: Void?
     }
 
-    open var navGestureBack: Bool {
+    var navGestureBack: Bool {
         get {
             if let back = objc_getAssociatedObject(self, &AssociatedKeys.navBack) as? Bool {
                 return back

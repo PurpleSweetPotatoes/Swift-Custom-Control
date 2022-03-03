@@ -154,7 +154,7 @@ class BQPlayerSliderView: UIView {
 
     // MARK: - *** UI method
 
-    private func configUI() {
+    func configUI() {
         bgLayer.backgroundColor = UIColor(white: 1, alpha: 0.3).cgColor
         bufferLayer.backgroundColor = UIColor(white: 1, alpha: 0.5).cgColor
         sliderLayer.backgroundColor = UIColor.white.cgColor
@@ -168,7 +168,7 @@ class BQPlayerSliderView: UIView {
         layer.addSublayer(sliderLayer)
 
         thumbV.frame = CGRect(x: 0, y: 0, width: 12, height: 12)
-        thumbV.setCorner(readius: thumbV.size.width * 0.5)
+        thumbV.corner(thumbV.size.width * 0.5)
         thumbV.backgroundColor = .cyan
         addSubview(thumbV)
     }

@@ -19,7 +19,7 @@ enum ArrowDirection {
 }
 
 extension UIImage {
-    class func orginImg(name: String) -> UIImage? {
+    static func orginImg(name: String) -> UIImage? {
         return UIImage(named: name)?.withRenderingMode(.alwaysOriginal)
     }
 
@@ -207,7 +207,7 @@ extension UIImage {
 
     // MARK: - 二维码
 
-    class func qrcode(content: String, size: CGFloat? = nil) -> UIImage? {
+    static func qrcode(content: String, size: CGFloat? = nil) -> UIImage? {
         guard let ciImg = createCIImage(content) else {
             return nil
         }
@@ -241,7 +241,7 @@ extension UIImage {
     ///   - color: 颜色
     ///   - lineWidth: 线宽
     ///   - direction: 方向
-    class func arrowImg(size: CGSize, color: UIColor, lineWidth: CGFloat, direction: ArrowDirection) -> UIImage {
+    static func arrowImg(size: CGSize, color: UIColor, lineWidth: CGFloat, direction: ArrowDirection) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(size, false, UIScreen.main.scale)
         let context = UIGraphicsGetCurrentContext()
 
@@ -287,7 +287,7 @@ extension UIImage {
 
     // MARK: - 私有
 
-    private class func createCIImage(_ content: String) -> CIImage? {
+    private static func createCIImage(_ content: String) -> CIImage? {
         let filder = CIFilter(name: "CIQRCodeGenerator")
         filder?.setDefaults()
         let data = content.data(using: .utf8)

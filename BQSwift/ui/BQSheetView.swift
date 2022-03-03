@@ -33,7 +33,7 @@ class BQSheetView: UIView, UICollectionViewDataSource, UICollectionViewDelegate 
     ///   - tableDatas: 数据信息
     ///   - title: 标题
     ///   - handle: 回调
-    class func showSheetView(tableDatas: [String], title: String? = nil, handle: @escaping (Int) -> Void) {
+    static func showSheetView(tableDatas: [String], title: String? = nil, handle: @escaping (Int) -> Void) {
         let sheetView = BQSheetView(tableDatas: tableDatas, title: title)
         sheetView.callBlock = handle
         UIApplication.shared.keyWindow?.addSubview(sheetView)
@@ -46,7 +46,7 @@ class BQSheetView: UIView, UICollectionViewDataSource, UICollectionViewDelegate 
     ///   - shareDatas: ["image":"图片名"]
     ///   - title: 抬头名称
     ///   - handle: 回调方法
-    class func showShareView(shareDatas: [[String: String]], title: String, handle: @escaping (Int) -> Void) {
+    static func showShareView(shareDatas: [[String: String]], title: String, handle: @escaping (Int) -> Void) {
         let sheetView = BQSheetView(shareDatas: shareDatas, title: title)
         sheetView.callBlock = handle
         UIApplication.shared.keyWindow?.addSubview(sheetView)

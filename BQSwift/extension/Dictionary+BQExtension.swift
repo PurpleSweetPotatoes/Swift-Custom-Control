@@ -29,7 +29,6 @@ extension Dictionary where Key == String {
                     }
                 }
             }
-
             if boundary { outStr.append("]") }
         }
         return outStr

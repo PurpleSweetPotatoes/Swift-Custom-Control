@@ -10,7 +10,7 @@
 import UIKit
 
 public extension UIAlertController {
-    class func showAlert(content: String, title: String? = nil, handle: (() -> Void)? = nil) {
+    static func showAlert(content: String, title: String? = nil, handle: (() -> Void)? = nil) {
         showAlert(content: content, title: title, btnTitleArr: ["确定"]) { _ in
             if let block = handle {
                 block()
@@ -18,7 +18,7 @@ public extension UIAlertController {
         }
     }
 
-    class func showAlert(content: String, title: String? = nil, btnTitleArr: [String], handle: @escaping ((_ index: Int) -> Void)) {
+    static func showAlert(content: String, title: String? = nil, btnTitleArr: [String], handle: @escaping ((_ index: Int) -> Void)) {
         let alertVc = UIAlertController(title: title, message: content, preferredStyle: .alert)
         for (index, title) in btnTitleArr.enumerated() {
             let action = UIAlertAction(title: title, style: .default, handler: { _ in

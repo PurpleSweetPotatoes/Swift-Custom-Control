@@ -34,8 +34,23 @@ public extension NSObject {
         else {
             return false
         }
-
-        method_exchangeImplementations(before, after)
+        
+        if (class_addMethod(self, targetSel, method_getImplementation(after), method_getTypeEncoding(after))) {
+            class_replaceMethod(self, newSel, method_getImplementation(before), method_getTypeEncoding(before))
+        } else {
+            method_exchangeImplementations(before, after)
+        }
         return true
+    }
+    
+    static func className(hasSpace: Bool = false) -> String {
+        let name = NSStringFromClass(self)
+        if hasSpace {
+            return name
+        }
+        if let last = name.split(separator: ".").last {
+            return String(last)
+        }
+        return ""
     }
 }

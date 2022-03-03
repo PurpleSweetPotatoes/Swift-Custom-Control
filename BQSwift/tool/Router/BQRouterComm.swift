@@ -27,15 +27,15 @@ class BQRouterComm {
 
     // MARK: - --- public Method
 
-    public class func addRouterComm(names: Notification.Name..., target: BQRouterCommProtocol) {
+    public static func addRouterComm(names: Notification.Name..., target: BQRouterCommProtocol) {
         share.addComm(names: names, target: target)
     }
 
-    public class func postRouterComm(name: Notification.Name, params: Any? = nil) {
+    public static func postRouterComm(name: Notification.Name, params: Any? = nil) {
         share.postComm(name: name, params: params)
     }
 
-    public class func romveRouterComm(target: BQRouterCommProtocol) {
+    public static func romveRouterComm(target: BQRouterCommProtocol) {
         share.removeComm(target: target)
     }
 

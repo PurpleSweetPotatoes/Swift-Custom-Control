@@ -27,7 +27,7 @@ class BQShowImgsView: UIView, UIScrollViewDelegate {
 
     // MARK: - ***** initialize Method *****
 
-    class func show(imgs: [UIImageView], current: Int = 0, deleteHandle: (([Int]) -> Void)?) {
+    static func show(imgs: [UIImageView], current: Int = 0, deleteHandle: (([Int]) -> Void)?) {
         let view = BQShowImgsView(frame: UIScreen.main.bounds)
         view.currentIndex = current
         view.imgArr.append(contentsOf: imgs)

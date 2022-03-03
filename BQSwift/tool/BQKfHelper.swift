@@ -13,7 +13,7 @@ import UIKit
     import Kingfisher
 
     extension UIImageView {
-        func kfImage(_ url: String, holderImg: UIImage? = nil, needProgress: Bool = false, completeHandler: ((Result<UIImage, BQError>) -> Void)? = nil) {
+        func kfImage(_ url: String, holderImg: UIImage? = nil, headInfo: [String:String]? = nil, needProgress: Bool = false, completeHandler: ((Result<UIImage, BQError>) -> Void)? = nil) {
             let proVTag = 10843
             if needProgress {
                 if let v = viewWithTag(proVTag) as? BQProgressView {
@@ -26,7 +26,17 @@ import UIKit
                 }
             }
 
-            kf.setImage(with: URL(string: url), placeholder: holderImg) { [weak self] recSize, totalSize in
+            let modifier = AnyModifier { request in
+                var r = request
+                if let head = headInfo {
+                    head.forEach { (key: String, value: String) in
+                        r.setValue(value, forHTTPHeaderField: key)
+                    }
+                }
+                return r
+            }
+            
+            kf.setImage(with: URL(string: url), placeholder: holderImg, options: [.requestModifier(modifier)]) { [weak self] recSize, totalSize in
                 if let v = self?.viewWithTag(proVTag) as? BQProgressView {
                     BQLogger.log("进度更新\(needProgress): 接收\(recSize) 大小\(totalSize)")
                     v.setProgressNum(recive: Int(recSize), total: Int(totalSize))
@@ -46,8 +56,17 @@ import UIKit
             }
         }
 
-        static func prefetchLoadImgUrl(urls: [URL]) {
-            let preFetcher = ImagePrefetcher(urls: urls)
+        static func prefetchLoadImgUrl(urls: [URL], headInfo: [String:String]? = nil) {
+            let modifier = AnyModifier { request in
+                var r = request
+                if let head = headInfo {
+                    head.forEach { (key: String, value: String) in
+                        r.setValue(value, forHTTPHeaderField: key)
+                    }
+                }
+                return r
+            }
+            let preFetcher = ImagePrefetcher(urls: urls, options: [.requestModifier(modifier)])
             preFetcher.start()
         }
 
@@ -65,7 +84,7 @@ import UIKit
                 case let .success(re):
                     handle(re.toDiskSize())
                 case .failure:
-                    handle(nil)
+                    handle("")
                 }
             }
         }

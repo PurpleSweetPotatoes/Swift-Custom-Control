@@ -16,12 +16,12 @@ let keyBoardManager = BQKeyBoardManager()
 class BQKeyBoardManager: NSObject {
     // MARK: Public
 
-    public class func start(reView: UIView) {
+    public static func start(reView: UIView) {
         keyBoardManager.managerV = reView
         keyBoardManager.addNotification()
     }
 
-    public class func close() {
+    public static func close() {
         keyBoardManager.managerV = nil
         keyBoardManager.removeNotification()
     }
@@ -166,7 +166,7 @@ class BQkeyBoardToolBar: UIView {
 
     // MARK: Private
 
-    private func configUI() {
+    func configUI() {
         backgroundColor = .groupTableViewBackground
 
         let preBtn = UIButton(type: .custom)
@@ -191,7 +191,7 @@ class BQkeyBoardToolBar: UIView {
         dissBtn.frame = CGRect(x: sizeW - 60, y: 0, width: sizeH, height: sizeH)
         dissBtn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
         dissBtn.setTitle("完成", for: .normal)
-        dissBtn.setTitleColor(UIColor("0099ff"), for: .normal)
+        dissBtn.setTitleColor(UIColor.mainColor, for: .normal)
         addSubview(dissBtn)
         self.dissBtn = dissBtn
     }

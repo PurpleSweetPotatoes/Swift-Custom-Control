@@ -85,7 +85,7 @@ extension UIImageView {
         image = animatedImg
     }
 
-    class func frameDuration(index: Int, source: CGImageSource) -> Double {
+    static func frameDuration(index: Int, source: CGImageSource) -> Double {
         var frameDuration: Double = 0.1
         let frameProperties = CGImageSourceCopyPropertiesAtIndex(source, index, nil)! as! [String: AnyObject]
         let gifProperties = frameProperties[kCGImagePropertyGIFDictionary as String] as! [String: AnyObject]
@@ -120,7 +120,7 @@ class BQShowImageView: UIView {
         }
     }
 
-    class func show(img: UIImage, origiFrame: CGRect) {
+    static func show(img: UIImage, origiFrame: CGRect) {
         let showView = BQShowImageView(frame: UIScreen.main.bounds)
         showView.initUI()
         showView.imageView.image = img

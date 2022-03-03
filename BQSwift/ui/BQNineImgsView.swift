@@ -93,7 +93,7 @@ class BQNineImgsView: UIView {
 
     // MARK: - UI method
 
-    private func configUI() {
+    func configUI() {
         for tag in 0 ..< 9 {
             let imgV = UIImageView()
             let tap = UITapGestureRecognizer(target: self, action: #selector(imgVTapAction(tap:)))

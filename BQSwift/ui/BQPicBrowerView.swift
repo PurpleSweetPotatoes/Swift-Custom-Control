@@ -37,7 +37,9 @@ class BQPicBrowerView: UIView {
     // MARK: - *** Public method
 
     public func scorllerTo(_ index: Int) {
-        collectionView.scrollToItem(at: IndexPath(item: index, section: 0), at: .centeredHorizontally, animated: false)
+        if index < imgCount {        
+            collectionView.scrollToItem(at: IndexPath(item: index, section: 0), at: .centeredHorizontally, animated: false)
+        }
     }
 
     public func reloadData() {
@@ -67,7 +69,7 @@ class BQPicBrowerView: UIView {
 
     // MARK: - *** UI method
 
-    private func configUI() {
+    func configUI() {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.itemSize = bounds.size

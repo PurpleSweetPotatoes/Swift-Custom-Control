@@ -10,6 +10,7 @@
 import UIKit
 
 extension UIColor {
+    
     public convenience init(_ hexString: String) {
         let colorStr = hexString.replacingOccurrences(of: "", with: "#")
         let scan = Scanner(string: colorStr)
@@ -35,13 +36,21 @@ extension UIColor {
         self.init(red: r, green: g, blue: b, alpha: a)
     }
 
-    class var randomColor: UIColor {
+    static var randomColor: UIColor {
         let red = CGFloat(arc4random() % 256) / 255.0
         let green = CGFloat(arc4random() % 256) / 255.0
         let blue = CGFloat(arc4random() % 256) / 255.0
         return UIColor(r: red, g: green, b: blue)
     }
 
+    static var bgColor: UIColor {
+        return UIColor(white: 0, alpha: 0.6)
+    }
+    
+    static var mainColor: UIColor {
+        return UIColor(0x0099ff)
+    }
+    
     var rgbRed: CGFloat { return rgbaArray()[0] }
 
     var rgbGreen: CGFloat { return rgbaArray()[1] }

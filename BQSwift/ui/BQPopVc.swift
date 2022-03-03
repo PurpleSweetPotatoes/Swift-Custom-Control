@@ -9,11 +9,11 @@
 
 import UIKit
 
-open class BQPopVc: UIViewController {
+class BQPopVc: UIViewController {
     // MARK: - var
 
-    open var showTime: TimeInterval = 0.25
-    open var hideTime: TimeInterval = 0.25
+    var showTime: TimeInterval = 0.25
+    var hideTime: TimeInterval = 0.25
     public var showBgView: Bool = true {
         didSet {
             backView.isHidden = !showBgView
@@ -24,7 +24,7 @@ open class BQPopVc: UIViewController {
 
     // MARK: - create
 
-    open class func showView(presentVc: UIViewController) {
+    static func showView(presentVc: UIViewController) {
         let popVc = self.init()
         presentVc.present(popVc, animated: false) {
             popVc.show()
@@ -51,19 +51,19 @@ open class BQPopVc: UIViewController {
 
     // MARK: - public method
 
-    open func showView(presentVc: UIViewController) {
+    func showView(presentVc: UIViewController) {
         presentVc.present(self, animated: false) {
             self.show()
         }
     }
 
-    open func didDisMiss() {
+    func didDisMiss() {
         print("完成移除")
     }
 
-    open func animationShow() {}
+    func animationShow() {}
 
-    open func animationHide() {}
+    func animationHide() {}
 
     // MARK: - private method
 
@@ -102,7 +102,7 @@ open class BQPopVc: UIViewController {
 
     // MARK: - UI method
 
-    private func configUI() {
+    func configUI() {
         backView.backgroundColor = UIColor.black.withAlphaComponent(0.25)
         view.addSubview(backView)
 

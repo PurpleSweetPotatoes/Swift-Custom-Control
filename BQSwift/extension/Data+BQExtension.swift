@@ -52,6 +52,10 @@ extension Data {
         }
         return nil
     }
+    
+    var hexStr: String {
+        return self.map { String(format: "%02x", $0) }.joined()
+    }
 
     // MARK: - ***** private Method *****
 

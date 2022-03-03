@@ -51,7 +51,7 @@ extension UIButton {
         isUserInteractionEnabled = false
     }
 
-    public class func startIntervalAction(interval: TimeInterval) {
+    public static func startIntervalAction(interval: TimeInterval) {
         _interval = interval
         DispatchQueue.once(token: #function) {
             exchangeMethod(targetSel: #selector(sendAction), newSel: #selector(re_sendAction))
@@ -88,12 +88,12 @@ extension UIButton {
 
     // MARK: - ***** Override func *****
 
-    override open func removeFromSuperview() {
+    open override func removeFromSuperview() {
         super.removeFromSuperview()
         timer?.cancel()
     }
 
-    override open func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+    open override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         if hitEdge == UIEdgeInsets.zero || !isEnabled || isHidden {
             return super.point(inside: point, with: event)
         }

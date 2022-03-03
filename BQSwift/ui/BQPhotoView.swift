@@ -23,7 +23,7 @@ class BQPhotoView: UIView {
     private var backView: UIView!
     fileprivate var origiFrame: CGRect!
 
-    class func show(imgView: UIImageView) {
+    static func show(imgView: UIImageView) {
         guard let image = imgView.image, let supView = imgView.superview else {
             return
         }
@@ -37,7 +37,7 @@ class BQPhotoView: UIView {
         showView.startAnimation()
     }
 
-    class func show(img: UIImage) {
+    static func show(img: UIImage) {
         let showView = BQPhotoView(frame: UIScreen.main.bounds)
         showView.imageView.image = img
         let imgSize = img.size

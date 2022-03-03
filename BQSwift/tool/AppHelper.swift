@@ -39,7 +39,7 @@ struct AppInfo {
             return UIApplication.shared.statusBarFrame.height
         }
     }
-    
+     
     static var bottomSaveHeight: CGFloat {
         get {
             return statusHeight > 20 ? 34 : 0

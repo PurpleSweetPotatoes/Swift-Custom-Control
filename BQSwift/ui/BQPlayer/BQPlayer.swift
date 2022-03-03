@@ -40,21 +40,14 @@ protocol BQPlayerDelegate: NSObjectProtocol {
 }
 
 class BQPlayer: AVPlayer {
+    
     public var bqStatus: BQPlayerStatus = .none {
         didSet {
-            var total: Double?
-            if let item = currentItem, item.duration.seconds.isNormal {
-                total = item.duration.seconds
-            }
-            delegate?.bqPlayerStatusChange(status: bqStatus, totalTime: total)
+            delegate?.bqPlayerStatusChange(status: bqStatus, totalTime: self.duration)
         }
     }
 
     public weak var delegate: BQPlayerDelegate?
-
-    private var kvoList = [NSKeyValueObservation?]()
-    private var timeKvo: Any?
-    private var playerStatusKvo: NSKeyValueObservation?
 
     /// 时间改变回调间隔 value/timescale = seconds，默认1s回调一次
     public var hookTime: CMTime = CMTime.zero {
@@ -66,14 +59,20 @@ class BQPlayer: AVPlayer {
         didSet {
             timeKvo = addPeriodicTimeObserver(forInterval: hookTime, queue: nil) { [weak self] time in
                 if let weakSelf = self {
-                    BQLogger.log("内部回调时间改变\(time.seconds)")
                     weakSelf.delegate?.bqPlayerTimeChange(time: time.seconds)
-                    if let item = weakSelf.currentItem, weakSelf.currentTime().seconds == item.duration.seconds {
-                        weakSelf.bqStatus = .stop
+                    if weakSelf.bqStatus == .stop && weakSelf.currentTime().seconds == weakSelf.duration {
+                        weakSelf.bqStatus = .puased
                     }
                 }
             }
         }
+    }
+    
+    private var kvoList = [NSKeyValueObservation?]()
+    private var timeKvo: Any?
+    private var playerStatusKvo: NSKeyValueObservation?
+    private var duration: Double {
+        return currentItem?.duration.seconds ?? 0
     }
 
     override func play() {
@@ -91,6 +90,7 @@ class BQPlayer: AVPlayer {
     }
     
     deinit {
+        BQLogger.log("视频层移除")
         cleanObserver()
         if let kv = timeKvo {
             removeTimeObserver(kv)
@@ -156,11 +156,7 @@ class BQPlayer: AVPlayer {
         if timeControlStatus == .playing {
             self.bqStatus = .playing
         } else if timeControlStatus == .paused {
-            if let item = currentItem, bqStatus != .stop, currentTime().seconds == item.duration.seconds {
-                self.bqStatus = .stop
-            } else {
-                self.bqStatus = .puased
-            }
+            self.bqStatus = currentTime().seconds == self.duration ? .stop : .puased
         } else {
             self.bqStatus = .wait
         }

@@ -72,7 +72,7 @@ import UIKit
       */
     enum BQAPI {
         /// 项目的域名,针对BQAPIItem使用
-        static let domain = "http://47.105.91.34/api/"
+        static let domain = "http://139.155.245.189/api/"
 //    static let domain = "http://192.168.31.174:8080/"
         // 超时时间
         static let timeOut: TimeInterval = 20

@@ -23,7 +23,7 @@ public extension UserDefaults {
     }
 
     /// 多值保存
-    class func setInfo(dic: [String: String]) {
+    static func setInfo(dic: [String: String]) {
         let user = UserDefaults.standard
         for k in dic.keys {
             user.setValue(dic[k], forKey: k)

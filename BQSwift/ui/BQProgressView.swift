@@ -62,7 +62,7 @@ class BQProgressView: UIView {
 
     // MARK: - *** UI method
 
-    private func configUI() {
+    func configUI() {
         if type == .circle {
             configCirLayer(bgLayer, storeColor: .lightGray)
             configCirLayer(colorLayer, storeColor: .white)

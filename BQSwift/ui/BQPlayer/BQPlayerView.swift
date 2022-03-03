@@ -40,13 +40,13 @@ class BQPlayerView: UIView {
     public weak var delegate: BQPlayerViewDelegate?
 
     // 播放器相关
-    private var player: BQPlayer!
+    private var player: BQPlayer = BQPlayer()
     private let playerLayer = AVPlayerLayer()
     public var ctrlView: BQPlayerCtrlView!
     private var activView: UIView!
 
     // 全屏
-    private var supV = UIView()
+    private weak var supV: UIView?
     private var originFrame = CGRect.zero
 
     // MARK: - *** Public method
@@ -56,7 +56,10 @@ class BQPlayerView: UIView {
         var canPlay = true
         if let dele = delegate {
             canPlay = dele.playBtnClick(self)
+        } else if status == .stop {
+            
         }
+        
         if canPlay {
             status = .playing
             player.play()
@@ -80,42 +83,46 @@ class BQPlayerView: UIView {
     }
 
     public func setFull() {
-        isFull = true
-        let keyWindow = UIApplication.shared.keyWindow
-        originFrame = frame
-        supV = superview!
-        frame = supV.convert(frame, to: keyWindow)
-        keyWindow?.addSubview(self)
-        UIView.animate(withDuration: 0.25) { [weak self] in
-            if let weakSelf = self {
-                weakSelf.transform = CGAffineTransform(rotationAngle: CGFloat(Double.pi / 2))
-                weakSelf.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: UIScreen.main.bounds.size.height)
-                weakSelf.playerLayer.frame = weakSelf.bounds
-                weakSelf.activView.center = CGPoint(x: weakSelf.size.width * 0.5, y: weakSelf.size.height * 0.5)
-                weakSelf.ctrlView.frame = weakSelf.bounds
-                weakSelf.ctrlView.adjustSubView()
+        if let superV = superview {
+            isFull = true
+            let keyWindow = UIApplication.shared.keyWindow
+            originFrame = frame
+            supV = superV
+            frame = superV.convert(frame, to: keyWindow)
+            keyWindow?.addSubview(self)
+            UIView.animate(withDuration: 0.25) { [weak self] in
+                if let weakSelf = self {
+                    weakSelf.transform = CGAffineTransform(rotationAngle: CGFloat(Double.pi / 2))
+                    weakSelf.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: UIScreen.main.bounds.size.height)
+                    weakSelf.playerLayer.frame = weakSelf.bounds
+                    weakSelf.activView.center = CGPoint(x: weakSelf.size.width * 0.5, y: weakSelf.size.height * 0.5)
+                    weakSelf.ctrlView.frame = weakSelf.bounds
+                    weakSelf.ctrlView.adjustSubView()
+                }
             }
-        }
-        if let dele = delegate {
-            dele.playFullStatusChange(self)
+            if let dele = delegate {
+                dele.playFullStatusChange(self)
+            }
         }
     }
 
     public func backFull() {
-        isFull = false
-        supV.addSubview(self)
-        UIView.animate(withDuration: 0.25) { [weak self] in
-            if let weakSelf = self {
-                weakSelf.transform = CGAffineTransform.identity
-                weakSelf.frame = weakSelf.originFrame
-                weakSelf.playerLayer.frame = weakSelf.bounds
-                weakSelf.ctrlView.frame = weakSelf.bounds
-                weakSelf.ctrlView.adjustSubView()
-                weakSelf.activView.center = CGPoint(x: weakSelf.size.width * 0.5, y: weakSelf.size.height * 0.5)
+        if let superV = supV {
+            isFull = false
+            superV.addSubview(self)
+            UIView.animate(withDuration: 0.25) { [weak self] in
+                if let weakSelf = self {
+                    weakSelf.transform = CGAffineTransform.identity
+                    weakSelf.frame = weakSelf.originFrame
+                    weakSelf.playerLayer.frame = weakSelf.bounds
+                    weakSelf.ctrlView.frame = weakSelf.bounds
+                    weakSelf.ctrlView.adjustSubView()
+                    weakSelf.activView.center = CGPoint(x: weakSelf.size.width * 0.5, y: weakSelf.size.height * 0.5)
+                }
             }
-        }
-        if let dele = delegate {
-            dele.playFullStatusChange(self)
+            if let dele = delegate {
+                dele.playFullStatusChange(self)
+            }
         }
     }
 
@@ -129,10 +136,18 @@ class BQPlayerView: UIView {
         }
 
         if let src = src {
-            player = BQPlayer(url: src)
-            player.delegate = self
-            playerLayer.player = player
+            let item = AVPlayerItem(url: src)
+            resetPlayeItem(item: item)
         }
+    }
+    
+    public func resetPlayeItem(item: AVPlayerItem?) {
+        if isFull {
+            backFull()
+        }
+        
+        player.replaceCurrentItem(with: item)
+        ctrlView.resetStatus()
     }
 
     // MARK: - *** Life cycle
@@ -145,10 +160,17 @@ class BQPlayerView: UIView {
         self.init(frame: frame)
         resetUrl(url: url)
     }
+    
+    public convenience init(frame: CGRect, item: AVPlayerItem?) {
+        self.init(frame: frame)
+        resetPlayeItem(item: item)
+    }
 
     override public init(frame: CGRect) {
         super.init(frame: frame)
         playerLayer.frame = bounds
+        player.delegate = self
+        playerLayer.player = player
         configUI()
     }
 
@@ -167,7 +189,7 @@ class BQPlayerView: UIView {
 
     // MARK: - *** UI method
 
-    private func configUI() {
+    func configUI() {
         backgroundColor = .black
         layer.addSublayer(playerLayer)
 
@@ -178,7 +200,7 @@ class BQPlayerView: UIView {
 
         activView = UIView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
         activView.backgroundColor = UIColor(white: 0, alpha: 0.3)
-        activView.setCorner(readius: 6)
+        activView.corner(6)
         let activ = UIActivityIndicatorView(style: .white)
         activ.frame = activView.bounds
         activ.startAnimating()
@@ -195,7 +217,6 @@ extension BQPlayerView: BQPlayerDelegate {
         let curTime = Int(time)
         ctrlView.sliderV.setCurrentValue(curTime)
         ctrlView.setCurrentTime(curTime)
-
         if let dele = delegate {
             dele.playTimeChange(self)
         }

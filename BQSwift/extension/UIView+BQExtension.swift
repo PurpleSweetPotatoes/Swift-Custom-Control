@@ -14,55 +14,130 @@ extension UIView {
         get { return frame.origin }
         set { frame.origin = newValue }
     }
-
+    
+    @discardableResult
+    func origin(_ origin: CGPoint) -> Self {
+        self.origin = origin
+        return self
+    }
+    
+    
     var top: CGFloat {
         get { return frame.origin.y }
         set { frame.origin = CGPoint(x: frame.origin.x, y: newValue) }
     }
-
+    
+    @discardableResult
+    func top(_ top: CGFloat) -> Self {
+        self.top = top
+        return self
+    }
+    
     var left: CGFloat {
         get { return frame.origin.x }
         set { frame.origin = CGPoint(x: newValue, y: frame.origin.y) }
+    }
+    
+    @discardableResult
+    func left(_ left: CGFloat) -> Self {
+        self.left = left
+        return self
     }
 
     var bottom: CGFloat {
         get { return frame.origin.y + frame.height }
         set { top = newValue - frame.height }
     }
+    
+    @discardableResult
+    func bottom(_ bottom: CGFloat) -> Self {
+        self.bottom = bottom
+        return self
+    }
 
     var right: CGFloat {
         get { return frame.origin.x + frame.width }
         set { left = newValue - frame.width }
+    }
+    
+    @discardableResult
+    func right(_ right: CGFloat) -> Self {
+        self.right = right
+        return self
     }
 
     var size: CGSize {
         get { return bounds.size }
         set { bounds.size = newValue }
     }
+    
+    @discardableResult
+    func size(_ size: CGSize) -> Self {
+        self.size = size
+        return self
+    }
 
     var sizeW: CGFloat {
         get { return frame.width }
         set { frame.size = CGSize(width: newValue, height: frame.height) }
+    }
+    
+    @discardableResult
+    func sizeW(_ sizeW: CGFloat) -> Self {
+        self.sizeW = sizeW
+        return self
     }
 
     var sizeH: CGFloat {
         get { return frame.height }
         set { frame.size = CGSize(width: frame.width, height: newValue) }
     }
-
-    func toRound() {
-        setCorner(readius: frame.height * 0.5)
+    
+    @discardableResult
+    func sizeH(_ sizeH: CGFloat) -> Self {
+        self.sizeH = sizeH
+        return self
+    }
+    
+    func cneter(_ point: CGPoint) -> Self {
+        center = point
+        return self
     }
 
-    func setCorner(readius: CGFloat) {
+    @discardableResult
+    func toRound() -> Self {
+        return corner(frame.height * 0.5)
+    }
+
+    @discardableResult
+    func corner(_ readius: CGFloat) -> Self {
         layer.allowsEdgeAntialiasing = true
         layer.cornerRadius = readius
         clipsToBounds = true
+        return self
     }
 
-    func setBordColor(color: UIColor, width: CGFloat = 1.0) {
+    @discardableResult
+    func backgroundColor(_ color: UIColor) -> Self {
+        backgroundColor = color
+        return self
+    }
+
+    @discardableResult
+    func setBordColor(color: UIColor, width: CGFloat = 1.0) -> Self{
         layer.borderColor = color.cgColor
         layer.borderWidth = width
+        return self
+    }
+    
+    static func xibView(name: String? = nil) -> Self? {
+        var clsName = ""
+        if let cn = name {
+            clsName = cn
+        } else {
+            clsName = className()
+        }
+        return Bundle.main.loadNibNamed(clsName, owner: nil, options: nil)?.last as? Self
     }
 
     func snapshoot() -> UIImage? {
@@ -76,11 +151,13 @@ extension UIView {
         return nil
     }
 
-    func addTapGes(action: @escaping (_ view: UIView) -> Void) {
+    @discardableResult
+    func addTapGes(action: @escaping (_ view: UIView) -> Void) -> Self {
         let gesture = UITapGestureRecognizer(target: self, action: #selector(tapGestureAction))
         isUserInteractionEnabled = true
         self.action = action
         addGestureRecognizer(gesture)
+        return self
     }
 
     // MARK: - ***** Private tapGesture *****
