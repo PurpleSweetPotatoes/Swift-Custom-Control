@@ -24,10 +24,10 @@ extension Data {
 
     // if want to use this method should open keychain sharing
     @discardableResult
-    public func saveKeychain(data: Data) -> Bool {
+    public func saveKeychain() -> Bool {
         var keychainQuery = type(of: self).getkeychain()
         SecItemDelete(keychainQuery as CFDictionary)
-        keychainQuery[kSecValueData as String] = data as AnyObject?
+        keychainQuery[kSecValueData as String] = self as AnyObject
         let statu = SecItemAdd(keychainQuery as CFDictionary, nil)
         return statu == noErr
     }
@@ -44,9 +44,10 @@ extension Data {
         keychainQuery[kSecReturnData as String] = kCFBooleanTrue as AnyObject
         keychainQuery[kSecMatchLimit as String] = kSecMatchLimitOne as AnyObject
         var result: AnyObject?
-        let statu = withUnsafeMutablePointer(to: &result) {
-            SecItemCopyMatching(keychainQuery as CFDictionary, UnsafeMutablePointer($0))
-        }
+        let statu = SecItemCopyMatching(keychainQuery as CFDictionary, &result)
+//        let statu = withUnsafeMutablePointer(to: &result) {
+//            SecItemCopyMatching(keychainQuery as CFDictionary, UnsafeMutablePointer($0))
+//        }
         if statu == noErr {
             return result as? Data
         }

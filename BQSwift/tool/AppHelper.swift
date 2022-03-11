@@ -10,6 +10,7 @@
 
 import UIKit
 
+
 struct AppInfo {
     static var name: String {
         get {

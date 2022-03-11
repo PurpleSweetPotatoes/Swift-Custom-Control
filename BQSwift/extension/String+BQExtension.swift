@@ -111,7 +111,7 @@ public extension String {
         }
     }
     
-    var hexData: Data {
+    var hexData: Data? {
         
         var data = Data(capacity: self.count / 2)
         
@@ -122,8 +122,8 @@ public extension String {
             data.append(&num, count: 1)
         }
 
-//        guard data.count > 0 else { return nil }
-
+        guard data.count > 0 else { return nil }
+        
         return data
     }
     
@@ -154,6 +154,10 @@ public extension String {
             }
         }
         return lowercased ? headPinyinStr.lowercased() : headPinyinStr
+    }
+    
+    func toDate(format: String = "yyyy/MM/dd") -> Date? {
+        return Date.load(self, format: format)
     }
 
     subscript(range: NSRange) -> String {

@@ -57,6 +57,7 @@ class BQDrawView: UIView {
         drawPath.removeAllPoints()
         drawLayer.path = drawPath.cgPath
         hasDraw = false
+        
     }
 
     // MARK: - *** Life cycle

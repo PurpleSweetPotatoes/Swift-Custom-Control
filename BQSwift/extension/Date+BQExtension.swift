@@ -18,17 +18,21 @@ extension Date {
     }
 
     /// 格式化日期
-    ///
     /// - Parameters:
     ///   - format: y、M、d、H、m、s
-    ///   - localId: 地域标示符
-    func timeStringFormat(format: String = "yyyy/MM/dd", localId: String = "zh_CN") -> String {
+    func toString(format: String = "yyyy/MM/dd HH:mm:ss", localId: String = "zh_CN") -> String {
         _dateFormatter.dateFormat = format
-        if _dateFormatter.locale.identifier != localId {
-            let local = Locale(identifier: localId)
-            _dateFormatter.locale = local
-        }
         return _dateFormatter.string(from: self)
+    }
+    
+    /// 加载Date
+    /// - Parameters:
+    ///   - timeStr: 时间字符串
+    ///   - format: 格式化方式
+    /// - Returns: Date?
+    static func load(_ timeStr: String, format: String = "yyyy/MM/dd") -> Date? {
+        _dateFormatter.dateFormat = format
+        return _dateFormatter.date(from: timeStr)
     }
 
     /// 时间组件

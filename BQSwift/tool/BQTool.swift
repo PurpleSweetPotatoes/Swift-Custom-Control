@@ -27,7 +27,7 @@ struct BQTool {
         guard let data = try? JSONSerialization.data(withJSONObject: obj, options: .prettyPrinted) else {
             return String(describing: obj)
         }
-
+        
         if let result = String(data: data, encoding: .utf8) {
             return result
         }
