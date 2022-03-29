@@ -47,14 +47,6 @@ public final class BQTextView: UITextView {
         }
     }
 
-    override public weak var delegate: UITextViewDelegate? {
-        didSet {
-            if !(delegate is BQTextView) {
-                fatalError("代理请设置textDelegate")
-            }
-        }
-    }
-
     // MARK: - creat
 
     override public func awakeFromNib() {

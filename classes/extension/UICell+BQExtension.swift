@@ -67,6 +67,24 @@ extension UITableViewCell {
     }
 }
 
+extension UITableViewHeaderFooterView {
+    /// 注册 headerFooterView
+    static func register(to tableV: UITableView, isNib: Bool = false) {
+        let identifier = className()
+        if isNib {
+            tableV.register(self, forHeaderFooterViewReuseIdentifier: identifier)
+        } else {
+            tableV.register(self, forHeaderFooterViewReuseIdentifier: identifier)
+        }
+    }
+
+    /// 加载 headerFooterView
+    static func load(from tableV: UITableView) -> Self {
+        return tableV.dequeueReusableHeaderFooterView(withIdentifier: className()) as! Self
+    }
+
+}
+
 extension UICollectionViewCell {
     static func register(to collectionV: UICollectionView, isNib: Bool = false) {
         let identifier = className()

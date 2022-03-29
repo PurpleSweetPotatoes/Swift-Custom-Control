@@ -44,7 +44,7 @@ struct BQTextRule {
 
 extension UITextField {
     @objc func tfValueDidChange() {
-        guard markedTextRange == nil, var content = text, let rule = self.rule else {
+        guard var content = text, let rule = self.rule else {
             return
         }
 
@@ -132,9 +132,9 @@ extension UITextField {
         set {
             
             if newValue == nil && rule != nil {
-                removeTarget(self, action: #selector(UITextField.tfValueDidChange), for: .editingChanged)
+                removeTarget(self, action: #selector(tfValueDidChange), for: .editingChanged)
             } else if rule == nil && newValue != nil {
-                addTarget(self, action: #selector(UITextField.tfValueDidChange), for: .editingChanged)
+                addTarget(self, action: #selector(tfValueDidChange), for: .editingChanged)
             }
             
             if let rule = newValue {
@@ -149,7 +149,7 @@ extension UITextField {
                 }
             }
 
-            objc_setAssociatedObject(self, &AssociatedKeys.ruleKey, rule, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject(self, &AssociatedKeys.ruleKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 
         }
     }

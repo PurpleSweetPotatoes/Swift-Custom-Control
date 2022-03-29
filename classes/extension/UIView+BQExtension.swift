@@ -153,7 +153,7 @@ extension UIView {
 
     @discardableResult
     func addTapGes(action: @escaping (_ view: UIView) -> Void) -> Self {
-        let gesture = UITapGestureRecognizer(target: self, action: #selector(tapGestureAction))
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(myTapGestureAction))
         isUserInteractionEnabled = true
         self.action = action
         addGestureRecognizer(gesture)
@@ -177,7 +177,7 @@ extension UIView {
         }
     }
 
-    @objc private func tapGestureAction(sender: UITapGestureRecognizer) {
+    @objc private func myTapGestureAction(sender: UITapGestureRecognizer) {
         guard let actionBlock = action else {
             return
         }

@@ -36,6 +36,10 @@ extension UITableView {
         estimatedRowHeight = 50
         dataSource = objc
         delegate = objc
+        
+        if #available(iOS 15.0, *) {
+            sectionHeaderTopPadding = 0
+        }
     }
 
     func setEmtpyViewDelegate(target: EmptyViewProtocol) {
@@ -48,17 +52,27 @@ extension UITableView {
     @objc func re_layoutSubviews() {
         re_layoutSubviews()
         if let delegate = emptyDelegate {
+            
+            let emptyViewTag = 10_231_343
+            
             if delegate.showEmptyView(tableView: self) {
                 let emptyView = delegate.configEmptyView(tableView: self)
-                let emptyViewTag = 10_231_343
-
-                if let v = viewWithTag(emptyViewTag), v != emptyView {
-                    v.removeFromSuperview()
+                
+                if let v = viewWithTag(emptyViewTag) {
+                    if emptyView == v {
+                        v.isHidden = false
+                    } else {
+                        v.removeFromSuperview()
+                    }
                 }
 
                 if emptyView.superview == nil {
                     emptyView.tag = emptyViewTag
                     addSubview(emptyView)
+                }
+            } else {
+                if let v = viewWithTag(emptyViewTag){
+                    v.isHidden = true
                 }
             }
         }

@@ -38,7 +38,7 @@ struct DatePickerOptions: OptionSet {
 
 protocol BQDatePickerDelegate: NSObjectProtocol {
     func datePickerCancel(_ picker: BQDatePicker)
-    func datePickerSelect(_ picker: BQDatePicker, model: DateComponents)
+    func datePickerSelect(_ picker: BQDatePicker, date: Date)
 }
 
 extension BQDatePickerDelegate {
@@ -155,7 +155,6 @@ class BQDatePicker: UIView {
     // MARK: - *** Event Action
 
     @objc private func backBtnClick() {
-        BQLogger.log("返回")
         if let delegate = delegate {
             delegate.datePickerCancel(self)
         }
@@ -163,12 +162,10 @@ class BQDatePicker: UIView {
     }
 
     @objc private func sureBtnClick() {
-        BQLogger.log("确定")
-        hide()
-
         if let delegate = delegate {
-            delegate.datePickerSelect(self, model: dateModel)
+            delegate.datePickerSelect(self, date: Calendar.current.date(from: dateModel)!)
         }
+        hide()
     }
 
     // MARK: - *** Delegate

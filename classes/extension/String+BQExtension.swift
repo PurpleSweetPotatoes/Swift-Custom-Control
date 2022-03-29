@@ -159,6 +159,24 @@ public extension String {
     func toDate(format: String = "yyyy/MM/dd") -> Date? {
         return Date.load(self, format: format)
     }
+    
+    
+    /// 增加小数点，针对整形转小数
+    /// - Parameter decimal: 后两位变小数点
+    /// - Returns: 转化后小数字符串
+    func toFloatStr(_ deci: Int = 2) -> String {
+        if let num = Int(self), deci > 0 {
+            var last = num
+            var outStr = ""
+            for i in (0...deci).reversed() {
+                let deciNum = Int(powl(10.0,Double(i)))
+                outStr.append("\(last / deciNum)")
+                last = last % deciNum
+            }
+            return outStr
+        }
+        return ""
+    }
 
     subscript(range: NSRange) -> String {
         if range.location < 0 || range.location + range.length >= count {
