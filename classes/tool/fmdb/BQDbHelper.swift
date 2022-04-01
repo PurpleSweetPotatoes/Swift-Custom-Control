@@ -5,6 +5,7 @@
 //  Created by baiqiang on 2022/3/26.
 //
 
+#if canImport(SQLite)
 import UIKit
 import SQLite
 
@@ -181,3 +182,4 @@ class BQDbHelper: NSObject {
     
 }
 
+#endif

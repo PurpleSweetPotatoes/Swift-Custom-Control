@@ -45,7 +45,6 @@ extension UITabBarController {
                 
                 if needNav {
                     let navVc = BQNavgationController(rootViewController: vc)
-                    navVc.navigationBar.lt_setBackgroundColor(color: .white)
                     vcArr.append(navVc)
                 } else {
                     vcArr.append(vc)

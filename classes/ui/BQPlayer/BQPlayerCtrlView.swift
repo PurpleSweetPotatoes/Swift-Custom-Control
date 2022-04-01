@@ -563,7 +563,7 @@ public extension UIImage {
 
         // 画圆
         context?.setLineWidth(1)
-        context?.addArc(center: CGPoint(x: size.width * 0.5, y: size.height * 0.5), radius: 5, startAngle: CGFloat.pi, endAngle: -CGFloat.pi, clockwise: true)
+        context?.addArc(center: CGPoint(x: size.width * 0.5, y: size.height * 0.5), radius: 5, startAngle: CGFloat.pi, endAngle: -2*CGFloat.pi, clockwise: true)
         context?.strokePath()
 
         for _ in 0 ..< 9 {

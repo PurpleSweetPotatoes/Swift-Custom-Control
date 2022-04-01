@@ -26,11 +26,26 @@ public enum GradientPostion: Int {
 }
 
 public extension CALayer {
-    static func lineLayer(frame: CGRect, color: UIColor = UIColor.groupTableViewBackground) -> CAShapeLayer {
+    static func lineLayer(frame: CGRect, color: UIColor = .groupTableViewBackground) -> CAShapeLayer {
         let line = CAShapeLayer()
         line.frame = frame
         line.backgroundColor = color.cgColor
         return line
+    }
+    
+    static func dashLayer(frame: CGRect, color: UIColor = .groupTableViewBackground, dashPattern: [NSNumber] = [5, 5]) -> CAShapeLayer {
+        let shapeLayer = CAShapeLayer()
+        shapeLayer.frame = frame
+        shapeLayer.lineDashPattern = dashPattern
+        shapeLayer.strokeColor = color.cgColor
+        shapeLayer.fillColor = UIColor.clear.cgColor
+        shapeLayer.lineWidth = shapeLayer.sizeH
+                
+        let path = CGMutablePath()
+        path.move(to: CGPoint.zero)
+        path.addLine(to: CGPoint(x: shapeLayer.sizeW, y: 0))
+        shapeLayer.path = path
+        return shapeLayer
     }
 
     static func gradientLayer(frame: CGRect, start: GradientPostion = .leftTop, end: GradientPostion = .leftBottom, colors: [CGColor], locations: [NSNumber]? = nil) -> CAGradientLayer {
