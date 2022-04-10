@@ -118,7 +118,7 @@ extension UIButton {
         get {
             return objc_getAssociatedObject(self, &AssociatedKeys.actionKey) as? btnUpdateBlock
         }
-        set(newValue) {
+        set {
             objc_setAssociatedObject(self, &AssociatedKeys.actionKey, newValue!, .OBJC_ASSOCIATION_COPY_NONATOMIC)
         }
     }
@@ -127,7 +127,7 @@ extension UIButton {
         get {
             return objc_getAssociatedObject(self, &AssociatedKeys.timerKey) as? DispatchSourceTimer
         }
-        set(newValue) {
+        set {
             objc_setAssociatedObject(self, &AssociatedKeys.timerKey, newValue!, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
@@ -136,7 +136,7 @@ extension UIButton {
         get {
             return (objc_getAssociatedObject(self, &AssociatedKeys.countKey) as! Int)
         }
-        set(newValue) {
+        set {
             objc_setAssociatedObject(self, &AssociatedKeys.countKey, newValue!, .OBJC_ASSOCIATION_ASSIGN)
         }
     }
@@ -145,7 +145,7 @@ extension UIButton {
         get {
             return (objc_getAssociatedObject(self, &AssociatedKeys.isIgnoreEventKey) as? Bool) ?? false
         }
-        set(newValue) {
+        set {
             objc_setAssociatedObject(self, &AssociatedKeys.isIgnoreEventKey, newValue!, .OBJC_ASSOCIATION_ASSIGN)
         }
     }
@@ -154,7 +154,7 @@ extension UIButton {
         get {
             return (objc_getAssociatedObject(self, &AssociatedKeys.hitSpaceKey) as? UIEdgeInsets) ?? UIEdgeInsets.zero
         }
-        set(newValue) {
+        set {
             objc_setAssociatedObject(self, &AssociatedKeys.hitSpaceKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }

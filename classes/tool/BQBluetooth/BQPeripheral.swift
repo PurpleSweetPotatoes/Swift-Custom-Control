@@ -24,15 +24,13 @@ enum BQConnectState: Int {
     case otherConnect
     
     var stateName: String {
-        get {
-            switch self {
-            case .canConnect:
-                return "可连接"
-            case .didConenct:
-                return "已连接"
-            default:
-                return "已被其他设备链接"
-            }
+        switch self {
+        case .canConnect:
+            return "可连接"
+        case .didConenct:
+            return "已连接"
+        default:
+            return "已被其他设备链接"
         }
     }    
 }
@@ -44,15 +42,13 @@ class BQPeripheral: NSObject {
     var rssi: NSNumber?
     var contentBlock: ContentPeripheralsBlock?
     var connectState: BQConnectState {
-        get {
-            if BQCBCentralManage.contenctArr.contains(self) {
-                return .didConenct
-            }
-            if let state = advertisementData["kCBAdvDataIsConnectable"] as? Int, state == 1 {
-                return .otherConnect
-            }
-            return .canConnect
+        if BQCBCentralManage.contenctArr.contains(self) {
+            return .didConenct
         }
+        if let state = advertisementData["kCBAdvDataIsConnectable"] as? Int, state == 1 {
+            return .otherConnect
+        }
+        return .canConnect
     }
     
     init(peripheral: CBPeripheral, advertisementData: [String : Any], rssi: NSNumber?) {
@@ -63,8 +59,8 @@ class BQPeripheral: NSObject {
         self.peripheral.delegate = self
     }
     
-    var name: String { get { return peripheral.name ?? "未知" } }
-    var uuidStr: String { get { return peripheral.identifier.uuidString } }
+    var name: String { return peripheral.name ?? "未知" }
+    var uuidStr: String { return peripheral.identifier.uuidString }
     
     public func configConnectHandle(handle: @escaping ContentPeripheralsBlock) {
         contentBlock = handle

@@ -33,4 +33,7 @@ extension Dictionary where Key == String {
         }
         return outStr
     }
+    func hasKey(_ key: String) -> Bool {
+        return self[key] != nil
+    }
 }

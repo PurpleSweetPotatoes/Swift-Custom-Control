@@ -27,7 +27,7 @@ class BQCBCentralManage: NSObject {
     private var currenConnectPeri: BQPeripheral?
     
     /// 是否正在扫描
-    public static var isScan: Bool { get { return sharedManager.centeral.isScanning }}
+    public static var isScan: Bool { return sharedManager.centeral.isScanning }
     
     /// 已连接外设列表
     public static var contenctArr = [BQPeripheral]()

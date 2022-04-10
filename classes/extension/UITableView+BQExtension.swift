@@ -88,7 +88,7 @@ extension UITableView {
         get {
             return (objc_getAssociatedObject(self, &AssociatedKeys.emptyDelegateKey) as? EmptyViewProtocol)
         }
-        set(newValue) {
+        set {
             objc_setAssociatedObject(self, &AssociatedKeys.emptyDelegateKey, newValue, .OBJC_ASSOCIATION_RETAIN)
         }
     }

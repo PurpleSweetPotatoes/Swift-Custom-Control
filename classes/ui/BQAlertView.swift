@@ -33,9 +33,7 @@ class BQAlertView: UIView {
     // MARK: - *** public
     
     public var priority: Int {
-        get {
-            return config.priority
-        }
+        return config.priority
     }
     
     final class BQAlertConfig {

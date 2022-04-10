@@ -29,6 +29,8 @@ enum BQTextType: Int {
 struct BQTextRule {
     var type: BQTextType
     var maxLength: UInt
+    var maxNum: Int = 100000
+    var minNUm: Int = -100000
     var precision: (UInt, UInt)?
     var upText: Bool
     var clearSpace: Bool
@@ -51,6 +53,15 @@ extension UITextField {
         switch rule.type {
         case .num:
             content = content.deleteCharset(regular: "[^0-9]")
+            if let number = Int(content) {
+                if rule.maxNum < number {
+                    content = String(rule.maxNum)
+                } else if rule.minNUm > number {
+                    content = String(rule.minNUm)
+                } else {
+                    content = String(number)
+                }
+            }
         case .char:
             content = content.deleteCharset(regular: "[^a-zA-Z]")
         case .numChar:
@@ -125,7 +136,7 @@ extension UITextField {
         static var ruleKey: Void?
     }
 
-    var rule: BQTextRule? {
+    var rule:BQTextRule? {
         get {
             return objc_getAssociatedObject(self, &AssociatedKeys.ruleKey) as? BQTextRule
         }

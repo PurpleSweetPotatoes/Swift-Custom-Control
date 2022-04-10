@@ -57,7 +57,7 @@ public extension UINavigationBar {
         get {
             return objc_getAssociatedObject(self, &AssociatedKeys.overlayKey) as? UIView
         }
-        set(newValue) {
+        set {
             objc_setAssociatedObject(self, &AssociatedKeys.overlayKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }

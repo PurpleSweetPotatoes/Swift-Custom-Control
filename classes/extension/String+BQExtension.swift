@@ -160,6 +160,10 @@ public extension String {
         return Date.load(self, format: format)
     }
     
+    mutating func insert(_ str: String, local: Int) {
+        let at = index(startIndex, offsetBy: local)
+        insert(Character(str), at: at)
+    }
     
     /// 增加小数点，针对整形转小数
     /// - Parameter decimal: 后两位变小数点
@@ -169,7 +173,7 @@ public extension String {
             var last = num
             var outStr = ""
             for i in (0...deci).reversed() {
-                let deciNum = Int(powl(10.0,Double(i)))
+                let deciNum = Int(pow(Double(10.0),Double(i)))
                 outStr.append("\(last / deciNum)")
                 last = last % deciNum
             }

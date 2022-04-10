@@ -84,7 +84,7 @@ extension Int: UnitConver {
     /// 小数点字符串
     func toDecimalStr(num: Int = 2) -> String {
         let deciNum = Float(self)
-        let diNum = Float(powl(Double(10), Double(num)))
+        let diNum = Float(pow(Double(10), Double(num)))
         return String(format: "%0.\(num)f", deciNum / diNum)
     }
 }

@@ -172,7 +172,7 @@ extension UIView {
         get {
             return objc_getAssociatedObject(self, &AssociatedKeys.actionKey) as? addBlock
         }
-        set(newValue) {
+        set {
             objc_setAssociatedObject(self, &AssociatedKeys.actionKey, newValue!, .OBJC_ASSOCIATION_COPY_NONATOMIC)
         }
     }
