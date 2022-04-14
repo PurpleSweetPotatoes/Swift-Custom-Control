@@ -19,4 +19,26 @@ public extension UIScrollView {
             vc.automaticallyAdjustsScrollViewInsets = false
         }
     }
+    
+    var captureLongImage: UIImage? {
+        
+        var image: UIImage? = nil
+        
+        let savedContentOffset = contentOffset
+        let savedFrame = frame
+        contentOffset = .zero
+        frame = CGRect(origin: .zero, size: contentSize)
+        
+        UIGraphicsBeginImageContextWithOptions(contentSize, false, UIScreen.main.scale)
+        if let context = UIGraphicsGetCurrentContext() {
+            layer.render(in: context)
+            image = UIGraphicsGetImageFromCurrentImageContext()
+        }
+        UIGraphicsEndImageContext()
+        
+        contentOffset = savedContentOffset
+        frame = savedFrame
+        
+        return image
+    }
 }
