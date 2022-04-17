@@ -11,10 +11,16 @@ import UIKit
 
 private let identifi = "BQPhotoCollectionDisPlayCell"
 
+protocol BQPhotoBrowserViewDelegate: NSObjectProtocol {
+    func startAnimationFromFrame(currentIndex: Int) -> CGRect?
+    func removeAnimationToFrame(currentIndex: Int) -> CGRect?
+}
+
 class BQPhotoBrowserView: UIView {
     // MARK: - ***** Ivars *****
+    public var delegate: BQPhotoBrowserViewDelegate?
 
-    fileprivate var datas: [UIImageView]!
+    fileprivate var datas: [UIImage]
     fileprivate var pageControl: UIPageControl!
     private var collectionView: UICollectionView!
     private var index: Int = 0
@@ -23,7 +29,7 @@ class BQPhotoBrowserView: UIView {
 
     // MARK: - ***** Class Method *****
 
-    static func show(datas: [UIImageView], current: Int = 0) {
+    static func show(datas: [UIImage], current: Int = 0, delegate: BQPhotoBrowserViewDelegate? = nil) {
         let browser = BQPhotoBrowserView(frame: UIScreen.main.bounds, datas: datas, current: current)
         UIApplication.shared.keyWindow?.addSubview(browser)
         browser.startAnimation()
@@ -31,9 +37,9 @@ class BQPhotoBrowserView: UIView {
 
     // MARK: - ***** initialize Method *****
 
-    private init(frame: CGRect, datas: [UIImageView], current: Int = 0) {
-        super.init(frame: frame)
+    private init(frame: CGRect, datas: [UIImage], current: Int = 0) {
         self.datas = datas
+        super.init(frame: frame)
         index = current
         initData()
         initUI()
@@ -62,44 +68,47 @@ class BQPhotoBrowserView: UIView {
     }
 
     private func startAnimation() {
-        let imgView = datas[index]
-        animationView.frame = imgView.superview?.convert(imgView.frame, to: UIApplication.shared.keyWindow?.rootViewController?.view) ?? CGRect.zero
-        backView.alpha = 0
-        collectionView.alpha = 0
-        pageControl.alpha = 0
-
-        UIView.animate(withDuration: 0.25, animations: {
-            self.configImgFrame(imgView: imgView)
-            self.backView.alpha = 1
-        }) { _ in
-            self.animationView.alpha = 0
-            self.collectionView.alpha = 1
-            self.pageControl.alpha = 1
+        if let delegate = delegate, let fromRect = delegate.startAnimationFromFrame(currentIndex: index) {
+            backView.alpha = 0
+            collectionView.alpha = 0
+            pageControl.alpha = 0
+            UIView.animate(withDuration: 0.25, animations: {
+                self.configImgFrame(frame: fromRect)
+                self.backView.alpha = 1
+            }) { _ in
+                self.animationView.alpha = 0
+                self.collectionView.alpha = 1
+                self.pageControl.alpha = 1
+            }
+        } else {
+            animationView.alpha = 0
         }
     }
 
     fileprivate func removeSelf(row: Int) {
         print("第\(row)个被点击")
         index = row
-        let imgView = datas[index]
-        let toFrame = imgView.superview?.convert(imgView.frame, to: UIApplication.shared.keyWindow?.rootViewController?.view) ?? CGRect.zero
-        configImgFrame(imgView: imgView)
-        animationView.alpha = 1
-        collectionView.alpha = 0
-        pageControl.alpha = 0
-        UIView.animate(withDuration: 0.25, animations: {
-            self.backView.alpha = 0
-            self.animationView.frame = toFrame
-        }) { _ in
+        if let delegate = delegate, let toRect = delegate.removeAnimationToFrame(currentIndex: index) {
+            configImgFrame(frame: toRect)
+            animationView.alpha = 1
+            collectionView.alpha = 0
+            pageControl.alpha = 0
+            UIView.animate(withDuration: 0.25, animations: {
+                self.backView.alpha = 0
+                self.animationView.frame = toRect
+            }) { _ in
+                self.removeFromSuperview()
+            }
+        } else {
             self.removeFromSuperview()
         }
     }
 
-    func configImgFrame(imgView: UIImageView) {
-        let imgSize = imgView.image!.size
+    func configImgFrame(frame: CGRect) {
+        let imgSize = frame.size
         let height = imgSize.height * (sizeW - 16) / imgSize.width
         let frame = CGRect(x: 8, y: (sizeH - height) * 0.5, width: sizeW - 16, height: height)
-        animationView.image = datas[index].image
+        animationView.image = datas[index]
         animationView.frame = frame
     }
 
@@ -143,7 +152,7 @@ extension BQPhotoBrowserView: UICollectionViewDelegate, UICollectionViewDataSour
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifi, for: indexPath) as! PhotoCollectionCell
         cell.delegate = self
         cell.row = indexPath.row
-        cell.setImage(img: datas[indexPath.row].image)
+        cell.setImage(img: datas[indexPath.row])
         return cell
     }
 
@@ -173,7 +182,7 @@ class PhotoCollectionCell: UICollectionViewCell {
     var row: Int = 0
     override init(frame: CGRect) {
         super.init(frame: frame)
-        let photoView = BQPhotoView(frame: CGRect(x: 8, y: 0, width: UIScreen.main.bounds.width - 16, height: UIScreen.main.bounds.height))
+        let photoView = BQPhotoView(frame: frame)
         contentView.addSubview(photoView)
         self.photoView = photoView
         self.photoView.tapAction { [weak self] _ in
@@ -197,5 +206,16 @@ class PhotoCollectionCell: UICollectionViewCell {
     @available(*, unavailable)
     required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+
+extension BQPhotoBrowserViewDelegate {
+    func startAnimationFromFrame(currentIndex: Int) -> CGRect? {
+        return nil
+    }
+    
+    func removeAnimationToFrame(currentIndex: Int) -> CGRect? {
+        return nil
     }
 }

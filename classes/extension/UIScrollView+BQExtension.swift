@@ -9,7 +9,7 @@
 
 import UIKit
 
-public extension UIScrollView {
+extension UIScrollView {
     func noAdjustInsets(vc: UIViewController) {
         
         if #available(iOS 11.0, *) {

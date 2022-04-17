@@ -9,14 +9,22 @@
 
 import UIKit
 
-public extension Array where Element: Equatable {
-    
-    mutating func safeRemove(ele objc: Element) {
-        if let i = firstIndex(of: objc) {
-            remove(at: i)
-        }
-    }
 
+extension Array {
+    
+    /// 合并多个数组
+    /// - Parameters:
+    ///   - arrList: 数组集合
+    ///   - count: 合并个数(集合中任意数组长度应该大于等于count)
+    /// - Returns: 合并后的数组
+    static func zip<T: Any, U: Any>(arr1: Array<T>, arr2: Array<U>, count: Int, handle:(T, U) -> Element) -> [Element] {
+        var outArr: [Element] = []
+        for i in 0..<count {
+            outArr.append(handle(arr1[i], arr2[i]))
+        }
+        return outArr
+    }
+    
     func random() -> Array {
         var list = self
         for index in 0 ..< list.count {
@@ -26,6 +34,15 @@ public extension Array where Element: Equatable {
             }
         }
         return list
+    }
+}
+
+extension Array where Element: Equatable {
+    
+    mutating func safeRemove(ele objc: Element) {
+        if let i = firstIndex(of: objc) {
+            remove(at: i)
+        }
     }
 
     subscript(input: [Int]) -> ArraySlice<Element> {
@@ -64,3 +81,4 @@ extension Collection {
         return indices.contains(index) ? self[index] : nil
     }
 }
+
