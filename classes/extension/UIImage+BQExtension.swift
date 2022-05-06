@@ -11,14 +11,14 @@ import UIKit
 
 private let colorSpaceRef = CGColorSpaceCreateDeviceRGB()
 
-enum ArrowDirection {
+public enum ArrowDirection {
     case top
     case left
     case bottom
     case right
 }
 
-extension UIImage {
+public extension UIImage {
     static func orginImg(name: String) -> UIImage? {
         return UIImage(named: name)?.withRenderingMode(.alwaysOriginal)
     }
@@ -226,7 +226,7 @@ extension UIImage {
                 if let cgimg = bitContext?.makeImage() {
                     if let prodata = cgimg.dataProvider {
                         let data = prodata.data!
-                        BQLogger.log("\(data)")
+                        BQLogger.debug("\(data)")
                     }
                     return UIImage(cgImage: cgimg)
                 }

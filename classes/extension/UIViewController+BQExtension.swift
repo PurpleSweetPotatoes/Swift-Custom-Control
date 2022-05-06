@@ -9,7 +9,7 @@
 
 import UIKit
 
-extension UIViewController {
+public extension UIViewController {
     var navBarBottom: CGFloat {
         if let nvc = navigationController {
             return nvc.navigationBar.bounds.height + AppInfo.statusHeight
@@ -31,7 +31,7 @@ extension UIViewController {
         }
         return vc
     }
-    
+
     static func xibVc(bundle: Bundle? = nil) -> Self {
         let name = String(className())
         return self.init(nibName: name, bundle: bundle)

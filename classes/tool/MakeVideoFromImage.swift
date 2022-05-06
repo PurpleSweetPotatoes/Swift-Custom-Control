@@ -10,9 +10,10 @@ import UIKit
 import AVFoundation
 import AssetsLibrary
 
-class MakeVideoFromImage {
+public class MakeVideoFromImage {
+    public init() {}
     
-    func make(image:UIImage, handler: @escaping (_ url:URL) -> Void) {
+    public func make(image:UIImage, handler: @escaping (_ url:URL) -> Void) {
         let url = self.genUrl()
         do {
             let assetWriter = try AVAssetWriter(outputURL: url, fileType: .mov)
@@ -59,13 +60,13 @@ class MakeVideoFromImage {
         }
     }
     
-    func genUrl() -> URL {
+    public func genUrl() -> URL {
         let directory = NSTemporaryDirectory()
         let fileName = NSUUID().uuidString + ".mov"
         return NSURL.fileURL(withPathComponents: [directory, fileName])!
     }
     
-    func pixelBufferFromImage(image: UIImage) -> CVPixelBuffer {
+    public func pixelBufferFromImage(image: UIImage) -> CVPixelBuffer {
         
         let ciimage = CIImage(image: image)
         //let cgimage = convertCIImageToCGImage(inputImage: ciimage!)

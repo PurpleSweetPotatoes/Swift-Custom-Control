@@ -10,13 +10,14 @@
 
 import UIKit
 
-typealias BQAlertBtnBlock = (Int) -> Void
+public typealias BQAlertBtnBlock = (Int) -> Void
 
-struct BQAlertAction {
+public struct BQAlertAction {
     let name: String
     let color: UIColor
     let font: UIFont
-    init(name btnName: String, color btnColor: UIColor = .black, font btnFont: UIFont = .systemFont(ofSize: 15)) {
+    
+    public init(name btnName: String, color btnColor: UIColor = .black, font btnFont: UIFont = .systemFont(ofSize: 15)) {
         name = btnName
         color = btnColor
         font = btnFont
@@ -28,7 +29,7 @@ struct BQAlertAction {
 /// 用法示例:
 /// priority代表弹窗优先级，数字越小 优先级约高
 /// BQAlertView.alert().title("测试").content("这是第个弹窗").priority(1).show()
-class BQAlertView: UIView {
+public class BQAlertView: UIView {
     
     // MARK: - *** public
     
@@ -36,7 +37,7 @@ class BQAlertView: UIView {
         return config.priority
     }
     
-    final class BQAlertConfig {
+    final public class BQAlertConfig {
         var priority: Int = 100
         var bgView: UIView?
         var title: String = ""
@@ -47,7 +48,7 @@ class BQAlertView: UIView {
         fileprivate weak var supView: UIView? = UIApplication.shared.keyWindow
         
         @discardableResult
-        func title(_ str: String) -> Self {
+        public func title(_ str: String) -> Self {
             title = str
             return self
         }
@@ -55,32 +56,32 @@ class BQAlertView: UIView {
         /// 优先级 数字约小越先展示
         /// - Parameter priority: 优先级别
         @discardableResult
-        func priority(_ num: Int) -> Self {
+        public func priority(_ num: Int) -> Self {
             priority = num
             return self
         }
         
         @discardableResult
-        func content(_ str: String = "", attribute: NSAttributedString = NSAttributedString()) -> Self {
+        public func content(_ str: String = "", attribute: NSAttributedString = NSAttributedString()) -> Self {
             content = str
             attributContent = attribute
             return self
         }
         
         @discardableResult
-        func actions(_ btns: [BQAlertAction]) -> Self {
+        public func actions(_ btns: [BQAlertAction]) -> Self {
             actions = btns
             return self
         }
         
         @discardableResult
-        func actionBlock(_ block: @escaping BQAlertBtnBlock) -> Self {
+        public func actionBlock(_ block: @escaping BQAlertBtnBlock) -> Self {
             handle = block
             return self
         }
         
         @discardableResult
-        func supView(_ view: UIView) -> Self {
+        public func supView(_ view: UIView) -> Self {
             supView = view
             return self
         }
@@ -95,7 +96,7 @@ class BQAlertView: UIView {
         }
         
         @discardableResult
-        func show() -> BQAlertView {
+        public func show() -> BQAlertView {
             configCheck()
             let alertV = BQAlertView(frame: supView!.bounds, info: self)
             BQAlertViewManager.addAlertInfo(v: alertV)
@@ -114,11 +115,11 @@ class BQAlertView: UIView {
     private let space: CGFloat = 15
     
     @discardableResult
-    static func alert() -> BQAlertConfig {
+    static public func alert() -> BQAlertConfig {
         return BQAlertConfig()
     }
     
-    convenience init(frame: CGRect, info: BQAlertConfig) {
+    convenience public init(frame: CGRect, info: BQAlertConfig) {
         self.init(frame: frame)
         config = info
         configUI()
@@ -249,7 +250,7 @@ enum BQAlertViewManager {
             info.startAnimation()
             alertList.remove(at: 0)
         } else {
-            BQLogger.log("队列资源展示完毕")
+            BQLogger.debug("队列资源展示完毕")
         }
     }
 }

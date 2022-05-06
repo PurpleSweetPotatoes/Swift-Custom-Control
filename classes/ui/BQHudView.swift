@@ -9,14 +9,14 @@
 
 import UIKit
 
-class BQHudView: UIView {
+public class BQHudView: UIView {
     private var titleFont = UIFont.systemFont(ofSize: 16)
     private var title: String?
     private var info: String!
     private var infoFont = UIFont.systemFont(ofSize: 14)
 
     @discardableResult
-    public static func show(supView: UIView, animation _: Bool? = true, title: String? = nil) -> BQHudView {
+    class public func show(supView: UIView, animation _: Bool? = true, title: String? = nil) -> BQHudView {
         if let hudView = self.hudView(supView: supView) {
             hudView.removeFromSuperview()
         }
@@ -29,13 +29,13 @@ class BQHudView: UIView {
         return hudView
     }
 
-    public static func hide(supView: UIView, animation: Bool? = true) {
+    class public func hide(supView: UIView, animation: Bool? = true) {
         if let hudView = self.hudView(supView: supView) {
             hudView.hide(animation: animation)
         }
     }
 
-    public static func hudView(supView: UIView) -> BQHudView? {
+    class public func hudView(supView: UIView) -> BQHudView? {
         for view in supView.subviews.reversed() {
             if view is BQHudView {
                 return view as? BQHudView
@@ -45,7 +45,7 @@ class BQHudView: UIView {
         return nil
     }
 
-    public static func show(_ info: String, title: String? = nil) {
+    class public func show(_ info: String, title: String? = nil) {
         if info.count == 0 { return }
 
         let msgView = BQHudView(frame: UIScreen.main.bounds, info: info, title: title)
@@ -76,7 +76,7 @@ class BQHudView: UIView {
     // MARK: - ***** instance method *****
 
     public func setUpUI() {
-//        self.backgroundColor = UIColor("e3e7e7")
+
         backgroundColor = UIColor(white: 0, alpha: 0.7)
         layer.cornerRadius = 8
 

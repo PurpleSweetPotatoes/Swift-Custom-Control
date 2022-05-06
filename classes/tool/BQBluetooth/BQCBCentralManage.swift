@@ -13,11 +13,10 @@ import UIKit
 import CoreBluetooth
 
 let sharedManager = BQCBCentralManage()
+public typealias DisCoverPeripheralsBlock = (_ peripheral: BQPeripheral) -> Void
 
-typealias DisCoverPeripheralsBlock = (_ peripheral: BQPeripheral) -> Void
 
-
-class BQCBCentralManage: NSObject {
+public class BQCBCentralManage: NSObject {
     
     private let centeral = CBCentralManager(delegate: nil, queue: DispatchQueue.global())
     
@@ -27,12 +26,12 @@ class BQCBCentralManage: NSObject {
     private var currenConnectPeri: BQPeripheral?
     
     /// 是否正在扫描
-    public static var isScan: Bool { return sharedManager.centeral.isScanning }
+    static var isScan: Bool { return sharedManager.centeral.isScanning }
     
     /// 已连接外设列表
-    public static var contenctArr = [BQPeripheral]()
+    static var contenctArr = [BQPeripheral]()
     
-    public static func scanPeripherals(sevices:[CBUUID]? = nil, options:[String: Any]? = nil, handle: @escaping DisCoverPeripheralsBlock) {
+    class public func scanPeripherals(sevices:[CBUUID]? = nil, options:[String: Any]? = nil, handle: @escaping DisCoverPeripheralsBlock) {
         
         sharedManager.discoverBlock = handle
         sharedManager.sevices = sevices
@@ -40,31 +39,31 @@ class BQCBCentralManage: NSObject {
         
         switch sharedManager.centeral.state {
         case .unknown:
-            BQLogger.log("未知")
+            BQLogger.debug("未知")
         case .unsupported:
-            BQLogger.log("不支持蓝牙")
+            BQLogger.debug("不支持蓝牙")
         case .poweredOff:
-            BQLogger.log("未打开蓝牙")
+            BQLogger.debug("未打开蓝牙")
         case .unauthorized:
-            BQLogger.log("未验证")
+            BQLogger.debug("未验证")
         case .poweredOn:
-            BQLogger.log("蓝牙已打开")
+            BQLogger.debug("蓝牙已打开")
             sharedManager.startScanPerioheral()
         case .resetting:
-            BQLogger.log("重置状态")
+            BQLogger.debug("重置状态")
         default:
-            BQLogger.log("其他状态")
+            BQLogger.debug("其他状态")
         }
     }
     
-    public static func stopscan() {
+    class public func stopscan() {
         sharedManager.centeral.stopScan()
         sharedManager.discoverBlock = nil
         sharedManager.sevices = nil
         sharedManager.options = nil
     }
 
-    public static func connect(_ peri: BQPeripheral, options:[String: Any]? = nil) {
+    class public func connect(_ peri: BQPeripheral, options:[String: Any]? = nil) {
         
         if let _ = sharedManager.currenConnectPeri {
             if sharedManager.currenConnectPeri == peri {
@@ -82,7 +81,7 @@ class BQCBCentralManage: NSObject {
         
         switch peri.connectState {
         case .canConnect:
-            BQLogger.log("尝试链接\(peri.uuidStr)")
+            BQLogger.debug("尝试链接\(peri.uuidStr)")
             sharedManager.currenConnectPeri = peri
             sharedManager.centeral.connect(peri.peripheral, options: options)
         case .didConenct:
@@ -103,7 +102,7 @@ class BQCBCentralManage: NSObject {
     }
 
     
-    public static func deniedAlert() {
+    class public func deniedAlert() {
         UIAlertController.showAlert(content: "温馨提示", title: "蓝牙授权已被拒绝，请开启蓝牙授权后使用该功能", btnTitleArr: ["取消","前往设置"]) { index in
             if 1 == index {
                 BQTool.goPermissionSettings()
@@ -113,14 +112,14 @@ class BQCBCentralManage: NSObject {
 }
 
 extension BQCBCentralManage: CBCentralManagerDelegate {
-    func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        BQLogger.waring("蓝牙状态已改变: \(central.state.rawValue)")
+    public func centralManagerDidUpdateState(_ central: CBCentralManager) {
+        BQLogger.debug("蓝牙状态已改变: \(central.state.rawValue)")
         if let _ = self.discoverBlock, central.state == .poweredOn {
             startScanPerioheral()
         }
     }
     
-    func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
+    public func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
         if let block = self.discoverBlock {
             let per = BQPeripheral(peripheral: peripheral, advertisementData: advertisementData, rssi: RSSI)
             DispatchQueue.main.async {
@@ -129,19 +128,19 @@ extension BQCBCentralManage: CBCentralManagerDelegate {
         }
     }
     
-    func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
+    public func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         if let per = self.currenConnectPeri, per.uuidStr == peripheral.identifier.uuidString {
             BQCBCentralManage.contenctArr.append(per)
-            BQLogger.log("链接设备\(peripheral)-操作设备\(per.peripheral)")
+            BQLogger.debug("链接设备\(peripheral)-操作设备\(per.peripheral)")
             DispatchQueue.main.async {
                 per.callHandle(res: true, msg: "链接成功")
             }
         } else {
-            BQLogger.log("链接上设备:\(peripheral.name ?? "null") & \(peripheral.identifier.uuidString)")
+            BQLogger.debug("链接上设备:\(peripheral.name ?? "null") & \(peripheral.identifier.uuidString)")
         }
     }
     
-    func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
+    public func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
         if let per = self.currenConnectPeri, per.uuidStr == peripheral.identifier.uuidString {
             self.currenConnectPeri = nil
             per.callHandle(res: false, msg: error?.localizedDescription ?? "链接设备失败")
@@ -150,7 +149,7 @@ extension BQCBCentralManage: CBCentralManagerDelegate {
         }
     }
     
-    func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
-        BQLogger.log("断开链接\(peripheral)")
+    public func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
+        BQLogger.debug("断开链接\(peripheral)")
     }
 }

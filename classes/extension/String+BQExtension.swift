@@ -9,12 +9,12 @@
 
 import Foundation
 
-//infix operator =~: Regular
-//precedencegroup Regular {
+// infix operator =~: Regular
+// precedencegroup Regular {
 //    associativity: left
 //    higherThan: AdditionPrecedence
 //    lowerThan: MultiplicationPrecedence
-//}
+// }
 
 private var Regular_Phone = "^(13|14|15|17|18)\\d{9}$"
 private var Regular_Email = "^([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})$"
@@ -49,7 +49,7 @@ public extension String {
     /// 密码判断不包含空格和汉字
     func isPwd() -> Bool {
         if !contains(" ") {
-            return hasChinese()
+            return self.hasChinese()
         }
         return false
     }
@@ -64,7 +64,7 @@ public extension String {
 //            return false
 //        }
 //    }
-    
+
     func reMatch(_ re: String) -> Bool {
         do {
             let regex = try NSRegularExpression(pattern: re, options: .caseInsensitive)
@@ -110,24 +110,33 @@ public extension String {
             return nil
         }
     }
-    
+
     var hexData: Data? {
-        
         var data = Data(capacity: self.count / 2)
-        
+
         let regex = try! NSRegularExpression(pattern: "[0-9a-f]{1,2}", options: .caseInsensitive)
-        regex.enumerateMatches(in: self, range: NSMakeRange(0, utf16.count)) { match, flags, stop in
+        regex.enumerateMatches(in: self, range: NSMakeRange(0, utf16.count)) { match, _, _ in
             let byteString = (self as NSString).substring(with: match!.range)
             var num = UInt8(byteString, radix: 16)!
             data.append(&num, count: 1)
         }
 
         guard data.count > 0 else { return nil }
-        
+
         return data
     }
-    
-    static var documentPath : String {
+
+    var lastPathComponent: String {
+        guard let last = split(separator: "/").last else { return self }
+        return String(last)
+    }
+
+    var lastPathComponentName: String {
+        guard let last = split(separator: "/").last, let name = last.split(separator: ".").first else { return self }
+        return String(name)
+    }
+
+    static var documentPath: String {
         return "\(NSHomeDirectory())/Documents"
     }
 
@@ -146,7 +155,7 @@ public extension String {
     ///
     /// - Parameter lowercased: 是否小写（默认小写）
     func transformToPinyinHead(lowercased: Bool = true) -> String {
-        let pinyin = transformToPinyin(hasBlank: true).capitalized // 字符串转换为首字母大写
+        let pinyin = self.transformToPinyin(hasBlank: true).capitalized // 字符串转换为首字母大写
         var headPinyinStr = ""
         for (_, ch) in pinyin.enumerated() {
             if ch <= "Z", ch >= "A" {
@@ -155,16 +164,16 @@ public extension String {
         }
         return lowercased ? headPinyinStr.lowercased() : headPinyinStr
     }
-    
+
     func toDate(format: String = "yyyy/MM/dd") -> Date? {
         return Date.load(self, format: format)
     }
-    
+
     mutating func insert(_ str: String, local: Int) {
         let at = index(startIndex, offsetBy: local)
-        insert(Character(str), at: at)
+        self.insert(Character(str), at: at)
     }
-    
+
     /// 增加小数点，针对整形转小数
     /// - Parameter decimal: 后两位变小数点
     /// - Returns: 转化后小数字符串
@@ -172,8 +181,8 @@ public extension String {
         if let num = Int(self), deci > 0 {
             var last = num
             var outStr = ""
-            for i in (0...deci).reversed() {
-                let deciNum = Int(pow(Double(10.0),Double(i)))
+            for i in (0 ... deci).reversed() {
+                let deciNum = Int(pow(Double(10.0), Double(i)))
                 outStr.append("\(last / deciNum)")
                 last = last % deciNum
             }
@@ -213,7 +222,7 @@ public extension String {
 
 extension Character {
     func toInt() -> Int {
-        var intFromCharacter: Int = 0
+        var intFromCharacter = 0
         for scalar in String(self).unicodeScalars {
             intFromCharacter = Int(scalar.value)
         }

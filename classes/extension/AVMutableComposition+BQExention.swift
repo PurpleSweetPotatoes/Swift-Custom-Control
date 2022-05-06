@@ -1,19 +1,18 @@
 // *******************************************
-//  File Name:      AVMutableComposition+BQExention.swift       
+//  File Name:      AVMutableComposition+BQExention.swift
 //  Author:         MrBai
 //  Created Date:   2022/3/2 2:01 PM
-//    
+//
 //  Copyright © 2022 ___ORGANIZATIONNAME___
 //  All rights reserved
 // *******************************************
-    
 
 import AVFoundation
 
-typealias videoComBlock = (_ fromLayer: AVMutableVideoCompositionLayerInstruction, _ toLayer: AVMutableVideoCompositionLayerInstruction, _ timeRange: CMTimeRange) -> Void
+public typealias videoComBlock = (_ fromLayer: AVMutableVideoCompositionLayerInstruction, _ toLayer: AVMutableVideoCompositionLayerInstruction, _ timeRange: CMTimeRange) -> Void
 
 /// 自定义轨道素材对象
-struct BQAssetTrack {
+public struct BQAssetTrack {
     /// 素材资源
     public private(set) var track: AVAssetTrack!
 
@@ -22,16 +21,16 @@ struct BQAssetTrack {
 
     /// 素材插入时间点
     public private(set) var atTime = CMTime.zero
-    
+
     public var sencods: Double {
         return track?.asset?.duration.seconds ?? 0
     }
-    
+
     public var lastTime: Double {
         return atTime.seconds + insertRange.duration.seconds
     }
-    
-    init(_ forTrack: AVAssetTrack) {
+
+    public init(_ forTrack: AVAssetTrack) {
         track = forTrack
         insertRange = CMTimeRangeMake(start: CMTime.zero, duration: forTrack.asset?.duration ?? CMTime.zero)
     }
@@ -51,8 +50,7 @@ struct BQAssetTrack {
     }
 }
 
-extension AVMutableComposition {
-    
+public extension AVMutableComposition {
     /// 生成素材合成样本,可用于试看
     /// - Parameter trackList: 素材列表
     func addTracks(trackList: [BQAssetTrack]) {
@@ -60,20 +58,19 @@ extension AVMutableComposition {
             addTrack(bqTrack)
         }
     }
-    
+
     /// 生成轨道并返回可变轨道
     /// - Parameter bqTrack: 自定义轨道素材
     /// - Returns: 可变素材轨道
     @discardableResult
     func addTrack(_ bqTrack: BQAssetTrack) -> AVMutableCompositionTrack? {
-        
         if let comTrack = addMutableTrack(withMediaType: bqTrack.track.mediaType, preferredTrackID: kCMPersistentTrackID_Invalid) {
             comTrack.insertTrack(bqTrack)
             return comTrack
         }
         return nil
     }
-    
+
     /// 通过A、B视频轨道分别添加视频，并设置过渡动画
     /// 回调中如下使用
     /// 动画配置
@@ -83,25 +80,25 @@ extension AVMutableComposition {
     ///   - stracks: 视频素材集合
     ///   - handle: 过渡动画设置回调
     /// - Returns:
-    func videoComposition(_ stracks:[BQAssetTrack], handle: videoComBlock) -> AVMutableVideoComposition? {
-        if stracks.count == 0 { return nil}
-        
+    func videoComposition(_ stracks: [BQAssetTrack], handle: videoComBlock) -> AVMutableVideoComposition? {
+        if stracks.count == 0 { return nil }
+
         // 移除视频轨道
-        for track in self.tracks(withMediaType: .video) {
-            self.removeTrack(track)
+        for track in tracks(withMediaType: .video) {
+            removeTrack(track)
         }
 
         // 创建视频轨道
         guard let comTrackA = addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid), let comTrackB = addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid) else {
             return nil
         }
-        
+
         let videoTracks = [comTrackA, comTrackB]
         for (index, bqStarck) in stracks.enumerated() {
             let videoTrack = videoTracks[index % 2]
             videoTrack.insertTrack(bqStarck)
         }
-        
+
         let videoCom = AVMutableVideoComposition(propertiesOf: self)
         var index = 0
         for instruction in videoCom.instructions {
@@ -117,19 +114,18 @@ extension AVMutableComposition {
                 handle(fromLayer, toLayer, instruct.timeRange)
             }
         }
-        
+
         return videoCom
     }
-    
+
     /// 单轨道，素材拼接
     /// - Parameter stracks: 轨道素材
-    func mergeStracks(_ stracks:[BQAssetTrack]) {
-        
+    func mergeStracks(_ stracks: [BQAssetTrack]) {
         if stracks.count == 0 { return }
-        
+
         // 移除素材轨道
-        for track in self.tracks(withMediaType: stracks.first!.track.mediaType) {
-            self.removeTrack(track)
+        for track in tracks(withMediaType: stracks.first!.track.mediaType) {
+            removeTrack(track)
         }
 
         // 创建素材轨道
@@ -142,11 +138,9 @@ extension AVMutableComposition {
             comTrack.insertTrack(bqStrack)
         }
     }
-    
 }
 
-
-extension AVMutableCompositionTrack {
+public extension AVMutableCompositionTrack {
     /// 插入素材轨道
     func insertTrack(_ bqTrack: BQAssetTrack) {
         do {
@@ -157,8 +151,7 @@ extension AVMutableCompositionTrack {
     }
 }
 
-
-extension CMTime {
+public extension CMTime {
     init(_ time: Double) {
         self.init(value: Int64(time * 600), timescale: 600)
     }

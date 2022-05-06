@@ -11,7 +11,7 @@ import UIKit
 
 private let _dateFormatter = DateFormatter()
 
-extension Date {
+public extension Date {
     /// 时间戳
     var timeStamp: String {
         return String(format: "%.lf", timeIntervalSince1970)
@@ -24,7 +24,7 @@ extension Date {
         _dateFormatter.dateFormat = format
         return _dateFormatter.string(from: self)
     }
-    
+
     /// 加载Date
     /// - Parameters:
     ///   - timeStr: 时间字符串
@@ -39,38 +39,38 @@ extension Date {
     func components() -> DateComponents {
         return Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second, .weekday], from: self)
     }
-    
+
     /// 获取当日初和明日初
     /// - Returns: (当日初，明日初)
-    func dayStartAndEnd() -> (Date,Date)? {
+    func dayStartAndEnd() -> (Date, Date)? {
         return dateStartAndEnd([.year, .month, .day]) { compon in
             var com = compon
             com.day = (com.day ?? 0) + 1
             return com
         }
     }
-    
+
     /// 获取当月初和下个月初
     /// - Returns: (当月初，下个月初)
-    func monthStartAndEnd() -> (Date,Date)? {
+    func monthStartAndEnd() -> (Date, Date)? {
         return dateStartAndEnd([.year, .month]) { compon in
             var com = compon
             com.month = (com.month ?? 0) + 1
             return com
         }
     }
-    
+
     /// 获取当年初和下年初
     /// - Returns: (当年初，下年初)
-    func yearStartAndEnd() -> (Date,Date)? {
+    func yearStartAndEnd() -> (Date, Date)? {
         return dateStartAndEnd([.year]) { compon in
             var com = compon
             com.year = (com.year ?? 0) + 1
             return com
         }
     }
-    
-    func dateStartAndEnd(_ components: Set<Calendar.Component>, handle: (DateComponents) -> DateComponents) -> (Date,Date)? {
+
+    func dateStartAndEnd(_ components: Set<Calendar.Component>, handle: (DateComponents) -> DateComponents) -> (Date, Date)? {
         let calend = Calendar.current
         let components = calend.dateComponents(components, from: self)
         let startDate = calend.date(from: components)
@@ -82,13 +82,12 @@ extension Date {
     }
 }
 
-
-extension DateComponents {
-    public func dateNum() -> Int {
+public extension DateComponents {
+    func dateNum() -> Int {
         return (year ?? 0) * 10000 + (month ?? 0) * 100 + (day ?? 0)
     }
-    
-    public var chainWeekStr: String {
+
+    var chainWeekStr: String {
         if let wday = weekday {
             switch wday {
             case 1: return "星期天"

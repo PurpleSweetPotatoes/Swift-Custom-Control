@@ -9,7 +9,7 @@
 
 import UIKit
 
-protocol BQPicBrowerViewDelegate: NSObjectProtocol {
+public protocol BQPicBrowerViewDelegate: NSObjectProtocol {
     func didShowImgV(imgV: UIImageView, index: Int)
     func willShowImgV(imgV: UIImageView, index: Int)
     func changeCurrentIndex(index: Int)
@@ -17,14 +17,14 @@ protocol BQPicBrowerViewDelegate: NSObjectProtocol {
     func scrollerToNext()
 }
 
-extension BQPicBrowerViewDelegate {
+public extension BQPicBrowerViewDelegate {
     func willShowImgV(imgV _: UIImageView, index _: Int) {}
     func changeCurrentIndex(index _: Int) {}
     func scrollerToFront() {}
     func scrollerToNext() {}
 }
 
-class BQPicBrowerView: UIView {
+public class BQPicBrowerView: UIView {
     private var collectionView: UICollectionView!
     public var imgCount: Int = 0
     public var delegate: BQPicBrowerViewDelegate?
@@ -93,18 +93,18 @@ class BQPicBrowerView: UIView {
 }
 
 extension BQPicBrowerView: UICollectionViewDelegate, UICollectionViewDataSource {
-    func collectionView(_: UICollectionView, numberOfItemsInSection _: Int) -> Int {
+    public func collectionView(_: UICollectionView, numberOfItemsInSection _: Int) -> Int {
         return imgCount
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "identifi", for: indexPath) as! PicCollectionCell
         cell.row = indexPath.item
         callDelegate(isDid: true, cell: cell)
         return cell
     }
 
-    func collectionView(_: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt _: IndexPath) {
+    public func collectionView(_: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt _: IndexPath) {
         let photoCell = cell as! PicCollectionCell
         callDelegate(isDid: false, cell: photoCell)
     }
@@ -122,7 +122,7 @@ extension BQPicBrowerView: UICollectionViewDelegate, UICollectionViewDataSource 
         }
     }
 
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let x = Int(scrollView.contentOffset.x + scrollView.sizeW * 0.5)
         let w = Int(scrollView.sizeW)
         let index = x / w

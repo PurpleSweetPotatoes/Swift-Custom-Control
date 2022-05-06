@@ -19,7 +19,7 @@ public extension NSObject {
             let data = try JSONSerialization.data(withJSONObject: self, options: .prettyPrinted)
             return String(data: data, encoding: .utf8)
         } catch let err {
-            assert(false, err.localizedDescription)
+            assertionFailure(err.localizedDescription)
             return nil
         }
     }
@@ -34,15 +34,15 @@ public extension NSObject {
         else {
             return false
         }
-        
-        if (class_addMethod(self, targetSel, method_getImplementation(after), method_getTypeEncoding(after))) {
+
+        if class_addMethod(self, targetSel, method_getImplementation(after), method_getTypeEncoding(after)) {
             class_replaceMethod(self, newSel, method_getImplementation(before), method_getTypeEncoding(before))
         } else {
             method_exchangeImplementations(before, after)
         }
         return true
     }
-    
+
     static func className(hasSpace: Bool = false) -> String {
         let name = NSStringFromClass(self)
         if hasSpace {

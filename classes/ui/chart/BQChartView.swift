@@ -10,7 +10,7 @@
 
 import UIKit
 
-protocol BQChartViewDelegate: NSObjectProtocol {
+public protocol BQChartViewDelegate: NSObjectProtocol {
     
     /// 图形数据个数
     func chartDataCount(_ columV: BQChartView) -> Int
@@ -27,7 +27,7 @@ protocol BQChartViewDelegate: NSObjectProtocol {
 }
 
 
-class BQChartView: UIView {
+open class BQChartView: UIView {
 
     //MARK: - *** Ivars
         
@@ -64,7 +64,7 @@ class BQChartView: UIView {
         configChart()
     }
     
-    override func didMoveToSuperview() {
+    public override func didMoveToSuperview() {
         super.didMoveToSuperview()
         reload()
     }
@@ -79,7 +79,7 @@ class BQChartView: UIView {
         
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    public required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -150,7 +150,7 @@ class BQChartView: UIView {
 
 }
 
-extension BQChartViewDelegate {
+public extension BQChartViewDelegate {
     func chartDataCount(_ columV: BQChartView) -> Int { return 12 }
     
     func chartItemSpace(_ columV: BQChartView) -> CGFloat {return 8.0}

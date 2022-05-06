@@ -9,13 +9,13 @@
 
 import UIKit
 
-protocol BQPlayerSliderViewProtocol: NSObjectProtocol {
+public protocol BQPlayerSliderViewProtocol: NSObjectProtocol {
     func sliderStartChange()
     func sliderDidChange()
     func sliderEndChange()
 }
 
-class BQPlayerSliderView: UIView {
+public class BQPlayerSliderView: UIView {
     // MARK: - *** Ivars
 
     public weak var delegate: BQPlayerSliderViewProtocol?
@@ -95,14 +95,14 @@ class BQPlayerSliderView: UIView {
         if let dg = delegate {
             dg.sliderEndChange()
         }
-        BQLogger.log("点击:\(point.x)")
+        BQLogger.debug("点击:\(point.x)")
     }
 
     @objc private func panGestureAction(sender: UIPanGestureRecognizer) {
         if !canSlider || maxValue == 0 { return }
 
         let point = sender.location(in: self)
-        BQLogger.log("滑动:\(point.x)")
+        BQLogger.debug("滑动:\(point.x)")
         changeWidth(layer: sliderLayer, width: point.x)
 
         if let dg = delegate {

@@ -9,12 +9,12 @@
 
 import Foundation
 
-typealias TaskBlock = (_ cancel: Bool) -> Void
+public typealias TaskBlock = (_ cancel: Bool) -> Void
 
-extension DispatchQueue {
+public extension DispatchQueue {
     private static var _onceTracker = [String]()
 
-    public static func once(token: String, block: () -> Void) {
+    static func once(token: String, block: () -> Void) {
         objc_sync_enter(self)
         if !_onceTracker.contains(token) {
             _onceTracker.append(token)
@@ -43,7 +43,7 @@ extension DispatchQueue {
                 closure(false)
             }
         }
-        
+
         return result
     }
 

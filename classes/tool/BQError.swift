@@ -9,16 +9,16 @@
 
 import Foundation
 
-struct BQError: Error {
-    let desc: String
-    let code: Int
+public struct BQError: Error {
+    public let desc: String
+    public let code: Int
 
-    init(_ codeNum: Int, _ reason: String) {
+    public init(_ codeNum: Int, _ reason: String) {
         code = codeNum
         desc = reason
     }
 
-    var errorDescription: String? {
+    public var errorDescription: String? {
         return desc
     }
 }

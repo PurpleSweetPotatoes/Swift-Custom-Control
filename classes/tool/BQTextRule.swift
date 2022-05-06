@@ -11,7 +11,7 @@ import UIKit
 
 
 /// 输入内容
-enum BQTextType: Int {
+public enum BQTextType: Int {
     /// 无规则
     case normal
     /// 数字
@@ -26,7 +26,7 @@ enum BQTextType: Int {
     case price
 }
 
-struct BQTextRule {
+public struct BQTextRule {
     var type: BQTextType
     var maxLength: UInt
     var maxNum: Int = 100000
@@ -35,7 +35,7 @@ struct BQTextRule {
     var upText: Bool
     var clearSpace: Bool
 
-    init(type: BQTextType = .normal, maxLength: UInt = 1000, precision: (UInt, UInt)? = nil, upText: Bool = false, clearSpace: Bool = false) {
+    public init(type: BQTextType = .normal, maxLength: UInt = 1000, precision: (UInt, UInt)? = nil, upText: Bool = false, clearSpace: Bool = false) {
         self.type = type
         self.maxLength = maxLength
         self.precision = precision
@@ -44,7 +44,7 @@ struct BQTextRule {
     }
 }
 
-extension UITextField {
+public extension UITextField {
     @objc func tfValueDidChange() {
         guard var content = text, let rule = self.rule else {
             return

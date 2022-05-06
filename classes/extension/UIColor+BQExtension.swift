@@ -9,9 +9,8 @@
 
 import UIKit
 
-extension UIColor {
-    
-    public convenience init(_ hexString: String) {
+public extension UIColor {
+    convenience init(_ hexString: String) {
         let colorStr = hexString.replacingOccurrences(of: "", with: "#")
         let scan = Scanner(string: colorStr)
         var rgbValue: UInt32 = 0
@@ -19,7 +18,7 @@ extension UIColor {
         self.init(rgbValue)
     }
 
-    public convenience init(_ rgbValue: UInt32) {
+    convenience init(_ rgbValue: UInt32) {
         let red = CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0
         let green = CGFloat((rgbValue & 0xFF00) >> 8) / 255.0
         let blue = CGFloat(rgbValue & 0xFF) / 255.0
@@ -27,12 +26,12 @@ extension UIColor {
     }
 
     /// r,g,b (0 ~ 255)
-    public convenience init(r: Int, g: Int, b: Int, a: CGFloat = 1) {
+    convenience init(r: Int, g: Int, b: Int, a: CGFloat = 1) {
         self.init(red: CGFloat(r) / 255.0, green: CGFloat(g) / 255.0, blue: CGFloat(b) / 255.0, alpha: a)
     }
 
     /// r,g,b (0 ~ 1)
-    public convenience init(r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat = 1) {
+    convenience init(r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat = 1) {
         self.init(red: r, green: g, blue: b, alpha: a)
     }
 
@@ -46,11 +45,11 @@ extension UIColor {
     static var bgColor: UIColor {
         return UIColor(white: 0, alpha: 0.6)
     }
-    
+
     static var mainColor: UIColor {
-        return UIColor(0x0099ff)
+        return UIColor(0x0099FF)
     }
-    
+
     var rgbRed: CGFloat { return rgbaArray()[0] }
 
     var rgbGreen: CGFloat { return rgbaArray()[1] }
@@ -59,7 +58,7 @@ extension UIColor {
 
     var alpha: CGFloat { return rgbaArray()[3] }
 
-    public func rgbaArray() -> [CGFloat] {
+    func rgbaArray() -> [CGFloat] {
         var r: CGFloat = 0
         var g: CGFloat = 0
         var b: CGFloat = 0

@@ -10,7 +10,7 @@
 import UIKit
 
 /// 绘画视图
-class BQDrawView: UIView {
+public class BQDrawView: UIView {
     // MARK: - *** Ivars
 
     private var drawLayer = CAShapeLayer() // 展示层
@@ -62,7 +62,7 @@ class BQDrawView: UIView {
 
     // MARK: - *** Life cycle
 
-    override public init(frame: CGRect) {
+    public override init(frame: CGRect) {
         super.init(frame: frame)
         configUI()
     }
@@ -80,14 +80,14 @@ class BQDrawView: UIView {
 
     // MARK: - *** Instance method
 
-    override func touchesBegan(_ touches: Set<UITouch>, with _: UIEvent?) {
+    public override func touchesBegan(_ touches: Set<UITouch>, with _: UIEvent?) {
         let point = touches.first!.location(in: self)
         drawPath.move(to: point)
         hasDraw = true
         isOut = false
     }
 
-    override func touchesMoved(_ touches: Set<UITouch>, with _: UIEvent?) {
+    public override func touchesMoved(_ touches: Set<UITouch>, with _: UIEvent?) {
         let point = touches.first!.location(in: self)
 
         if bounds.contains(point) {

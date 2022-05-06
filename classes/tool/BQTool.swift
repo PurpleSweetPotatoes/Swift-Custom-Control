@@ -8,13 +8,12 @@
 // *******************************************
 
 import UIKit
-
-struct BQTool {
-    private static var sapceName = ""
+ 
+public struct BQTool {
 
     // MARK: - ***** 计算方法耗时 *****
 
-    static func getFuntionUseTime(function: () -> Void) {
+    static public func getFuntionUseTime(function: () -> Void) {
         let start = CACurrentMediaTime()
         function()
         let end = CACurrentMediaTime()
@@ -23,7 +22,7 @@ struct BQTool {
 
     // MARK: - ***** 对象转json *****
 
-    static func jsonFromObject(obj: Any) -> String {
+    static public func jsonFromObject(obj: Any) -> String {
         guard let data = try? JSONSerialization.data(withJSONObject: obj, options: .prettyPrinted) else {
             return String(describing: obj)
         }
@@ -35,23 +34,13 @@ struct BQTool {
         return String(describing: obj)
     }
 
-    static func currentSapceName() -> String {
-        if sapceName == "" {
-            var arrSapce = AppDelegate.classForCoder().description().split(separator: ".")
-            arrSapce.removeLast()
-            sapceName = arrSapce.joined()
-        }
-        return sapceName
-    }
-
-    static func loadVc(vcName: String, spaceName: String? = nil) -> UIViewController? {
+    static public func loadVc(vcName: String, spaceName: String? = nil) -> UIViewController? {
         var clsName = ""
 
         if let space = spaceName {
             clsName = space + "." + vcName
-
         } else {
-            clsName = currentSapceName() + "." + vcName
+            clsName = (currentSapceName ?? "") + "." + vcName
         }
 
         let cls = NSClassFromString(clsName) as? UIViewController.Type
@@ -129,27 +118,31 @@ struct BQTool {
         }
     }
 
-    static var appName: String? {
+    static public var currentSapceName: String? {
+        return Bundle.main.infoDictionary?["CFBundleExecutable"] as? String
+    }
+    
+    static public var appName: String? {
         return Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String
     }
 
-    static var identifier: String? {
+    static public var identifier: String? {
         return Bundle.main.bundleIdentifier
     }
 
-    static var appVersion: String? {
+    static public var appVersion: String? {
         return Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
     }
 
-    static var systemVersion: String {
+    static public var systemVersion: String {
         return UIDevice.current.systemVersion
     }
 
-    static var uuidIdentifier: String? {
+    static public var uuidIdentifier: String? {
         return UIDevice.current.identifierForVendor?.uuidString
     }
 
-    static func goPermissionSettings() {
+    static public func goPermissionSettings() {
         if let settingsUrl = URL(string: UIApplication.openSettingsURLString) {
             if #available(iOS 10.0, *) {
                 UIApplication.shared.open(settingsUrl, options: [:], completionHandler: nil)
@@ -159,17 +152,17 @@ struct BQTool {
         }
     }
 
-    static func address(_ pt: UnsafeRawPointer) -> String {
+    static public func address(_ pt: UnsafeRawPointer) -> String {
         return String(format: "%p", Int(bitPattern: pt))
     }
 
-    static func random(_ range: Range<Int>) -> Int {
+    static public func random(_ range: Range<Int>) -> Int {
         let count = UInt32(range.endIndex - range.startIndex)
         return Int(arc4random_uniform(count)) + range.startIndex
     }
 
     /// IP地址相关(第一个为外网ip)
-    static func getIFAddresses() -> [String] {
+    static public func getIFAddresses() -> [String] {
         var addresses = [String]()
 
         // Get list of all interfaces on the local machine:

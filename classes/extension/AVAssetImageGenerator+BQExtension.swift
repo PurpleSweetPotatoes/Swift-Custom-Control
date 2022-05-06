@@ -8,9 +8,8 @@
 // *******************************************
 
 import AVFoundation
-import UIKit
 
-extension AVAssetImageGenerator {
+public extension AVAssetImageGenerator {
     func frameImage(_ atTime: CMTimeValue) -> UIImage? {
         appliesPreferredTrackTransform = true
         requestedTimeToleranceBefore = CMTime.zero

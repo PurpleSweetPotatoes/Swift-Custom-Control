@@ -9,9 +9,8 @@
 
 import UIKit
 
-extension UIScrollView {
+public extension UIScrollView {
     func noAdjustInsets(vc: UIViewController) {
-        
         if #available(iOS 11.0, *) {
             contentInsetAdjustmentBehavior = .never
         } else {
@@ -21,8 +20,7 @@ extension UIScrollView {
     }
     
     var captureLongImage: UIImage? {
-        
-        var image: UIImage? = nil
+        var image: UIImage?
         
         let savedContentOffset = contentOffset
         let savedFrame = frame

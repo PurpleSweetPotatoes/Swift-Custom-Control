@@ -88,12 +88,12 @@ extension UIButton {
 
     // MARK: - ***** Override func *****
 
-    open override func removeFromSuperview() {
+    override open func removeFromSuperview() {
         super.removeFromSuperview()
         timer?.cancel()
     }
 
-    open override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+    override open func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         if hitEdge == UIEdgeInsets.zero || !isEnabled || isHidden {
             return super.point(inside: point, with: event)
         }

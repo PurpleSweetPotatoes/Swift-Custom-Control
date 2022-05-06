@@ -11,7 +11,7 @@ import Foundation
 
 import UIKit
 
-extension UILabel {
+public extension UILabel {
     convenience init(frame: CGRect, font: UIFont? = nil, text: String? = nil, textColor: UIColor? = nil, alignment: NSTextAlignment = .left) {
         self.init(frame: frame)
         self.font = font

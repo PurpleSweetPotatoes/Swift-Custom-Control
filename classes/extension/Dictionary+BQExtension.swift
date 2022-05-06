@@ -9,7 +9,7 @@
 
 import Foundation
 
-extension Dictionary where Key == String {
+public extension Dictionary where Key == String {
     func toString(boundary: Bool = false) -> String {
         var outStr = ""
         let keys = self.keys.sorted()
@@ -33,6 +33,7 @@ extension Dictionary where Key == String {
         }
         return outStr
     }
+
     func hasKey(_ key: String) -> Bool {
         return self[key] != nil
     }

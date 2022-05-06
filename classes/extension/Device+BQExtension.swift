@@ -90,7 +90,7 @@ public enum DeviceName: String {
     case unknown
 }
 
-extension UIDevice {
+public extension UIDevice {
     fileprivate static func getVersionCode() -> String {
         var systemInfo = utsname()
         uname(&systemInfo)
@@ -163,7 +163,7 @@ extension UIDevice {
         }
     }
 
-    public static func type() -> DeviceType {
+    static func type() -> DeviceType {
         let versionCode = getVersionCode()
 
         if versionCode.contains("iPhone") {
@@ -179,7 +179,7 @@ extension UIDevice {
         }
     }
 
-    public static func name() -> DeviceName {
+    static func name() -> DeviceName {
         return getVersion(code: getVersionCode())
     }
 }

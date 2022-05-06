@@ -9,11 +9,11 @@
 
 import UIKit
 
-class BQPopVc: UIViewController {
+open class BQPopVc: UIViewController {
     // MARK: - var
 
-    var showTime: TimeInterval = 0.25
-    var hideTime: TimeInterval = 0.25
+    public var showTime: TimeInterval = 0.25
+    public var hideTime: TimeInterval = 0.25
     public var showBgView: Bool = true {
         didSet {
             backView.isHidden = !showBgView
@@ -31,7 +31,7 @@ class BQPopVc: UIViewController {
         }
     }
 
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+    public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         modalPresentationStyle = .overCurrentContext
     }
@@ -43,7 +43,7 @@ class BQPopVc: UIViewController {
 
     // MARK: - life
 
-    override public func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         configUI()
@@ -102,7 +102,7 @@ class BQPopVc: UIViewController {
 
     // MARK: - UI method
 
-    func configUI() {
+    open func configUI() {
         backView.backgroundColor = UIColor.black.withAlphaComponent(0.25)
         view.addSubview(backView)
 

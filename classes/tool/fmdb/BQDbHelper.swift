@@ -5,13 +5,11 @@
 //  Created by baiqiang on 2022/3/26.
 //
 
-#if canImport(SQLite)
-import UIKit
 import SQLite
+import UIKit
 
-class BQDbHelper: NSObject {
-    
-    static let share = BQDbHelper()
+public class BQDbHelper: NSObject {
+    public static let share = BQDbHelper()
     
     private var sqlDb: Connection?
     
@@ -19,19 +17,19 @@ class BQDbHelper: NSObject {
     
 //    MARK: Public
     
-    func createDB(dbName: String = "BQDb.sqlite3") {
+    public func createDB(dbName: String = "BQDb.sqlite3") {
         let dbPath = String.documentPath.appending("/\(dbName)")
         do {
             sqlDb = try Connection(dbPath)
         } catch let err {
-            assert(false, err.localizedDescription)
+            assertionFailure(err.localizedDescription)
         }
-        BQLogger.log("初始化数据库成功")
+        BQLogger.debug("初始化数据库成功")
     }
     
     @discardableResult
-    func createTable(_ cls: SQLiteModelProtocol.Type) -> Bool {
-        guard let db = sqlDb else { return false}
+    public func createTable(_ cls: SQLiteModelProtocol.Type) -> Bool {
+        guard let db = sqlDb else { return false }
         let tableName = cls.tableName
         
         var sql = "CREATE TABLE IF NOT EXISTS \(tableName) (id INTEGER PRIMARY KEY AUTOINCREMENT"
@@ -45,33 +43,34 @@ class BQDbHelper: NSObject {
         sql.append(")")
         do {
             try db.execute(sql)
-            BQLogger.log("sql: \(sql) \n 表 \(tableName) 创建成功!")
+            BQLogger.debug("sql: \(sql) \n 表 \(tableName) 创建成功!")
             return true
         } catch let err {
-            BQLogger.log("建表 \(tableName) 失败: \(err.localizedDescription)")
+            BQLogger.debug("建表 \(tableName) 失败: \(err.localizedDescription)")
             return false
         }
     }
     
     @discardableResult
-    func dorpTable(_ cls: SQLiteModelProtocol.Type) -> Bool {
-        guard let db = sqlDb else { return false}
+    public func dorpTable(_ cls: SQLiteModelProtocol.Type) -> Bool {
+        guard let db = sqlDb else { return false }
         
         let sql = "DROP TABLE \(cls.tableName)"
         do {
             try db.execute(sql)
-            BQLogger.log("表 \(cls.tableName) 删除成功!")
+            BQLogger.debug("表 \(cls.tableName) 删除成功!")
             return true
         } catch let err {
-            BQLogger.log("删表 \(cls.tableName) 失败! \(err.localizedDescription)")
+            BQLogger.debug("删表 \(cls.tableName) 失败! \(err.localizedDescription)")
             return false
         }
     }
     
     /// 插入单个
     @discardableResult
-    public func save<T: SQLiteModelProtocol>(_ model: T)  -> Bool {
-        guard let db = sqlDb else { return false}
+    public func save<T: SQLiteModelProtocol>(_ model: T) -> Bool {
+        guard let db = sqlDb else { return false }
+        
         let infos = T.propertyTypes
         let keys = T.propertyNames
         var values = [String]()
@@ -84,10 +83,10 @@ class BQDbHelper: NSObject {
         let sql = "INSERT INTO \(type(of: model).tableName) (\(keys.joined(separator: ","))) VALUES (\(values.joined(separator: ",")))"
         do {
             try db.execute(sql)
-            BQLogger.log("插入数据成功")
+            BQLogger.debug("插入数据成功")
             return true
         } catch let err {
-            BQLogger.log("插入数据失败 \(err.localizedDescription)")
+            BQLogger.debug("插入数据失败 \(err.localizedDescription)")
             return false
         }
     }
@@ -95,7 +94,7 @@ class BQDbHelper: NSObject {
     /// 修改单个
     @discardableResult
     public func update<T: SQLiteModelProtocol>(_ model: T) -> Bool {
-        guard let db = sqlDb else { return false}
+        guard let db = sqlDb else { return false }
         
         let infos = T.propertyTypes
         let dic = model.propertyDic
@@ -110,10 +109,10 @@ class BQDbHelper: NSObject {
         
         do {
             try db.execute(sql)
-            BQLogger.log("插入数据成功")
+            BQLogger.debug("插入数据成功")
             return true
         } catch let err {
-            BQLogger.log("插入数据失败 \(err.localizedDescription)")
+            BQLogger.debug("插入数据失败 \(err.localizedDescription)")
             return false
         }
     }
@@ -121,20 +120,20 @@ class BQDbHelper: NSObject {
     /// 删除单个
     @discardableResult
     public func delete(_ model: SQLiteModelProtocol) -> Bool {
-        return delete(type(of: model), condition: "id=\(model.id)");
+        return delete(type(of: model), condition: "id=\(model.id)")
     }
     
     /// 删除多个，不设置条件全部删除
     @discardableResult
     public func delete(_ cls: SQLiteModelProtocol.Type, condition: String = "") -> Bool {
-        guard let db = sqlDb else { return false}
+        guard let db = sqlDb else { return false }
         
         let sql = "DELETE FROM \(cls.tableName) WHERE \(condition)"
         do {
             try db.execute(sql)
-            BQLogger.log("删除成功")
+            BQLogger.debug("删除成功")
         } catch let err {
-            BQLogger.log("删除失败 \(err.localizedDescription)")
+            BQLogger.debug("删除失败 \(err.localizedDescription)")
         }
         return true
     }
@@ -145,11 +144,8 @@ class BQDbHelper: NSObject {
     ///   - condition: 查询条件
     @discardableResult
     public func list<T: SQLiteModelProtocol>(_ cls: T.Type, condition: String = "") -> [T]? {
-        
         guard let db = sqlDb else { return nil }
         var sql = "SELECT * FROM \(cls.tableName)"
-        
-        
         
         if condition.count > 0 {
             sql.append(" WHERE \(condition)")
@@ -173,13 +169,9 @@ class BQDbHelper: NSObject {
             }
             
         } catch let err {
-            BQLogger.log("\(cls.tableName) 查询失败 \(err.localizedDescription)");
+            BQLogger.debug("\(cls.tableName) 查询失败 \(err.localizedDescription)")
         }
         
         return nil
     }
-    
-    
 }
-
-#endif

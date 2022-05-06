@@ -13,7 +13,7 @@ import UIKit
 
 private let animationTime = 0.5
 
-class BQPlayerCtrlView: UIView {
+public class BQPlayerCtrlView: UIView {
     // MARK: - *** Ivars
 
     public let sliderV = BQPlayerSliderView(frame: CGRect.zero)
@@ -135,7 +135,7 @@ class BQPlayerCtrlView: UIView {
     // MARK: - *** Event Action
 
     @objc private func playBtnClick(sender: UIButton) {
-        BQLogger.log("播放按钮点击")
+        BQLogger.debug("播放按钮点击")
         if let player = playerV {
             if !sender.isSelected {
                 player.play()
@@ -242,7 +242,7 @@ class BQPlayerCtrlView: UIView {
 // MARK: - 进度条协议
 
 extension BQPlayerCtrlView: BQPlayerSliderViewProtocol {
-    func sliderStartChange() {
+    public func sliderStartChange() {
         if let block = hideBlock {
             DispatchQueue.cancel(task: block)
         }
@@ -254,11 +254,11 @@ extension BQPlayerCtrlView: BQPlayerSliderViewProtocol {
         }
     }
 
-    func sliderDidChange() {
+    public func sliderDidChange() {
         setCurrentTime(sliderV.currentValue)
     }
 
-    func sliderEndChange() {
+    public func sliderEndChange() {
         setCurrentTime(sliderV.currentValue)
         playerV?.seek(time: sliderV.currentValue)
         delayHide()
@@ -271,7 +271,7 @@ extension BQPlayerCtrlView: BQPlayerSliderViewProtocol {
 
 // MARK: - 手势处理部分
 
-extension BQPlayerCtrlView {
+public extension BQPlayerCtrlView {
     private func addGestrueHandle() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(tapGetureClick))
         addGestureRecognizer(tap)

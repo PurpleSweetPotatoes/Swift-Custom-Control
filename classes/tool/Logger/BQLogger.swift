@@ -9,46 +9,38 @@
 
 import UIKit
 
-private let LoggerQueue = DispatchQueue(label: "com.bq.Logger.queue")
-
-typealias CrashBlock = (NSException) -> Void?
-
-// MARK: - BQLogFileLevel
-
-/// 保存日志级别
-/// no     不保存
-/// error   错误级别
-/// waring  警告级别
-/// normal  所有级别
-enum BQLogFileLevel: Int {
-    case no     = 0
-    case error  = 1
-    case waring = 2
-    case normal = 3
-}
+public typealias CrashBlock = (NSException) -> Void?
 
 // MARK: - BQLogger
 
 public enum BQLogger {
-    // MARK: Internal
-
-    /// 日志保存等级 默认不保存
-    static var fileLevel: BQLogFileLevel = .no
-    /// 日志最大(单位b) 默认6M
-    static var maxSize: Double = 1024 * 1024 * 6
-    /// 日志保留时长(单位s) 默认7天
-    static var maxTime: Double = 60 * 60 * 24 * 7
+    
+    static private let configInfo = BQLoggerConfig()
+    
+    static public func config() -> BQLoggerConfig {
+        return configInfo
+    }
 
     /// 开启本地日志记录
     /// - Parameter handle: 文件超过阈值时回调(传回文件路径)回调后文件将被删除重建
-    static func limitHandle(_ handle: @escaping (String) -> Void) {
+    static public func limitHandle(_ handle: @escaping (String) -> Void) {
         fileBlock = handle
+    }
+    
+    static func loadLogger() -> String? {
+        return try? String(contentsOfFile: logFilePath)
+    }
+    
+    public static func clearLogger() {
+        fileHandle?.closeFile()
+        fileHandle = nil
+        try? FileManager.default.removeItem(at: URL(fileURLWithPath: logFilePath))
     }
 
     /// 开启crash日志，无回调存放于本地使用
     /// loadCrashInfo获取
     /// - Parameter handle: 获取到crash日志后回调
-    static func startCrashIntercept(_ handle: CrashBlock? = nil) {
+    public static func startCrashIntercept(_ handle: CrashBlock? = nil) {
         BQLogger.preCrashHandler = NSGetUncaughtExceptionHandler()
         crashHandler = handle
         NSSetUncaughtExceptionHandler { exception in
@@ -66,7 +58,7 @@ public enum BQLogger {
         }
     }
 
-    static func loadCrashInfo(clean: Bool = false) -> String? {
+    public static func loadCrashInfo(clean: Bool = false) -> String? {
         let outStr = try? String(contentsOfFile: crashFilePath())
         if clean {
             try? "".write(toFile: BQLogger.crashFilePath(), atomically: true, encoding: .utf8)
@@ -77,7 +69,7 @@ public enum BQLogger {
         return outStr
     }
 
-    static func showInfo(_ info: String) {
+    public static func showInfo(_ info: String) {
         let sv = UIView(frame: UIScreen.main.bounds)
         sv.backgroundColor = UIColor(white: 0, alpha: 0.7)
         UIApplication.shared.keyWindow?.addSubview(sv)
@@ -104,6 +96,7 @@ public enum BQLogger {
     fileprivate static var fileHandle: FileHandle?
     fileprivate static var fileBlock: StrBlock?
     fileprivate static var cache = Array<String>()
+    
     /// 缓存数组长度
     fileprivate static var cacheLength = 10
     fileprivate static func currentTime() -> String {
@@ -123,49 +116,43 @@ public enum BQLogger {
         return document.appending("/BQCrashInfo.log")
     }
 
-    private static func logFilePath() -> String {
-        let document = String.documentPath
-        return document.appending("/BQLogInfo.log")
+    private static var logFilePath : String {
+        String.documentPath.appending("/BQLogInfo.log")
     }
 }
 
 public extension BQLogger {
+
+    static func debug<T>(_ messsage: T, file: String = #file, funcName: String = #function, lineNum: Int = #line) {
+        printInfo(type: .debug, messsage: messsage, file: file, funcName: funcName, lineNum: lineNum)
+    }
+    
+    static func info<T>(_ messsage: T, file: String = #file, funcName: String = #function, lineNum: Int = #line) {
+        printInfo(type: .info, messsage: messsage, file: file, funcName: funcName, lineNum: lineNum)
+    }
     
     static func log<T>(_ messsage: T, file: String = #file, funcName: String = #function, lineNum: Int = #line) {
-        printInfo(type: "", messsage: messsage, file: file, funcName: funcName, lineNum: lineNum, save: fileLevel == .normal)
+        printInfo(type: .defualt, messsage: messsage, file: file, funcName: funcName, lineNum: lineNum)
     }
-
-    static func waring<T>(_ messsage: T, file: String = #file, funcName: String = #function, lineNum: Int = #line) {
-        printInfo(type: "waring:", messsage: messsage, file: file, funcName: funcName, lineNum: lineNum, save: fileLevel.rawValue >= BQLogFileLevel.waring.rawValue)
-    }
-
+    
     static func error<T>(_ messsage: T, file: String = #file, funcName: String = #function, lineNum: Int = #line) {
-        printInfo(type: "error:", messsage: messsage, file: file, funcName: funcName, lineNum: lineNum, save: fileLevel.rawValue >= BQLogFileLevel.error.rawValue)
+        printInfo(type: .error, messsage: messsage, file: file, funcName: funcName, lineNum: lineNum)
     }
 
-    private static func printInfo<T>(type: String, messsage: T, file: String = #file, funcName: String = #function, lineNum: Int = #line, save: Bool) {
+    private static func printInfo<T>(type: BQLogType, messsage: T, file: String = #filePath, funcName: String = #function, lineNum: Int = #line) {
         
-        let fileName = String(file.split(separator: "/").last!).split(separator: ".").first!
-        var output = "\(BQLogger.currentTime()) \(fileName):\(lineNum) \(funcName) >>> \(messsage)"
-        if !type.isEmpty {
-            output = "\(type) \(output)"
-        }
-
-        if canLog {
-            print(output)
+        let output = "\(type.colorStr)\(BQLogger.currentTime()) [\(file.lastPathComponentName):\(lineNum)] \(funcName) >>> \(messsage)\n"
+        
+        if configInfo.canLog(type: type) {
+            print(output, terminator:"")
         }
         
-        if save {
-            LoggerQueue.async {
-                cache.append(output)
-                if cache.count >= cacheLength {
-                    let fileInfo = cache.joined(separator: "\n") + "\n"
-                    self.saveInfo(info: fileInfo, filePath: logFilePath())
-                    cache.removeAll()
-                }
+        // 保存
+        if configInfo.canSave(type: type) {
+            configInfo.loggerQueue.async {
+                saveInfo(info: output, filePath: logFilePath)
             }
         }
-  
     }
 
     private static func saveInfo(info: String, filePath: String) {
@@ -191,14 +178,12 @@ public extension BQLogger {
                 if let block = fileBlock {
                     block(filePath)
                 }
-                fileHandle?.closeFile()
-                fileHandle = nil
-                try? FileManager.default.removeItem(at: URL(fileURLWithPath: filePath))
+                clearLogger()
             }
             
-            if let size = fileInfo[FileAttributeKey.size] as? NSNumber, size.doubleValue >= maxSize {
+            if let size = fileInfo[FileAttributeKey.size] as? NSNumber, size.doubleValue >= configInfo.maxSize {
                 callLimitBlock()
-            } else if let date = fileInfo[FileAttributeKey.creationDate] as? Date, -date.timeIntervalSinceNow >= maxTime {
+            } else if let date = fileInfo[FileAttributeKey.creationDate] as? Date, -date.timeIntervalSinceNow >= configInfo.saveTime {
                 callLimitBlock()
             }
         }

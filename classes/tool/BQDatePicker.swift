@@ -11,7 +11,7 @@ import UIKit
 
 // MARK: - DatePickerOptions
 
-struct DatePickerOptions: OptionSet {
+public struct DatePickerOptions: OptionSet {
     // MARK: Public
 
     public func convenToArr() -> [DatePickerOptions] {
@@ -23,31 +23,35 @@ struct DatePickerOptions: OptionSet {
         
         return outArr
     }
+    
+    public init(rawValue: UInt) {
+        self.rawValue = rawValue
+    }
 
     // MARK: Internal
-    let rawValue: UInt
-    static let year   = DatePickerOptions(rawValue: 1 << 1)
-    static let month  = DatePickerOptions(rawValue: 1 << 2)
-    static let day    = DatePickerOptions(rawValue: 1 << 3)
-    static let hour   = DatePickerOptions(rawValue: 1 << 4)
-    static let min    = DatePickerOptions(rawValue: 1 << 5)
-    static let second = DatePickerOptions(rawValue: 1 << 6)
+    public let rawValue: UInt
+    public static let year   = DatePickerOptions(rawValue: 1 << 1)
+    public static let month  = DatePickerOptions(rawValue: 1 << 2)
+    public static let day    = DatePickerOptions(rawValue: 1 << 3)
+    public static let hour   = DatePickerOptions(rawValue: 1 << 4)
+    public static let min    = DatePickerOptions(rawValue: 1 << 5)
+    public static let second = DatePickerOptions(rawValue: 1 << 6)
 }
 
 // MARK: - BQDatePickerDelegate
 
-protocol BQDatePickerDelegate: NSObjectProtocol {
+public protocol BQDatePickerDelegate: NSObjectProtocol {
     func datePickerCancel(_ picker: BQDatePicker)
     func datePickerSelect(_ picker: BQDatePicker, date: Date)
 }
 
-extension BQDatePickerDelegate {
+public extension BQDatePickerDelegate {
     func datePickerCancel(_: BQDatePicker) {}
 }
 
 // MARK: - BQDatePicker
 
-class BQDatePicker: UIView {
+public class BQDatePicker: UIView {
     // MARK: Lifecycle
 
     // MARK: - *** Life cycle
@@ -247,11 +251,11 @@ class BQDatePicker: UIView {
 // MARK: UIPickerViewDataSource, UIPickerViewDelegate
 
 extension BQDatePicker: UIPickerViewDataSource, UIPickerViewDelegate {
-    func numberOfComponents(in _: UIPickerView) -> Int {
+    public func numberOfComponents(in _: UIPickerView) -> Int {
         return numopt.count
     }
 
-    func pickerView(_: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    public func pickerView(_: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         let type = numopt[component]
         switch type {
         case .year:
@@ -290,7 +294,7 @@ extension BQDatePicker: UIPickerViewDataSource, UIPickerViewDelegate {
         }
     }
 
-    func pickerView(_: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+    public func pickerView(_: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         let type = numopt[component]
         switch type {
         case .year:
@@ -311,7 +315,7 @@ extension BQDatePicker: UIPickerViewDataSource, UIPickerViewDelegate {
         return ""
     }
 
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+    public func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         let type = numopt[component]
         switch type {
         case .year:
@@ -333,7 +337,7 @@ extension BQDatePicker: UIPickerViewDataSource, UIPickerViewDelegate {
         }
     }
 
-    func pickerView(_: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+    public func pickerView(_: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
         var pickerLabel = view as? UILabel
 
         if pickerLabel == nil {

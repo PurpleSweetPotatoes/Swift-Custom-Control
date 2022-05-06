@@ -9,9 +9,9 @@
 
 import AVFoundation
 
-typealias ExportBlock = (_ exportUrl: String?, _ errDesc: String?) -> Void
+public typealias ExportBlock = (_ exportUrl: String?, _ errDesc: String?) -> Void
 
-enum BQFileType: String {
+public enum BQFileType: String {
     case mp4
     case mov
     case m4a
@@ -31,8 +31,7 @@ enum BQFileType: String {
     }
 }
 
-extension AVAssetExportSession {
-    
+public extension AVAssetExportSession {
     /// 压缩导出音视频文件
     /// - Parameters:
     ///   - type: 导出文件类型
@@ -40,7 +39,7 @@ extension AVAssetExportSession {
     ///   - presetName: 导出预设样式
     ///   - handle: 回调
     @discardableResult
-    static func compositionFile(type: BQFileType, trackList: [BQAssetTrack], presetName: String = AVAssetExportPresetHighestQuality, handle: @escaping ExportBlock) -> AVAssetExportSession? {
+    class func compositionFile(type: BQFileType, trackList: [BQAssetTrack], presetName: String = AVAssetExportPresetHighestQuality, handle: @escaping ExportBlock) -> AVAssetExportSession? {
         let compostion = AVMutableComposition()
         compostion.addTracks(trackList: trackList)
         return exportFile(type: type, assert: compostion, presetName: presetName, handle: handle)

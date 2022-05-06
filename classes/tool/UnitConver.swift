@@ -11,13 +11,13 @@ import UIKit
 
 // MARK: - UnitConver
 
-protocol UnitConver {
+public protocol UnitConver {
     func toDistance() -> String
     func toDiskSize() -> String
 }
 
-extension UnitConver {
-    public func toDistance() -> String {
+public extension UnitConver {
+    func toDistance() -> String {
         if let value = converToNum(), value >= 0 {
             if value > 1000.0 {
                 return String(format: "%.1fkm", value / 1000)
@@ -29,7 +29,7 @@ extension UnitConver {
         }
     }
 
-    public func toDiskSize() -> String {
+    func toDiskSize() -> String {
         if let value = converToNum(), value >= 0 {
             let unit = 1024.0
 
@@ -82,7 +82,7 @@ extension Float: UnitConver {}
 extension Int: UnitConver {
     
     /// 小数点字符串
-    func toDecimalStr(num: Int = 2) -> String {
+    public func toDecimalStr(num: Int = 2) -> String {
         let deciNum = Float(self)
         let diNum = Float(pow(Double(10), Double(num)))
         return String(format: "%0.\(num)f", deciNum / diNum)

@@ -11,14 +11,21 @@ import UIKit
 
 // MARK: - TabBarVcModel
 
-struct TabBarVcModel {
+public struct TabBarVcModel {
     var name: String = ""
     var title: String = ""
     var selectImg: String = ""
     var normalImg: String = ""
+
+    public init(name: String, title: String, selectImg: String, normalImg: String) {
+        self.name = name
+        self.title = title
+        self.selectImg = selectImg
+        self.normalImg = normalImg
+    }
 }
 
-extension UITabBarController {
+public extension UITabBarController {
     /// 快捷创建tabbarVc方式
     ///
     /// - Parameter arr: 数组嵌套字典 vcName: selectImg: normalImg:
@@ -42,7 +49,7 @@ extension UITabBarController {
                 let tabbarItem = UITabBarItem(title: title, image: UIImage.orginImg(name: vcInfo.normalImg), selectedImage: UIImage.orginImg(name: vcInfo.selectImg))
                 vc.tabBarItem = tabbarItem
                 vc.title = vcInfo.title
-                
+
                 if needNav {
                     let navVc = BQNavgationController(rootViewController: vc)
                     vcArr.append(navVc)

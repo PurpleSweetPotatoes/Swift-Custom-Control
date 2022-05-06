@@ -6,15 +6,15 @@
 //
 
 import Foundation
-
-enum SQLiteType: String {
+ 
+public enum SQLiteType: String {
     case text = "TEXT"     //字符串、日期
     case inter = "INTEGER" //数字、时间戳
     case float = "REAL"    // 浮点数
     case bool = "BLOB"     // 真假,很少使用
 }
 
-protocol SQLiteModelProtocol: Codable {
+public protocol SQLiteModelProtocol: Codable {
     /// 表名
     static var tableName: String { get }
     
@@ -33,7 +33,7 @@ protocol SQLiteModelProtocol: Codable {
     var propertyDic: [String: String] { get }
 }
 
-extension SQLiteModelProtocol {
+public extension SQLiteModelProtocol {
     
     var propertyDic: [String: String] {
         var dic = [String: String]()

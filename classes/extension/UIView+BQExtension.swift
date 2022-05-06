@@ -9,35 +9,34 @@
 
 import UIKit
 
-extension UIView {
+public extension UIView {
     var origin: CGPoint {
         get { return frame.origin }
         set { frame.origin = newValue }
     }
-    
+
     @discardableResult
     func origin(_ origin: CGPoint) -> Self {
         self.origin = origin
         return self
     }
-    
-    
+
     var top: CGFloat {
         get { return frame.origin.y }
         set { frame.origin = CGPoint(x: frame.origin.x, y: newValue) }
     }
-    
+
     @discardableResult
     func top(_ top: CGFloat) -> Self {
         self.top = top
         return self
     }
-    
+
     var left: CGFloat {
         get { return frame.origin.x }
         set { frame.origin = CGPoint(x: newValue, y: frame.origin.y) }
     }
-    
+
     @discardableResult
     func left(_ left: CGFloat) -> Self {
         self.left = left
@@ -48,7 +47,7 @@ extension UIView {
         get { return frame.origin.y + frame.height }
         set { top = newValue - frame.height }
     }
-    
+
     @discardableResult
     func bottom(_ bottom: CGFloat) -> Self {
         self.bottom = bottom
@@ -59,7 +58,7 @@ extension UIView {
         get { return frame.origin.x + frame.width }
         set { left = newValue - frame.width }
     }
-    
+
     @discardableResult
     func right(_ right: CGFloat) -> Self {
         self.right = right
@@ -70,7 +69,7 @@ extension UIView {
         get { return bounds.size }
         set { bounds.size = newValue }
     }
-    
+
     @discardableResult
     func size(_ size: CGSize) -> Self {
         self.size = size
@@ -81,7 +80,7 @@ extension UIView {
         get { return frame.width }
         set { frame.size = CGSize(width: newValue, height: frame.height) }
     }
-    
+
     @discardableResult
     func sizeW(_ sizeW: CGFloat) -> Self {
         self.sizeW = sizeW
@@ -92,13 +91,13 @@ extension UIView {
         get { return frame.height }
         set { frame.size = CGSize(width: frame.width, height: newValue) }
     }
-    
+
     @discardableResult
     func sizeH(_ sizeH: CGFloat) -> Self {
         self.sizeH = sizeH
         return self
     }
-    
+
     func cneter(_ point: CGPoint) -> Self {
         center = point
         return self
@@ -124,12 +123,12 @@ extension UIView {
     }
 
     @discardableResult
-    func setBordColor(color: UIColor, width: CGFloat = 1.0) -> Self{
+    func setBordColor(color: UIColor, width: CGFloat = 1.0) -> Self {
         layer.borderColor = color.cgColor
         layer.borderWidth = width
         return self
     }
-    
+
     static func xibView(name: String? = nil) -> Self? {
         var clsName = ""
         if let cn = name {

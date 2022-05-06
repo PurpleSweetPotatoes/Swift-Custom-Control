@@ -10,10 +10,10 @@
 import UIKit
 import WebKit
 
-typealias ScriptBlock = (_ message: WKScriptMessage) -> Void
+public typealias ScriptBlock = (_ message: WKScriptMessage) -> Void
 
 /// h5端js交互消息发送 window.webkit.messageHandlers.<注册的消息名称>.post
-class BQWebView: WKWebView {
+public class BQWebView: WKWebView {
     // MARK: - *** Ivars
 
     let scriptObjc = WebScriptObjc()
@@ -23,11 +23,11 @@ class BQWebView: WKWebView {
 
     // MARK: - *** Public method
     
-    init(frame: CGRect) {
+    public init(frame: CGRect) {
         super.init(frame: frame, configuration: WKWebViewConfiguration())
     }
     
-    override init(frame: CGRect, configuration: WKWebViewConfiguration) {
+    public override init(frame: CGRect, configuration: WKWebViewConfiguration) {
         super.init(frame: frame, configuration: configuration)
     }
     
@@ -97,7 +97,7 @@ class BQWebView: WKWebView {
         cookScript = WKUserScript(source: cookieStr, injectionTime: .atDocumentStart, forMainFrameOnly: true)
         configuration.userContentController.addUserScript(cookScript!)
         for script in configuration.userContentController.userScripts {
-            BQLogger.log("===\(script.source)")
+            BQLogger.debug("===\(script.source)")
         }
     }
 
@@ -128,30 +128,30 @@ class BQWebView: WKWebView {
 
 @available(iOS 11.0, *)
 extension BQWebView: WKURLSchemeHandler {
-    func webView(_: WKWebView, start _: WKURLSchemeTask) {
-        BQLogger.log("开始请求")
+    public func webView(_: WKWebView, start _: WKURLSchemeTask) {
+        BQLogger.debug("开始请求")
     }
 
-    func webView(_: WKWebView, stop _: WKURLSchemeTask) {
-        BQLogger.log("完成请求")
+    public func webView(_: WKWebView, stop _: WKURLSchemeTask) {
+        BQLogger.debug("完成请求")
     }
 }
 
-class WebScriptObjc: NSObject, WKScriptMessageHandler {
+public class WebScriptObjc: NSObject, WKScriptMessageHandler {
     deinit {
-        BQLogger.log("\(self) 释放")
+        BQLogger.debug("\(self) 释放")
     }
 
-    var msgBlocks = [String: ScriptBlock]()
+    public var msgBlocks = [String: ScriptBlock]()
 
-    func userContentController(_: WKUserContentController, didReceive message: WKScriptMessage) {
+    public func userContentController(_: WKUserContentController, didReceive message: WKScriptMessage) {
         if let block = msgBlocks[message.name] {
             block(message)
         }
     }
 }
 
-extension WKWebView {
+public extension WKWebView {
     
     @discardableResult
     func load(_ urlStr: String) -> WKNavigation? {

@@ -10,7 +10,7 @@
 
 import UIKit
 
-class BQPieChartView: BQChartView {
+public class BQPieChartView: BQChartView {
 
 
     //MARK: - *** Ivars

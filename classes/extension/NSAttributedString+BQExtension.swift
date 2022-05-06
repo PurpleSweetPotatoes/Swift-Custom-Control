@@ -9,9 +9,9 @@
 
 import UIKit
 
-typealias AttributesKey = NSAttributedString.Key
+public typealias AttributesKey = NSAttributedString.Key
 
-extension NSAttributedString {
+public extension NSAttributedString {
     convenience init(string: String, font: UIFont? = nil, textColor: UIColor? = nil) {
         let textInfo = BQTextAttributes()
         textInfo.font = font

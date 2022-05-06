@@ -2,17 +2,16 @@
 //  File Name:      UICell+BQExtension.swift
 //  Author:         MrBai
 //  Created Date:   2022/2/23 4:28 PM
-//    
+//
 //  Copyright © 2022 ___ORGANIZATIONNAME___
 //  All rights reserved
 // *******************************************
-    
 
 import UIKit
 
-extension UITableViewCell {
+public extension UITableViewCell {
     /// 注册cell
-    static func register(to tableV: UITableView, isNib: Bool = false) {
+    class func register(to tableV: UITableView, isNib: Bool = false) {
         let identifier = className()
         if isNib {
             tableV.register(UINib(nibName: identifier, bundle: nil), forCellReuseIdentifier: identifier)
@@ -22,12 +21,12 @@ extension UITableViewCell {
     }
 
     /// 加载cell
-    static func load(from tableV: UITableView, indexPath: IndexPath) -> Self {
+    class func load(from tableV: UITableView, indexPath: IndexPath) -> Self {
         return tableV.dequeueReusableCell(withIdentifier: className(), for: indexPath) as! Self
     }
 
     /// 加载临时cell用于计算cell相关属性并缓存
-    static func loadTempleteCell(from tableV: UITableView) -> Self {
+    class func loadTempleteCell(from tableV: UITableView) -> Self {
         return tableV.dequeueReusableCell(withIdentifier: className()) as! Self
     }
 
@@ -36,7 +35,7 @@ extension UITableViewCell {
         var fittingHeight: CGFloat = 0
 
         var contentViewWidth = tableV.bounds.width
-        if let accessoryView = self.accessoryView {
+        if let accessoryView = accessoryView {
             contentViewWidth -= (16 + accessoryView.bounds.width)
         } else {
             let systemAccessoryWidths: [CGFloat] = [0, 34, 68, 40, 48]
@@ -67,7 +66,7 @@ extension UITableViewCell {
     }
 }
 
-extension UITableViewHeaderFooterView {
+public extension UITableViewHeaderFooterView {
     /// 注册 headerFooterView
     static func register(to tableV: UITableView, isNib: Bool = false) {
         let identifier = className()
@@ -82,10 +81,9 @@ extension UITableViewHeaderFooterView {
     static func load(from tableV: UITableView) -> Self {
         return tableV.dequeueReusableHeaderFooterView(withIdentifier: className()) as! Self
     }
-
 }
 
-extension UICollectionViewCell {
+public extension UICollectionViewCell {
     static func register(to collectionV: UICollectionView, isNib: Bool = false) {
         let identifier = className()
         if isNib {
@@ -94,7 +92,7 @@ extension UICollectionViewCell {
             collectionV.register(self, forCellWithReuseIdentifier: identifier)
         }
     }
-    
+
     static func load(from collectionV: UICollectionView, indexPath: IndexPath) -> Self {
         return collectionV.dequeueReusableCell(withReuseIdentifier: className(), for: indexPath) as! Self
     }

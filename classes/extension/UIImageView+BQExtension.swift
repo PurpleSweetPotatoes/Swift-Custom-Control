@@ -11,7 +11,7 @@ import UIKit
 
 private let ioImgQueue = DispatchQueue(label: "ioImgQueue", qos: DispatchQoS.default, attributes: DispatchQueue.Attributes.concurrent)
 
-extension UIImageView {
+public extension UIImageView {
     func canshow() {
         addTapGes { [weak self] _ in
             if let image = self?.image {
@@ -86,7 +86,7 @@ extension UIImageView {
     }
 
     static func frameDuration(index: Int, source: CGImageSource) -> Double {
-        var frameDuration: Double = 0.1
+        var frameDuration = 0.1
         let frameProperties = CGImageSourceCopyPropertiesAtIndex(source, index, nil)! as! [String: AnyObject]
         let gifProperties = frameProperties[kCGImagePropertyGIFDictionary as String] as! [String: AnyObject]
         let delayTimeUnclampedProp = gifProperties[kCGImagePropertyGIFUnclampedDelayTime as String] as? NSNumber

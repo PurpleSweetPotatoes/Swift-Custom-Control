@@ -9,9 +9,9 @@
 
 import UIKit
 
-typealias TableViewProtocol = UITableViewDelegate & UITableViewDataSource
+public typealias TableViewProtocol = UITableViewDelegate & UITableViewDataSource
 
-protocol EmptyViewProtocol: NSObjectProtocol {
+public protocol EmptyViewProtocol: NSObjectProtocol {
     /// 用以判断是会否显示空视图
     func showEmptyView(tableView: UITableView) -> Bool
 
@@ -19,13 +19,13 @@ protocol EmptyViewProtocol: NSObjectProtocol {
     func configEmptyView(tableView: UITableView) -> UIView
 }
 
-extension EmptyViewProtocol {
+public extension EmptyViewProtocol {
     func configEmptyView() -> UIView {
         return UIView()
     }
 }
 
-extension UITableView {
+public extension UITableView {
     // MARK: - ***** Public Method *****
 
     /// convenience method use config tableView has no separator
@@ -36,28 +36,44 @@ extension UITableView {
         estimatedRowHeight = 50
         dataSource = objc
         delegate = objc
-        
+
         if #available(iOS 15.0, *) {
             sectionHeaderTopPadding = 0
         }
     }
 
     func setEmtpyViewDelegate(target: EmptyViewProtocol) {
-        emptyDelegate = target
+        self.emptyDelegate = target
         DispatchQueue.once(token: #function) {
             UITableView.exchangeMethod(targetSel: #selector(layoutSubviews), newSel: #selector(re_layoutSubviews))
         }
     }
 
+    func addRefreshControl(_ target: Any?, action: Selector) {
+        if let _ = refreshControl {
+            BQLogger.info("did has refresh, need remove first")
+            return
+        }
+        let refresh = UIRefreshControl()
+        refresh.addTarget(target, action: action, for: .valueChanged)
+        addSubview(refresh)
+        refreshControl = refresh
+    }
+
+    func removeRefreshControl() {
+        if let control = refreshControl {
+            control.removeFromSuperview()
+        }
+    }
+
     @objc func re_layoutSubviews() {
-        re_layoutSubviews()
+        self.re_layoutSubviews()
         if let delegate = emptyDelegate {
-            
             let emptyViewTag = 10_231_343
-            
+
             if delegate.showEmptyView(tableView: self) {
                 let emptyView = delegate.configEmptyView(tableView: self)
-                
+
                 if let v = viewWithTag(emptyViewTag) {
                     if emptyView == v {
                         v.isHidden = false
@@ -71,13 +87,13 @@ extension UITableView {
                     addSubview(emptyView)
                 }
             } else {
-                if let v = viewWithTag(emptyViewTag){
+                if let v = viewWithTag(emptyViewTag) {
                     v.isHidden = true
                 }
             }
         }
     }
-    
+
     // MARK: - ***** Associated Object *****
 
     private enum AssociatedKeys {
@@ -94,20 +110,22 @@ extension UITableView {
     }
 }
 
-// MARK:- 链式编程
-public extension UITableView {
+// MARK: - 链式编程
 
+public extension UITableView {
     // MARK: 2.1、设置 delegate 代理
+
     /// 设置 delegate 代理
     /// - Parameter delegate: delegate description
     /// - Returns: 返回自身
-   @discardableResult
+    @discardableResult
     func delegate(_ delegate: UITableViewDelegate) -> Self {
         self.delegate = delegate
         return self
     }
 
     // MARK: 2.2、设置 dataSource 代理
+
     /// 设置 dataSource 代理
     /// - Parameter dataSource: dataSource description
     /// - Returns: 返回自身
@@ -118,6 +136,7 @@ public extension UITableView {
     }
 
     // MARK: 2.3、设置行高
+
     /// 设置行高
     /// - Parameter height: 行高
     /// - Returns: 返回自身
@@ -128,6 +147,7 @@ public extension UITableView {
     }
 
     // MARK: 2.4、设置段头(sectionHeaderHeight)的高度
+
     /// 设置段头(sectionHeaderHeight)的高度
     /// - Parameter height: 段头的高度
     /// - Returns: 返回自身
@@ -138,6 +158,7 @@ public extension UITableView {
     }
 
     // MARK: 2.5、设置段尾(sectionHeaderHeight)的高度
+
     /// 设置段尾(sectionHeaderHeight)的高度
     /// - Parameter height: 段尾的高度
     /// - Returns: 返回自身
@@ -148,6 +169,7 @@ public extension UITableView {
     }
 
     // MARK: 2.6、设置一个默认cell高度
+
     /// 设置一个默认cell高度
     /// - Parameter height: 默认cell高度
     /// - Returns: 返回自身
@@ -158,6 +180,7 @@ public extension UITableView {
     }
 
     // MARK: 2.7、设置默认段头(estimatedSectionHeaderHeight)高度
+
     /// 设置默认段头(estimatedSectionHeaderHeight)高度
     /// - Parameter height: 段头高度
     /// - Returns: 返回自身
@@ -168,6 +191,7 @@ public extension UITableView {
     }
 
     // MARK: 2.8、设置默认段尾(estimatedSectionFooterHeight)高度
+
     /// 设置默认段尾(estimatedSectionFooterHeight)高度
     /// - Parameter height: 段尾高度
     /// - Returns: 返回自身
@@ -178,6 +202,7 @@ public extension UITableView {
     }
 
     // MARK: 2.9、设置分割线的样式
+
     /// 设置分割线的样式
     /// - Parameter style: 分割线的样式
     /// - Returns: 返回自身
@@ -188,6 +213,7 @@ public extension UITableView {
     }
 
     // MARK: 2.10、设置 UITableView 的头部 tableHeaderView
+
     /// 设置 UITableView 的头部 tableHeaderView
     /// - Parameter head: 头部 View
     /// - Returns: 返回自身
@@ -198,6 +224,7 @@ public extension UITableView {
     }
 
     // MARK: 2.11、设置 UITableView 的尾部 tableFooterView
+
     /// 设置 UITableView 的尾部 tableFooterView
     /// - Parameter foot: 尾部 View
     /// - Returns: 返回自身
@@ -208,6 +235,7 @@ public extension UITableView {
     }
 
     // MARK: 2.12、滚动到第几个IndexPath
+
     /// 滚动到第几个IndexPath
     /// - Parameters:
     ///   - indexPath: 第几个IndexPath
@@ -216,7 +244,7 @@ public extension UITableView {
     /// - Returns: 返回自身
     @discardableResult
     func scroll(to indexPath: IndexPath, at scrollPosition: UITableView.ScrollPosition = .middle, animated: Bool = true) -> Self {
-        if indexPath.section < 0 || indexPath.row < 0 || indexPath.section > self.numberOfSections || indexPath.row > self.numberOfRows (inSection: indexPath.section) {
+        if indexPath.section < 0 || indexPath.row < 0 || indexPath.section > self.numberOfSections || indexPath.row > self.numberOfRows(inSection: indexPath.section) {
             return self
         }
         scrollToRow(at: indexPath, at: scrollPosition, animated: animated)
@@ -224,6 +252,7 @@ public extension UITableView {
     }
 
     // MARK: 2.13、滚动到第几个row、第几个section
+
     /// 滚动到第几个row、第几个section
     /// - Parameters:
     ///   - row: 第几 row
@@ -233,10 +262,11 @@ public extension UITableView {
     /// - Returns: 返回自身
     @discardableResult
     func scroll(row: Int, section: Int = 0, at scrollPosition: UITableView.ScrollPosition = .middle, animated: Bool = true) -> Self {
-        return scroll(to: IndexPath.init(row: row, section: section), at: scrollPosition, animated: animated)
+        return self.scroll(to: IndexPath(row: row, section: section), at: scrollPosition, animated: animated)
     }
 
     // MARK: 2.14、滚动到最近选中的cell（选中的cell消失在屏幕中，触发事件可以滚动到选中的cell）
+
     /// 滚动到最近选中的cell（选中的cell消失在屏幕中，触发事件可以滚动到选中的cell）
     /// - Parameters:
     ///   - scrollPosition: 滚动的方式
@@ -244,26 +274,7 @@ public extension UITableView {
     /// - Returns: 返回自身
     @discardableResult
     func scrollToNearestSelectedRow(scrollPosition: UITableView.ScrollPosition = .middle, animated: Bool = true) -> Self {
-        scrollToNearestSelectedRow(at: scrollPosition, animated: animated)
+        self.scrollToNearestSelectedRow(at: scrollPosition, animated: animated)
         return self
     }
 }
-
-
-
-#if canImport(MJRefresh)
-    import MJRefresh
-
-    extension UITableView {
-        func addHeaderRefresh(block: @escaping VoidBlock) {
-            let head = MJRefreshNormalHeader(refreshingBlock: block)
-            mj_header = head
-        }
-
-        func addFooterRefresh(block: @escaping VoidBlock) {
-            let footer = MJRefreshAutoNormalFooter(refreshingBlock: block)
-            mj_footer = footer
-        }
-    }
-
-#endif

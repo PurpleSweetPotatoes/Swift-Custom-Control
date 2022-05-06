@@ -9,16 +9,16 @@
 
 import UIKit
 
-class BQNavgationController: UINavigationController, UINavigationControllerDelegate, UIGestureRecognizerDelegate {
+public class BQNavgationController: UINavigationController, UINavigationControllerDelegate, UIGestureRecognizerDelegate {
     private var panGestureVC: UIViewController?
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         delegate = self
         interactivePopGestureRecognizer?.delegate = self
     }
 
-    override func pushViewController(_ viewController: UIViewController, animated: Bool) {
+    public override func pushViewController(_ viewController: UIViewController, animated: Bool) {
         if viewControllers.count == 1 { viewController.hidesBottomBarWhenPushed = true }
 
         super.pushViewController(viewController, animated: animated)
@@ -26,13 +26,13 @@ class BQNavgationController: UINavigationController, UINavigationControllerDeleg
 
     // MARK: - UINavigationControllerDelegate
 
-    func navigationController(_: UINavigationController, didShow viewController: UIViewController, animated _: Bool) {
+    public func navigationController(_: UINavigationController, didShow viewController: UIViewController, animated _: Bool) {
         panGestureVC = viewControllers.count <= 1 ? nil : viewController
     }
 
     // MARK: - UIGestureRecognizerDelegate
 
-    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         if interactivePopGestureRecognizer == gestureRecognizer {
             // Begin to pop only when top view controller is current child view controller but not root view controller
             if let panVc = panGestureVC, panVc == topViewController {
@@ -43,7 +43,7 @@ class BQNavgationController: UINavigationController, UINavigationControllerDeleg
     }
 }
 
-extension UIViewController {
+public extension UIViewController {
     private enum AssociatedKeys {
         static var navBack: Void?
     }

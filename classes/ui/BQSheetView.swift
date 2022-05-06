@@ -9,12 +9,12 @@
 
 import UIKit
 
-enum SheetType {
+public enum SheetType {
     case table
     case collection
 }
 
-class BQSheetView: UIView, UICollectionViewDataSource, UICollectionViewDelegate {
+public class BQSheetView: UIView, UICollectionViewDataSource, UICollectionViewDelegate {
     // MARK: - ***** Ivars *****
 
     private var title: String?
@@ -33,7 +33,7 @@ class BQSheetView: UIView, UICollectionViewDataSource, UICollectionViewDelegate 
     ///   - tableDatas: 数据信息
     ///   - title: 标题
     ///   - handle: 回调
-    static func showSheetView(tableDatas: [String], title: String? = nil, handle: @escaping (Int) -> Void) {
+    public static func showSheetView(tableDatas: [String], title: String? = nil, handle: @escaping (Int) -> Void) {
         let sheetView = BQSheetView(tableDatas: tableDatas, title: title)
         sheetView.callBlock = handle
         UIApplication.shared.keyWindow?.addSubview(sheetView)
@@ -46,7 +46,7 @@ class BQSheetView: UIView, UICollectionViewDataSource, UICollectionViewDelegate 
     ///   - shareDatas: ["image":"图片名"]
     ///   - title: 抬头名称
     ///   - handle: 回调方法
-    static func showShareView(shareDatas: [[String: String]], title: String, handle: @escaping (Int) -> Void) {
+    public static func showShareView(shareDatas: [[String: String]], title: String, handle: @escaping (Int) -> Void) {
         let sheetView = BQSheetView(shareDatas: shareDatas, title: title)
         sheetView.callBlock = handle
         UIApplication.shared.keyWindow?.addSubview(sheetView)
@@ -134,17 +134,17 @@ class BQSheetView: UIView, UICollectionViewDataSource, UICollectionViewDelegate 
 
     // MARK: - ***** Protocol *****
 
-    func collectionView(_: UICollectionView, numberOfItemsInSection _: Int) -> Int {
+    public func collectionView(_: UICollectionView, numberOfItemsInSection _: Int) -> Int {
         return shareDatas.count
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BQShareItemCell", for: indexPath) as! BQShareItemCell
         cell.loadInfo(dic: shareDatas[indexPath.row])
         return cell
     }
 
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
         callBlock(indexPath.row)
         removeAnimation()

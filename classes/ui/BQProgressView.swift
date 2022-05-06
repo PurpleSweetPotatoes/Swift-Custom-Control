@@ -9,11 +9,11 @@
 
 import UIKit
 
-enum BQProgressType {
+public enum BQProgressType {
     case circle // 原型
 }
 
-class BQProgressView: UIView {
+public class BQProgressView: UIView {
     // MARK: - *** Ivars
 
     private var type = BQProgressType.circle

@@ -7,62 +7,58 @@
 //  All rights reserved
 // *******************************************
 
-#if canImport(Alamofire)
+import Alamofire
 
-    import Alamofire
+/**
+ 网络请求对象，使用点语法配置成功和失败回调
+ */
+final public class BQRequest {
+    public var request: Alamofire.Request?
+    public var desc: String = ""
 
-    /**
-     网络请求对象，使用点语法配置成功和失败回调
-     */
-    final class BQRequest {
-        var request: Alamofire.Request?
-        var desc: String = ""
+    private var successHandler: BQSuccessClosure?
+    private var failedHandler: BQFailedClosure?
 
-        private var successHandler: BQSuccessClosure?
-        private var failedHandler: BQFailedClosure?
+    // MARK: - Handler
 
-        // MARK: - Handler
-
-        func handleResponse(response: AFDataResponse<Any>) {
-            switch response.result {
-            case let .failure(error):
-                if let closure = failedHandler {
-                    BQHudView.show(error.localizedDescription, title: desc)
-                    closure(BQReqError(error.responseCode ?? 0, d: error.localizedDescription, itemD: desc))
-                }
-            case let .success(result):
-                if let closure = successHandler {
-                    closure(result)
-                }
+    func handleResponse(response: AFDataResponse<Any>) {
+        switch response.result {
+        case let .failure(error):
+            if let closure = failedHandler {
+                BQHudView.show(error.localizedDescription, title: desc)
+                closure(BQReqError(error.responseCode ?? 0, d: error.localizedDescription, itemD: desc))
             }
-
-            successHandler = nil
-            failedHandler = nil
+        case let .success(result):
+            if let closure = successHandler {
+                closure(result)
+            }
         }
 
-        @discardableResult
-        public func success(_ closure: @escaping BQSuccessClosure) -> Self {
-            successHandler = closure
-            return self
-        }
-
-        @discardableResult
-        public func failed(_ closure: @escaping BQFailedClosure) -> Self {
-            failedHandler = closure
-            return self
-        }
-
-        func cancel() {
-            request?.cancel()
-        }
+        successHandler = nil
+        failedHandler = nil
     }
 
-    // MARK: - extension 部分
-
-    extension BQRequest: Equatable {
-        static func == (lhs: BQRequest, rhs: BQRequest) -> Bool {
-            return lhs.request?.id == rhs.request?.id
-        }
+    @discardableResult
+    public func success(_ closure: @escaping BQSuccessClosure) -> Self {
+        successHandler = closure
+        return self
     }
 
-#endif
+    @discardableResult
+    public func failed(_ closure: @escaping BQFailedClosure) -> Self {
+        failedHandler = closure
+        return self
+    }
+
+    public func cancel() {
+        request?.cancel()
+    }
+}
+
+// MARK: - extension 部分
+
+extension BQRequest: Equatable {
+    public static func == (lhs: BQRequest, rhs: BQRequest) -> Bool {
+        return lhs.request?.id == rhs.request?.id
+    }
+}

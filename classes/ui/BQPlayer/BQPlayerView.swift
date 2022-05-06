@@ -10,7 +10,7 @@
 import AVFoundation
 import UIKit
 
-protocol BQPlayerViewDelegate: NSObjectProtocol {
+public protocol BQPlayerViewDelegate: NSObjectProtocol {
     func playBtnClick(_ playV: BQPlayerView) -> Bool
     func puaseBtnClick(_ playV: BQPlayerView)
     func playItemDidEnd(_ playV: BQPlayerView)
@@ -19,7 +19,7 @@ protocol BQPlayerViewDelegate: NSObjectProtocol {
     func playStatusChange(_ playV: BQPlayerView)
 }
 
-class BQPlayerView: UIView {
+public class BQPlayerView: UIView {
     // MARK: - *** Ivars
 
     // 公共
@@ -153,7 +153,7 @@ class BQPlayerView: UIView {
     // MARK: - *** Life cycle
 
     deinit {
-        BQLogger.log("播放器界面释放")
+        BQLogger.debug("播放器界面释放")
     }
 
     public convenience init(frame: CGRect, url: String) {
@@ -211,9 +211,9 @@ class BQPlayerView: UIView {
 }
 
 extension BQPlayerView: BQPlayerDelegate {
-    func bqPlayerTimeChange(time: Double) {
+    public func bqPlayerTimeChange(time: Double) {
         if ctrlView.sliderV.isDrag { return }
-        BQLogger.log("时间改变:\(time)")
+        BQLogger.debug("时间改变:\(time)")
         let curTime = Int(time)
         ctrlView.sliderV.setCurrentValue(curTime)
         ctrlView.setCurrentTime(curTime)
@@ -222,10 +222,10 @@ extension BQPlayerView: BQPlayerDelegate {
         }
     }
 
-    func bqPlayerStatusChange(status: BQPlayerStatus, totalTime: Double?) {
-        BQLogger.log("状态改变:\(status)")
+    public func bqPlayerStatusChange(status: BQPlayerStatus, totalTime: Double?) {
+        BQLogger.debug("状态改变:\(status)")
         self.status = status
-        if let total = totalTime {
+        if let total = totalTime, !total.isNaN {
             let time = Int(total)
             ctrlView.sliderV.maxValue = time
             ctrlView.setDuration(time)
@@ -242,24 +242,24 @@ extension BQPlayerView: BQPlayerDelegate {
         }
     }
 
-    func bqPlayerBufferChange(value: Double?) {
+    public func bqPlayerBufferChange(value: Double?) {
         if let val = value {
             ctrlView.sliderV.setBufferValue(Int(val))
         }
     }
 
-    func bqPlayerBufferEmpty() {
-        BQLogger.log("正在加载中....")
+    public func bqPlayerBufferEmpty() {
+        BQLogger.debug("正在加载中....")
     }
 
-    func bqPlayerBufferReady() {
+    public func bqPlayerBufferReady() {
         if let item = player.currentItem {
             activView.isHidden = item.isPlaybackLikelyToKeepUp
         }
     }
 }
 
-extension BQPlayerViewDelegate {
+public extension BQPlayerViewDelegate {
     func playBtnClick(_: BQPlayerView) -> Bool { return true }
     func puaseBtnClick(_: BQPlayerView) {}
     func playItemDidEnd(_: BQPlayerView) {}

@@ -13,7 +13,7 @@ let keyBoardManager = BQKeyBoardManager()
 
 // MARK: - BQKeyBoardManager
 
-class BQKeyBoardManager: NSObject {
+public class BQKeyBoardManager: NSObject {
     // MARK: Public
 
     public static func start(reView: UIView) {

@@ -26,21 +26,21 @@ public enum GradientPostion: Int {
 }
 
 public extension CALayer {
-    static func lineLayer(frame: CGRect, color: UIColor = .groupTableViewBackground) -> CAShapeLayer {
+    class func lineLayer(frame: CGRect, color: UIColor = .groupTableViewBackground) -> CAShapeLayer {
         let line = CAShapeLayer()
         line.frame = frame
         line.backgroundColor = color.cgColor
         return line
     }
-    
-    static func dashLayer(frame: CGRect, color: UIColor = .groupTableViewBackground, dashPattern: [NSNumber] = [5, 5]) -> CAShapeLayer {
+
+    class func dashLayer(frame: CGRect, color: UIColor = .groupTableViewBackground, dashPattern: [NSNumber] = [5, 5]) -> CAShapeLayer {
         let shapeLayer = CAShapeLayer()
         shapeLayer.frame = frame
         shapeLayer.lineDashPattern = dashPattern
         shapeLayer.strokeColor = color.cgColor
         shapeLayer.fillColor = UIColor.clear.cgColor
         shapeLayer.lineWidth = shapeLayer.sizeH
-                
+
         let path = CGMutablePath()
         path.move(to: CGPoint.zero)
         path.addLine(to: CGPoint(x: shapeLayer.sizeW, y: 0))
@@ -48,7 +48,7 @@ public extension CALayer {
         return shapeLayer
     }
 
-    static func gradientLayer(frame: CGRect, start: GradientPostion = .leftTop, end: GradientPostion = .leftBottom, colors: [CGColor], locations: [NSNumber]? = nil) -> CAGradientLayer {
+    class func gradientLayer(frame: CGRect, start: GradientPostion = .leftTop, end: GradientPostion = .leftBottom, colors: [CGColor], locations: [NSNumber]? = nil) -> CAGradientLayer {
         let gradLayer = CAGradientLayer()
         gradLayer.frame = frame
         gradLayer.colors = colors
@@ -63,22 +63,22 @@ public extension CALayer {
         get { return frame.origin }
         set { frame.origin = newValue }
     }
-    
+
     @discardableResult
     func origin(_ origin: CGPoint) -> Self {
         self.origin = origin
-        return self;
+        return self
     }
 
     var top: CGFloat {
         get { return frame.origin.y }
         set { frame.origin = CGPoint(x: frame.origin.x, y: newValue) }
     }
-    
+
     @discardableResult
     func top(_ top: CGFloat) -> Self {
         self.top = top
-        return self;
+        return self
     }
 
     var left: CGFloat {
@@ -89,61 +89,61 @@ public extension CALayer {
     @discardableResult
     func left(_ left: CGFloat) -> Self {
         self.left = left
-        return self;
+        return self
     }
-    
+
     var bottom: CGFloat {
         get { return frame.origin.y + frame.height }
         set { top = newValue - frame.height }
     }
-    
+
     @discardableResult
     func bottom(_ bottom: CGFloat) -> Self {
         self.bottom = bottom
-        return self;
+        return self
     }
 
     var right: CGFloat {
         get { return frame.origin.x + frame.width }
         set { left = newValue - frame.width }
     }
-    
+
     @discardableResult
     func right(_ right: CGFloat) -> Self {
         self.right = right
-        return self;
+        return self
     }
 
     var size: CGSize {
         get { return bounds.size }
         set { bounds.size = newValue }
     }
-    
+
     @discardableResult
     func size(_ size: CGSize) -> Self {
         self.size = size
-        return self;
+        return self
     }
 
     var sizeW: CGFloat {
         get { return frame.width }
         set { frame.size = CGSize(width: newValue, height: frame.height) }
     }
-    
+
     @discardableResult
     func sizeW(_ sizeW: CGFloat) -> Self {
         self.sizeW = sizeW
-        return self;
+        return self
     }
 
     var sizeH: CGFloat {
         get { return frame.height }
         set { frame.size = CGSize(width: frame.width, height: newValue) }
     }
-    
+
     @discardableResult
     func sizeH(_ sizeH: CGFloat) -> Self {
         self.sizeH = sizeH
-        return self;
+        return self
     }
 }

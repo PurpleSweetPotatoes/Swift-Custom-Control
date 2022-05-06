@@ -9,8 +9,8 @@
 
 import Foundation
 
-extension Data {
-    public func toDic() -> Any {
+public extension Data {
+    func toDic() -> Any {
         var result: Any = ""
         do {
             result = try JSONSerialization.jsonObject(with: self, options: .mutableContainers)
@@ -24,7 +24,7 @@ extension Data {
 
     // if want to use this method should open keychain sharing
     @discardableResult
-    public func saveKeychain() -> Bool {
+    func saveKeychain() -> Bool {
         var keychainQuery = type(of: self).getkeychain()
         SecItemDelete(keychainQuery as CFDictionary)
         keychainQuery[kSecValueData as String] = self as AnyObject
@@ -53,9 +53,9 @@ extension Data {
         }
         return nil
     }
-    
+
     var hexStr: String {
-        return self.map { String(format: "%02x", $0) }.joined()
+        return map { String(format: "%02x", $0) }.joined()
     }
 
     // MARK: - ***** private Method *****

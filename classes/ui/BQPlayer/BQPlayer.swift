@@ -9,7 +9,7 @@
 
 import AVFoundation
 
-enum BQPlayerStatus {
+public enum BQPlayerStatus {
     case none
     case ready
     case playing
@@ -20,7 +20,7 @@ enum BQPlayerStatus {
 }
 
 /// 播放器代理
-protocol BQPlayerDelegate: NSObjectProtocol {
+public protocol BQPlayerDelegate: NSObjectProtocol {
     /// 状态改变
     func bqPlayerStatusChange(status: BQPlayerStatus, totalTime: Double?)
 
@@ -39,7 +39,7 @@ protocol BQPlayerDelegate: NSObjectProtocol {
     func bqPlayerTimeChange(time: Double)
 }
 
-class BQPlayer: AVPlayer {
+public class BQPlayer: AVPlayer {
     
     public var bqStatus: BQPlayerStatus = .none {
         didSet {
@@ -75,7 +75,7 @@ class BQPlayer: AVPlayer {
         return currentItem?.duration.seconds ?? 0
     }
 
-    override func play() {
+    public override func play() {
         if hookTime == CMTime.zero {
             hookTime = CMTime(value: 1, timescale: 1)
         }
@@ -90,14 +90,14 @@ class BQPlayer: AVPlayer {
     }
     
     deinit {
-        BQLogger.log("视频层移除")
+        BQLogger.debug("视频层移除")
         cleanObserver()
         if let kv = timeKvo {
             removeTimeObserver(kv)
         }
     }
 
-    override init() {
+    public override init() {
         super.init()
         bqStatus = .none
         playerStatusKvo = observe(\.timeControlStatus, options: [.new]) { [weak self] _, _ in
@@ -105,16 +105,16 @@ class BQPlayer: AVPlayer {
         }
     }
 
-    override init(url URL: URL) {
+    public override init(url URL: URL) {
         super.init(url: URL)
     }
 
-    override init(playerItem item: AVPlayerItem?) {
+    public override init(playerItem item: AVPlayerItem?) {
         super.init(playerItem: item)
         addObserverInfo()
     }
 
-    override func replaceCurrentItem(with item: AVPlayerItem?) {
+    public override func replaceCurrentItem(with item: AVPlayerItem?) {
         cleanObserver()
         self.bqStatus = .none
         super.replaceCurrentItem(with: item)
@@ -186,25 +186,25 @@ class BQPlayer: AVPlayer {
 
 // MARK: - 代理方法默认实现
 
-extension BQPlayerDelegate {
+public extension BQPlayerDelegate {
     func bqPlayerStatusChange(status: BQPlayerStatus, totalTime: Double?) {
-        BQLogger.log("当前状态:\(status),总时长:\(String(describing: totalTime))")
+        BQLogger.debug("当前状态:\(status),总时长:\(String(describing: totalTime))")
     }
 
     func bqPlayerBufferChange(value: Double?) {
-        BQLogger.log("缓存进度改变:\(String(describing: value))")
+        BQLogger.debug("缓存进度改变:\(String(describing: value))")
     }
 
     func bqPlayerBufferEmpty() {
-        BQLogger.log("无缓存可用")
+        BQLogger.debug("无缓存可用")
     }
 
     func bqPlayerBufferReady() {
-        BQLogger.log("有缓存可用")
+        BQLogger.debug("有缓存可用")
     }
 
     func bqPlayerTimeChange(time: Double) {
-        BQLogger.log("播放时间改变:\(time)")
+        BQLogger.debug("播放时间改变:\(time)")
     }
 }
 
