@@ -8,6 +8,7 @@
 // *******************************************
 
 import AVFoundation
+import UIKit
 
 public extension AVAssetImageGenerator {
     func frameImage(_ atTime: CMTimeValue) -> UIImage? {
