@@ -11,8 +11,8 @@ import Foundation
 
 public struct LocalKey<T> {
     var rawValue: String
-    init(_ key: String) {
-        rawValue = "BQUserDefaults_\(key)"
+    public init(_ key: String, preStr: String? = nil) {
+        rawValue = "\(preStr ?? "")\(key)"
     }
 }
 

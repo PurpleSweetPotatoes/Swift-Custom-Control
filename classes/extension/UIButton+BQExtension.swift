@@ -12,12 +12,25 @@ import UIKit
 /// 按钮点击间隔时间，防止重复点击
 private var _interval: TimeInterval = 0.5
 
-extension UIButton {
+public extension UIButton {
     convenience init(frame: CGRect, font: UIFont = .systemFont(ofSize: 17), text: String? = nil, textColor: UIColor? = nil) {
         self.init(frame: frame)
         titleLabel?.font = font
         setTitle(text, for: .normal)
         setTitleColor(textColor, for: .normal)
+    }
+    
+    
+    func setTitle(_ title: String?, for states: [UIControl.State]) {
+        for state in  states {
+            setTitle(title, for: state)
+        }
+    }
+    
+    func setTtitleColor(_ color: UIColor?, for states: [UIControl.State]) {
+        for state in  states {
+            setTitleColor(color, for: state)
+        }
     }
 
     /// 倒计时功能
