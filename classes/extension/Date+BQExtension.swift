@@ -14,7 +14,7 @@ private let _dateFormatter = DateFormatter()
 public extension Date {
     /// 时间戳
     var timeStamp: String {
-        return String(format: "%.lf", timeIntervalSince1970)
+        String(format: "%.lf", timeIntervalSince1970)
     }
 
     /// 格式化日期
@@ -37,54 +37,86 @@ public extension Date {
 
     /// 时间组件
     func components() -> DateComponents {
-        return Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second, .weekday], from: self)
+        Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second, .weekday], from: self)
     }
 
-    /// 获取当日初和明日初
-    /// - Returns: (当日初，明日初)
-    func dayStartAndEnd() -> (Date, Date)? {
-        return dateStartAndEnd([.year, .month, .day]) { compon in
-            var com = compon
-            com.day = (com.day ?? 0) + 1
-            return com
-        }
+    func addDay(_ day: Int) -> Date? {
+        Calendar.current.date(byAdding: .day, value: day, to: self)
+    }
+}
+
+// MARK: calendar date
+public extension Date {
+    var startDayOfMonth: Date? {
+        let calender = Calendar.current
+        let componets = calender.dateComponents([.year, .month], from: self)
+        return calender.date(from: componets)
     }
 
-    /// 获取当月初和下个月初
-    /// - Returns: (当月初，下个月初)
-    func monthStartAndEnd() -> (Date, Date)? {
-        return dateStartAndEnd([.year, .month]) { compon in
-            var com = compon
-            com.month = (com.month ?? 0) + 1
-            return com
-        }
+    var endDayOfMonth: Date? {
+        guard let startDayOfMonth = startDayOfMonth else { return nil }
+        let calendar = Calendar.current
+        var componets = DateComponents()
+        componets.month = 1
+        componets.day = -1
+        return calendar.date(byAdding: componets, to: startDayOfMonth)
     }
 
-    /// 获取当年初和下年初
-    /// - Returns: (当年初，下年初)
-    func yearStartAndEnd() -> (Date, Date)? {
-        return dateStartAndEnd([.year]) { compon in
-            var com = compon
-            com.year = (com.year ?? 0) + 1
-            return com
-        }
+    var startDayOfWeek: Date? {
+        let calender = Calendar.current
+        let componets = calender.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self)
+        return calender.date(from: componets)
     }
 
-    func dateStartAndEnd(_ components: Set<Calendar.Component>, handle: (DateComponents) -> DateComponents) -> (Date, Date)? {
-        let calend = Calendar.current
-        let components = calend.dateComponents(components, from: self)
-        let startDate = calend.date(from: components)
-        let endDate = calend.date(from: handle(components))
-        if let start = startDate, let end = endDate {
-            return (start, end)
+    var endDayOfWeek: Date? {
+        guard let startDayOfWeek = startDayOfWeek else { return nil }
+        return Calendar.current.date(byAdding: .day, value: 6, to: startDayOfWeek)
+    }
+
+    var startDayOfYear: Date? {
+        let calender = Calendar.current
+        let componets = calender.dateComponents([.year], from: self)
+        return calender.date(from: componets)
+    }
+
+    var endDayOfYear: Date? {
+        guard let startDayOfYear = startDayOfYear else { return nil }
+        return Calendar.current.date(byAdding: .day, value: 364, to: startDayOfYear)
+    }
+
+    var startTime: Date? {
+        let calender = Calendar.current
+        let componets = calender.dateComponents([.year, .month, .day], from: self)
+        return calender.date(from: componets)
+    }
+
+    var endTime: Date? {
+        let calender = Calendar.current
+        var componets = calender.dateComponents([.year, .month, .day], from: self)
+        componets.hour = 23
+        componets.minute = 59
+        componets.second = 59
+        return calender.date(from: componets)
+    }
+
+    var weekList: [Date] {
+        guard let startDayOfWeek = startDayOfWeek else { return [] }
+        var weekList: [Date] = []
+        let calendar = Calendar.current
+        var componets = DateComponents()
+        for index in 0..<7 {
+            componets.day = Int(index)
+            if let date = calendar.date(byAdding: componets, to: startDayOfWeek) {
+                weekList.append(date)
+            }
         }
-        return nil
+        return weekList
     }
 }
 
 public extension DateComponents {
     func dateNum() -> Int {
-        return (year ?? 0) * 10000 + (month ?? 0) * 100 + (day ?? 0)
+        (year ?? 0) * 10000 + (month ?? 0) * 100 + (day ?? 0)
     }
 
     var chainWeekStr: String {
