@@ -35,6 +35,17 @@ public extension UIColor {
         self.init(red: r, green: g, blue: b, alpha: a)
     }
 
+    convenience init(dark: UIColor, light: UIColor) {
+        self.init { collection in
+            switch collection.userInterfaceStyle {
+            case .dark:
+                return dark
+            default:
+                return light
+            }
+        }
+    }
+
     static var randomColor: UIColor {
         let red = CGFloat(arc4random() % 256) / 255.0
         let green = CGFloat(arc4random() % 256) / 255.0

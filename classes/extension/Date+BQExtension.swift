@@ -40,32 +40,32 @@ public extension Date {
         Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second, .weekday], from: self)
     }
 
-    func addDay(_ day: Int) -> Date? {
-        Calendar.current.date(byAdding: .day, value: day, to: self)
+    func add(component: Calendar.Component, value: Int) -> Date? {
+        Calendar.current.date(byAdding: component, value: value, to: self)
     }
 }
 
 // MARK: calendar date
 public extension Date {
     var startDayOfMonth: Date? {
-        let calender = Calendar.current
-        let componets = calender.dateComponents([.year, .month], from: self)
-        return calender.date(from: componets)
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.year, .month], from: self)
+        return calendar.date(from: components)
     }
 
     var endDayOfMonth: Date? {
         guard let startDayOfMonth = startDayOfMonth else { return nil }
         let calendar = Calendar.current
-        var componets = DateComponents()
-        componets.month = 1
-        componets.day = -1
-        return calendar.date(byAdding: componets, to: startDayOfMonth)
+        var components = DateComponents()
+        components.month = 1
+        components.day = -1
+        return calendar.date(byAdding: components, to: startDayOfMonth)
     }
 
     var startDayOfWeek: Date? {
-        let calender = Calendar.current
-        let componets = calender.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self)
-        return calender.date(from: componets)
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self)
+        return calendar.date(from: components)
     }
 
     var endDayOfWeek: Date? {
@@ -74,9 +74,9 @@ public extension Date {
     }
 
     var startDayOfYear: Date? {
-        let calender = Calendar.current
-        let componets = calender.dateComponents([.year], from: self)
-        return calender.date(from: componets)
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.year], from: self)
+        return calendar.date(from: components)
     }
 
     var endDayOfYear: Date? {
@@ -85,28 +85,28 @@ public extension Date {
     }
 
     var startTime: Date? {
-        let calender = Calendar.current
-        let componets = calender.dateComponents([.year, .month, .day], from: self)
-        return calender.date(from: componets)
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.year, .month, .day], from: self)
+        return calendar.date(from: components)
     }
 
     var endTime: Date? {
-        let calender = Calendar.current
-        var componets = calender.dateComponents([.year, .month, .day], from: self)
-        componets.hour = 23
-        componets.minute = 59
-        componets.second = 59
-        return calender.date(from: componets)
+        let calendar = Calendar.current
+        var components = calendar.dateComponents([.year, .month, .day], from: self)
+        components.hour = 23
+        components.minute = 59
+        components.second = 59
+        return calendar.date(from: components)
     }
 
     var weekList: [Date] {
         guard let startDayOfWeek = startDayOfWeek else { return [] }
         var weekList: [Date] = []
         let calendar = Calendar.current
-        var componets = DateComponents()
+        var components = DateComponents()
         for index in 0..<7 {
-            componets.day = Int(index)
-            if let date = calendar.date(byAdding: componets, to: startDayOfWeek) {
+            components.day = Int(index)
+            if let date = calendar.date(byAdding: components, to: startDayOfWeek) {
                 weekList.append(date)
             }
         }
