@@ -25,30 +25,27 @@ public extension Data {
     // if want to use this method should open keychain sharing
     @discardableResult
     func saveKeychain() -> Bool {
-        var keychainQuery = type(of: self).getkeychain()
+        var keychainQuery = type(of: self).getKeyChain()
         SecItemDelete(keychainQuery as CFDictionary)
         keychainQuery[kSecValueData as String] = self as AnyObject
-        let statu = SecItemAdd(keychainQuery as CFDictionary, nil)
-        return statu == noErr
+        let status = SecItemAdd(keychainQuery as CFDictionary, nil)
+        return status == noErr
     }
 
     @discardableResult
     static func deleteKeyChain() -> Bool {
-        let keychainQuery = getkeychain()
-        let statu = SecItemDelete(keychainQuery as CFDictionary)
-        return statu == noErr
+        let keychainQuery = getKeyChain()
+        let status = SecItemDelete(keychainQuery as CFDictionary)
+        return status == noErr
     }
 
     static func loadKeychain() -> Data? {
-        var keychainQuery = getkeychain()
+        var keychainQuery = getKeyChain()
         keychainQuery[kSecReturnData as String] = kCFBooleanTrue as AnyObject
         keychainQuery[kSecMatchLimit as String] = kSecMatchLimitOne as AnyObject
         var result: AnyObject?
-        let statu = SecItemCopyMatching(keychainQuery as CFDictionary, &result)
-//        let statu = withUnsafeMutablePointer(to: &result) {
-//            SecItemCopyMatching(keychainQuery as CFDictionary, UnsafeMutablePointer($0))
-//        }
-        if statu == noErr {
+        let status = SecItemCopyMatching(keychainQuery as CFDictionary, &result)
+        if status == noErr {
             return result as? Data
         }
         return nil
@@ -60,8 +57,8 @@ public extension Data {
 
     // MARK: - ***** private Method *****
 
-    private static func getkeychain() -> [String: AnyObject] {
-        let serveice = Bundle.main.bundleIdentifier!
-        return Dictionary(dictionaryLiteral: (kSecClass as String, kSecClassGenericPassword as AnyObject), (kSecAttrService as String, serveice as AnyObject), (kSecAttrAccount as String, serveice as AnyObject), (kSecAttrAccessible as String, kSecAttrAccessibleAfterFirstUnlock as AnyObject))
+    private static func getKeyChain() -> [String: AnyObject] {
+        let service = Bundle.main.bundleIdentifier!
+        return Dictionary(dictionaryLiteral: (kSecClass as String, kSecClassGenericPassword as AnyObject), (kSecAttrService as String, service as AnyObject), (kSecAttrAccount as String, service as AnyObject), (kSecAttrAccessible as String, kSecAttrAccessibleAfterFirstUnlock as AnyObject))
     }
 }

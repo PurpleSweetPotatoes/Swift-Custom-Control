@@ -17,6 +17,11 @@ public extension Date {
         String(format: "%.lf", timeIntervalSince1970)
     }
 
+    /// 时间组件
+    var components: DateComponents {
+        Calendar.current.dateComponents([.era, .year, .month, .day, .hour, .minute, .second, .weekday], from: self)
+    }
+
     /// 格式化日期
     /// - Parameters:
     ///   - format: y、M、d、H、m、s
@@ -33,11 +38,6 @@ public extension Date {
     static func load(_ timeStr: String, format: String = "yyyy/MM/dd") -> Date? {
         _dateFormatter.dateFormat = format
         return _dateFormatter.date(from: timeStr)
-    }
-
-    /// 时间组件
-    func components() -> DateComponents {
-        Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second, .weekday], from: self)
     }
 
     func add(component: Calendar.Component, value: Int) -> Date? {

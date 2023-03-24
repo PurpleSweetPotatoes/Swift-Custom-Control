@@ -127,7 +127,7 @@ public class BQDatePicker: UIView {
 
     /// 改变当前展示时间
     public func changeDate(date: Date) {
-        dateModel = date.components()
+        dateModel = date.components
         startYear = dateModel.year! - 30
         pickView.reloadAllComponents()
         
@@ -151,7 +151,7 @@ public class BQDatePicker: UIView {
     private var backBtn: UIButton!
     private var sureBtn: UIButton!
     private var centerLab: UILabel!
-    private var dateModel: DateComponents = Date().components()
+    private var dateModel: DateComponents = Date().components
     private var startYear: Int = 1970
 
     // MARK: - *** NetWork method

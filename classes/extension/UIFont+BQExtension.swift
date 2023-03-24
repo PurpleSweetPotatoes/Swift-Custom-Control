@@ -12,6 +12,7 @@ public enum BQFontStyle {
     case title1
     case title2
     case title3
+    case title4
     case body
     case callout
     case content
@@ -24,6 +25,7 @@ public enum BQFontStyle {
         case .title1: return 34
         case .title2: return 28
         case .title3: return 22
+        case .title4: return 20
         case .body: return 17
         case .callout: return 16
         case .content: return 15
@@ -39,6 +41,7 @@ public enum BQFontStyle {
         case .title1: return .largeTitle
         case .title2: return .title1
         case .title3: return .title2
+        case .title4: return .headline
         case .body: return .body
         case .callout: return  .callout
         case .content: return .subheadline
@@ -50,7 +53,7 @@ public enum BQFontStyle {
 }
 
 public extension UIFont {
-    static func dynamic(_ style: BQFontStyle, weight: UIFont.Weight = .regular, maxScaleSize: CGFloat = 2) -> UIFont {
+    static func dynamicFont(_ style: BQFontStyle, weight: UIFont.Weight = .regular, maxScaleSize: CGFloat = 1.6) -> UIFont {
         let systemFont = UIFont.systemFont(ofSize: style.size, weight: weight)
         let metrics = UIFontMetrics(forTextStyle: style.fontTextStyle)
         return metrics.scaledFont(for: systemFont, maximumPointSize: style.size * maxScaleSize)
