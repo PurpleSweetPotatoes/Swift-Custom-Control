@@ -11,6 +11,16 @@ import UIKit
 
 private let _dateFormatter = DateFormatter()
 
+public enum BQWeekDay: Int, CaseIterable {
+    case sunday = 1
+    case monday
+    case tuesday
+    case wednesday
+    case thursday
+    case friday
+    case saturday
+}
+
 public extension Date {
     /// 时间戳
     var timeStamp: String {
@@ -43,6 +53,19 @@ public extension Date {
     func add(component: Calendar.Component, value: Int) -> Date? {
         Calendar.current.date(byAdding: component, value: value, to: self)
     }
+
+    func calendarDistanceDay(_ toDate: Date) -> Int {
+        let fromDate = self.startOfDay
+        let toDate = toDate.startOfDay
+        guard let day = Calendar.current.dateComponents([.day,], from: fromDate, to: toDate).day else {
+            return Int(distance(to: toDate) / 60 * 60 * 24)
+        }
+        return day
+    }
+
+    func isSameYear(_ targetDate: Date) -> Bool {
+        components.year == targetDate.components.year
+    }
 }
 
 // MARK: calendar date
@@ -68,6 +91,15 @@ public extension Date {
         return calendar.date(from: components)
     }
 
+
+    /// Week start from Sunday to Saturday
+    func currentWeek(dayOfWeek: BQWeekDay) -> Date? {
+        let calendar = Calendar.current
+        var components = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear, .weekday], from: self)
+        components.weekday = dayOfWeek.rawValue
+        return calendar.date(from: components)
+    }
+
     var endDayOfWeek: Date? {
         guard let startDayOfWeek = startDayOfWeek else { return nil }
         return Calendar.current.date(byAdding: .day, value: 6, to: startDayOfWeek)
@@ -84,19 +116,12 @@ public extension Date {
         return Calendar.current.date(byAdding: .day, value: 364, to: startDayOfYear)
     }
 
-    var startTime: Date? {
-        let calendar = Calendar.current
-        let components = calendar.dateComponents([.year, .month, .day], from: self)
-        return calendar.date(from: components)
+    var startOfDay: Date {
+        Calendar.current.startOfDay(for: self)
     }
 
-    var endTime: Date? {
-        let calendar = Calendar.current
-        var components = calendar.dateComponents([.year, .month, .day], from: self)
-        components.hour = 23
-        components.minute = 59
-        components.second = 59
-        return calendar.date(from: components)
+    var endOfDay: Date {
+        startOfDay.addingTimeInterval(60 * 60 * 24 - 1)
     }
 
     var weekList: [Date] {

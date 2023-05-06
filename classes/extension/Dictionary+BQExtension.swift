@@ -38,3 +38,18 @@ public extension Dictionary where Key == String {
         return self[key] != nil
     }
 }
+
+@dynamicMemberLookup
+public protocol DictionaryDynamicLookup {
+    associatedtype Key
+    associatedtype Value
+    subscript(key: Key) -> Value? { get }
+}
+
+extension Dictionary: DictionaryDynamicLookup {}
+
+public extension DictionaryDynamicLookup where Key == String {
+    subscript(dynamicMember member: String) -> String {
+        return self[member] as? String ?? ""
+    }
+}

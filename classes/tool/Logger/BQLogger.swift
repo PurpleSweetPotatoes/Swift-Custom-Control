@@ -100,7 +100,7 @@ public enum BQLogger {
     /// 缓存数组长度
     fileprivate static var cacheLength = 10
     fileprivate static func currentTime() -> String {
-        dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        dateFormat.dateFormat = "MM/dd HH:mm:ss"
         return dateFormat.string(from: Date())
     }
 
@@ -141,7 +141,7 @@ public extension BQLogger {
 
     private static func printInfo<T>(type: BQLogType, messsage: T, file: String = #filePath, funcName: String = #function, lineNum: Int = #line) {
         
-        let output = "\(type.colorStr)\(BQLogger.currentTime()) [\(file.lastPathComponentName):\(lineNum)] \(funcName) >>> \(messsage)\n"
+        let output = "\(type.colorStr)\(BQLogger.currentTime()) [\(file.lastPathComponentName):\(lineNum)] \(funcName):\n\(messsage)\n"
         
         if configInfo.canLog(type: type) {
             print(output, terminator:"")
