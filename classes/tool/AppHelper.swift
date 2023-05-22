@@ -34,4 +34,18 @@ struct AppInfo {
     static var bottomSaveHeight: CGFloat {
         return statusHeight > 20 ? 34 : 0
     }
+
+    static var languageCode: String {
+        let languageCodeSpecifier = "-"
+        if let language = Bundle.main.preferredLocalizations.first {
+            // The first letter in script code should be a capital
+            let parts = language.components(separatedBy: languageCodeSpecifier)
+            if parts.count > 1 && parts[1].count > 1 {
+                return "\(parts[0])\(languageCodeSpecifier)\(parts[1].prefix(1).uppercased())\(parts[1].dropFirst())"
+            }
+            return language
+        } else {
+            return "en"
+        }
+    }
 }
