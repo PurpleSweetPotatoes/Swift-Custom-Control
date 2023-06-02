@@ -64,10 +64,10 @@ public extension UIButton {
         isUserInteractionEnabled = false
     }
 
-    public static func startIntervalAction(interval: TimeInterval) {
+    static func startIntervalAction(interval: TimeInterval) {
         _interval = interval
         DispatchQueue.once(token: #function) {
-            exchangeMethod(targetSel: #selector(sendAction), newSel: #selector(re_sendAction))
+//            exchangeMethod(targetSel: #selector(sendAction), newSel: #selector(re_sendAction))
         }
     }
 
