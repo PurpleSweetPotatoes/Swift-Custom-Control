@@ -8,14 +8,35 @@
 
 import Foundation
 
-public struct CalendarDate: CustomDebugStringConvertible {
-    // The value is like 202201
-    let shortYearMonth: Int
-    let date: Date
-    let isCurrentMonth: Bool
+public struct CalendarDate {
+    // The yearMonthDay is like 20220101
+    public let yearMonthDay: Int
+    public let date: Date
+    public let isToday: Bool
+    // The secontion number like 202201
+    public let sectionNumber: Int
 
-    public var debugDescription: String {
-        date.toString(format: "yyyy/MM/dd")
+    public var year: Int {
+        yearMonthDay / 10000
+    }
+    public var month: Int {
+        (yearMonthDay % 1000) / 100 + 1
+    }
+
+    public var day: Int {
+        yearMonthDay % 100
+    }
+
+    public var isCurrentMonth: Bool {
+        yearMonthDay / 100 == sectionNumber
+    }
+
+
+    public init(_ date: Date, sectionNumber: Int, isToday: Bool) {
+        self.date = date
+        self.yearMonthDay = Int(date.toString(format: "yyyyMMdd")) ?? 0
+        self.sectionNumber = sectionNumber
+        self.isToday = isToday
     }
 }
 
@@ -47,14 +68,13 @@ public struct CalendarUtil {
               let endDate = date.endDayOfMonth?.currentWeek(dayOfWeek: .saturday) else {
             return []
         }
-
-        let components = date.components
-        let shortYearMonth = (components.year ?? 0) * 100 + (components.month ?? 0)
-        var outList: [CalendarDate] = [CalendarDate(shortYearMonth: shortYearMonth, date: fromDate, isCurrentMonth: fromDate.components.month == date.components.month)]
+        let sectionNumber = Int(date.toString(format: "yyyyMM")) ?? 0
+        let today = Date().startOfDay
+        var outList: [CalendarDate] = [CalendarDate(fromDate, sectionNumber: sectionNumber, isToday: fromDate == today)]
         calendar.enumerateDates(startingAfter: fromDate, matching: DateComponents(hour: 0, minute: 0, second: 0), matchingPolicy: .nextTime) { nextDate, _, stop in
             if let nextDate = nextDate,
                nextDate <= endDate {
-                outList.append(CalendarDate(shortYearMonth: shortYearMonth, date: nextDate, isCurrentMonth: nextDate.components.month == date.components.month))
+                outList.append(CalendarDate(nextDate, sectionNumber: sectionNumber, isToday: nextDate == today))
             } else {
                 stop = true
             }

@@ -35,8 +35,13 @@ public extension Date {
     /// 格式化日期
     /// - Parameters:
     ///   - format: y、M、d、H、m、s
-    func toString(format: String = "yyyy/MM/dd HH:mm:ss", localId: String = "zh_CN") -> String {
+    func toString(format: String = "yyyy/MM/dd HH:mm:ss", localId: String? = nil) -> String {
         _dateFormatter.dateFormat = format
+        if let localId = localId {
+            _dateFormatter.timeZone = TimeZone(identifier: localId)
+        } else {
+            _dateFormatter.timeZone = TimeZone.current
+        }
         return _dateFormatter.string(from: self)
     }
 
