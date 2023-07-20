@@ -9,11 +9,21 @@
 
 import Foundation
 
-public struct LocalKey<T> {
-    var rawValue: String
-    public init(_ key: String, preStr: String? = nil) {
-        rawValue = "\(preStr ?? "")\(key)"
+@propertyWrapper
+struct LocalValue<Value> {
+    let userDefault = UserDefaults.standard
+    let key: String
+    let defaultValue: Value?
+
+    var wrappedValue: Value? {
+        get {
+            userDefault.value(forKey: key) as? Value ?? defaultValue
+        }
+        set {
+            userDefault.set(newValue, forKey: key)
+        }
     }
+    
 }
 
 public struct BQUserDefaults {
