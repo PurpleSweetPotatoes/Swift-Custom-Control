@@ -10,33 +10,28 @@
 import Foundation
 
 @propertyWrapper
-struct LocalValue<Value> {
+struct LocalDefaultValue<Value> {
     let userDefault = UserDefaults.standard
     let key: String
-    let defaultValue: Value?
+    let defaultValue: Value
 
-    var wrappedValue: Value? {
+    var wrappedValue: Value {
         get {
             userDefault.value(forKey: key) as? Value ?? defaultValue
         }
-        set {
-            userDefault.set(newValue, forKey: key)
-        }
+        set { userDefault.set(newValue, forKey: key) }
     }
-    
 }
 
-public struct BQUserDefaults {
-    public static let share = BQUserDefaults()
-    let user = UserDefaults.standard
+@propertyWrapper
+struct LocalValue<Value> {
+    let userDefault = UserDefaults.standard
+    let key: String
 
-    private init() {}
-
-    public func set<T>(_ value: T, key: LocalKey<T>) {
-        user.set(value, forKey: key.rawValue)
-    }
-
-    public func get<T>(_ key: LocalKey<T>) -> T? {
-        return user.object(forKey: key.rawValue) as? T
+    var wrappedValue: Value? {
+        get {
+            userDefault.value(forKey: key) as? Value
+        }
+        set { userDefault.set(newValue, forKey: key) }
     }
 }
