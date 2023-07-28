@@ -22,7 +22,7 @@ public struct BQAssetTrack {
     /// 素材插入时间点
     public private(set) var atTime = CMTime.zero
 
-    public var sencods: Double {
+    public var secods: Double {
         return track?.asset?.duration.seconds ?? 0
     }
 
@@ -80,8 +80,8 @@ public extension AVMutableComposition {
     ///   - stracks: 视频素材集合
     ///   - handle: 过渡动画设置回调
     /// - Returns:
-    func videoComposition(_ stracks: [BQAssetTrack], handle: videoComBlock) -> AVMutableVideoComposition? {
-        if stracks.count == 0 { return nil }
+    func videoComposition(_ tracksList: [BQAssetTrack], handle: videoComBlock) -> AVMutableVideoComposition? {
+        if !tracksList.isEmpty { return nil }
 
         // 移除视频轨道
         for track in tracks(withMediaType: .video) {
@@ -94,7 +94,7 @@ public extension AVMutableComposition {
         }
 
         let videoTracks = [comTrackA, comTrackB]
-        for (index, bqStarck) in stracks.enumerated() {
+        for (index, bqStarck) in tracksList.enumerated() {
             let videoTrack = videoTracks[index % 2]
             videoTrack.insertTrack(bqStarck)
         }
@@ -120,21 +120,21 @@ public extension AVMutableComposition {
 
     /// 单轨道，素材拼接
     /// - Parameter stracks: 轨道素材
-    func mergeStracks(_ stracks: [BQAssetTrack]) {
-        if stracks.count == 0 { return }
+    func mergeStracks(_ tracksList: [BQAssetTrack]) {
+        if !tracksList.isEmpty { return }
 
         // 移除素材轨道
-        for track in tracks(withMediaType: stracks.first!.track.mediaType) {
+        for track in tracks(withMediaType: tracksList.first!.track.mediaType) {
             removeTrack(track)
         }
 
         // 创建素材轨道
-        guard let comTrack = addMutableTrack(withMediaType: stracks.first!.track.mediaType, preferredTrackID: kCMPersistentTrackID_Invalid) else {
+        guard let comTrack = addMutableTrack(withMediaType: tracksList.first!.track.mediaType, preferredTrackID: kCMPersistentTrackID_Invalid) else {
             return
         }
 
         // 轨道插入素材
-        for bqStrack in stracks where bqStrack.track.mediaType == .video {
+        for bqStrack in tracksList where bqStrack.track.mediaType == .video {
             comTrack.insertTrack(bqStrack)
         }
     }

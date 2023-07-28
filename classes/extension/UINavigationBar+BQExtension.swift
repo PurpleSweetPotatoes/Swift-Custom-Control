@@ -14,7 +14,7 @@ public extension UINavigationBar {
 
     func lt_setBackgroundColor(color: UIColor) {
         if overlayView == nil {
-            let view = UIView(frame: CGRect(x: 0, y: 0, width: bounds.width, height: bounds.height + UIApplication.shared.statusBarFrame.height))
+            let view = UIView(frame: CGRect(x: 0, y: 0, width: bounds.width, height: bounds.height + UIApplication.statusBarHeight))
             view.isUserInteractionEnabled = false
             view.autoresizingMask = .flexibleWidth
             setBackgroundImage(UIImage(), for: .default)

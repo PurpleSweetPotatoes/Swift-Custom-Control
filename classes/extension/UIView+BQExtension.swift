@@ -130,24 +130,13 @@ public extension UIView {
     }
 
     static func xibView(name: String? = nil) -> Self? {
-        var clsName = ""
-        if let cn = name {
-            clsName = cn
-        } else {
-            clsName = className()
-        }
-        return Bundle.main.loadNibNamed(clsName, owner: nil, options: nil)?.last as? Self
+        Bundle.main.loadNibNamed(name ?? className(), owner: nil, options: nil)?.last as? Self
     }
 
-    func snapshoot() -> UIImage? {
-        UIGraphicsBeginImageContextWithOptions(size, false, UIScreen.main.scale)
-        if let context = UIGraphicsGetCurrentContext() {
-            layer.render(in: context)
-            let opImg = UIGraphicsGetImageFromCurrentImageContext()
-            UIGraphicsEndImageContext()
-            return opImg
+    func snapshot() -> UIImage? {
+        UIGraphicsImageRenderer(size: size).image { context in
+            layer.render(in: context.cgContext)
         }
-        return nil
     }
 
     @discardableResult

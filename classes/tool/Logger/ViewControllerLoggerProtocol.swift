@@ -13,9 +13,8 @@ import UIKit
 protocol ViewControllerLoggerProtocol {
     func bqLoggerViewDidLoad()
     func bqLoggerViewWillAppear(_ animated: Bool)
-    func bqLoggerViewDidAppear(_ animated: Bool)
     func bqLoggerViewWillDisappear(_ animated: Bool)
-    func bqLoggerViewDidDisappear(_ animated: Bool)
+    func bqLoggerPresent(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)?)
 }
 
 extension UIViewController {
@@ -29,19 +28,9 @@ extension UIViewController {
         bqLoggerViewWillAppear(animated)
     }
     
-    @objc func bqLoggerViewDidAppear(_ animated: Bool) {
-        BQLogger.log("\(self) viewDidAppear")
-        bqLoggerViewDidAppear(animated)
-    }
-    
     @objc func bqLoggerViewWillDisappear(_ animated: Bool) {
         BQLogger.log("\(self) viewWillDisappear")
         bqLoggerViewWillDisappear(animated)
-    }
-    
-    @objc func bqLoggerViewDidDisappear(_ animated: Bool) {
-        BQLogger.log("\(self) viewDidDisappear")
-        bqLoggerViewDidDisappear(animated)
     }
     
     @objc func bqLoggerPresent(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
@@ -53,10 +42,26 @@ extension UIViewController {
 
 extension UINavigationController {
     @objc func bqLoggerPushViewController(_ viewController: UIViewController, animated: Bool) {
-        BQLogger.log("\(self) present \(viewController)")
+        BQLogger.log("\(self) push \(viewController)")
         bqLoggerPushViewController(viewController, animated: animated)
     }
 }
 
-//extension UIViewController: ViewControllerLoggerProtocol {}
+extension UIViewController: ViewControllerLoggerProtocol {
+    public static func startLifeCyclingLog() {
+        guard UIApplication.isDebug else {
+            BQLogger.log("current environment is debug can't log UIViewController life cycling")
+            return
+        }
 
+        BQLogger.log("start UIViewController life cycling log")
+
+        DispatchQueue.once(token: #function) {
+            UIViewController.exchangeMethod(targetSel: #selector(viewDidLoad), newSel: #selector(bqLoggerViewDidLoad))
+            UIViewController.exchangeMethod(targetSel: #selector(viewWillAppear), newSel: #selector(bqLoggerViewWillAppear))
+            UIViewController.exchangeMethod(targetSel: #selector(viewWillDisappear), newSel: #selector(bqLoggerViewWillDisappear))
+            UIViewController.exchangeMethod(targetSel: #selector(present), newSel: #selector(bqLoggerPresent))
+            UINavigationController.exchangeMethod(targetSel: #selector(UINavigationController.pushViewController), newSel: #selector(UINavigationController.bqLoggerPushViewController))
+        }
+    }
+}

@@ -45,7 +45,7 @@ public class BQAlertView: UIView {
         var attributContent = NSAttributedString()
         var actions = [BQAlertAction(name: "确认", color: UIColor(0x0099ff))]
         var handle: BQAlertBtnBlock?
-        fileprivate weak var supView: UIView? = UIApplication.shared.keyWindow
+        fileprivate weak var supView: UIView? = UIApplication.keyWindow
         
         @discardableResult
         public func title(_ str: String) -> Self {

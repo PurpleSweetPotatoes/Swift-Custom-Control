@@ -15,7 +15,7 @@ public extension CGPoint {
         let yd = from.y - to.y
         return sqrt(xd * xd + yd * yd)
     }
-    
+
     static func agnle(_ pt: CGPoint, centerPt cPt: CGPoint) -> CGFloat {
         let y = abs(pt.y - cPt.y)
         let x = abs(pt.x - cPt.x)

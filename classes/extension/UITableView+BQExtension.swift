@@ -42,7 +42,7 @@ public extension UITableView {
         }
     }
 
-    func setEmtpyViewDelegate(target: EmptyViewProtocol) {
+    func setEmptyViewDelegate(target: EmptyViewProtocol) {
         self.emptyDelegate = target
         DispatchQueue.once(token: #function) {
             UITableView.exchangeMethod(targetSel: #selector(layoutSubviews), newSel: #selector(re_layoutSubviews))
@@ -51,7 +51,7 @@ public extension UITableView {
 
     func addRefreshControl(_ target: Any?, action: Selector) {
         if let _ = refreshControl {
-            BQLogger.info("did has refresh, need remove first")
+            BQLogger.log("did has refresh, need remove first")
             return
         }
         let refresh = UIRefreshControl()

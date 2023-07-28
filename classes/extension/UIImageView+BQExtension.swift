@@ -9,35 +9,35 @@
 
 import UIKit
 
-private let ioImgQueue = DispatchQueue(label: "ioImgQueue", qos: DispatchQoS.default, attributes: DispatchQueue.Attributes.concurrent)
+private let IOImageQueue = DispatchQueue(label: "IOImageQueue", qos: DispatchQoS.default, attributes: DispatchQueue.Attributes.concurrent)
 
 public extension UIImageView {
-    func canshow() {
+    func canShow() {
         addTapGes { [weak self] _ in
             if let image = self?.image {
-                BQShowImageView.show(img: image, origiFrame: (self?.superview!.convert((self?.frame)!, to: UIApplication.shared.keyWindow?.rootViewController?.view))!)
+                BQShowImageView.show(image, origiFrame: (self?.superview!.convert((self?.frame)!, to: UIApplication.keyWindow?.rootViewController?.view))!)
             }
         }
     }
 
-    func displayImg(imgFileName: String, bundle: Bundle = Bundle.main) {
-        if let path = bundle.path(forResource: imgFileName, ofType: nil) {
-            if let img = UIImage(contentsOfFile: path) {
-                displayImg(img: img)
+    func displayImage(imageFileName: String, bundle: Bundle = Bundle.main) {
+        if let path = bundle.path(forResource: imageFileName, ofType: nil) {
+            if let image = UIImage(contentsOfFile: path) {
+                displayImage(image: image)
             }
         }
     }
 
-    func displayImg(img: UIImage) {
-        ioImgQueue.async {
-            let leftImg = img.decompressedImg()
+    func displayImage(image: UIImage) {
+        IOImageQueue.async {
+            let leftImage = image.decompressedImage()
             DispatchQueue.main.async {
-                self.image = leftImg
+                self.image = leftImage
             }
         }
     }
 
-    func setGifImg(name: String?, bundle: Bundle = Bundle.main) {
+    func setGifImage(name: String?, bundle: Bundle = Bundle.main) {
         guard let gifName = name else {
             return
         }
@@ -59,19 +59,18 @@ public extension UIImageView {
         let source: CGImageSource = CGImageSourceCreateWithData(data as CFData, nil)!
         let count: size_t = CGImageSourceGetCount(source)
 
-        var animatedImg: UIImage?
+        var animatedImage: UIImage?
 
         if count <= 1 {
-            animatedImg = UIImage(data: data)
+            animatedImage = UIImage(data: data)
         } else {
-            var imgs: [UIImage] = []
+            var cgImages: [UIImage] = []
             var duration: TimeInterval = 0
 
             for i in 0 ... count {
-                let image: CGImage? = CGImageSourceCreateImageAtIndex(source, i, nil)
-                if let img = image {
+                if let cgImage = CGImageSourceCreateImageAtIndex(source, i, nil) {
                     duration += type(of: self).frameDuration(index: i, source: source)
-                    imgs.append(UIImage(cgImage: img, scale: UIScreen.main.scale, orientation: .up))
+                    cgImages.append(UIImage(cgImage: cgImage, scale: UIScreen.main.scale, orientation: .up))
                 }
             }
 
@@ -79,10 +78,10 @@ public extension UIImageView {
                 duration = (1.0 / 10.0) * Double(count)
             }
 
-            animatedImg = UIImage.animatedImage(with: imgs, duration: duration)
+            animatedImage = UIImage.animatedImage(with: cgImages, duration: duration)
         }
 
-        image = animatedImg
+        image = animatedImage
     }
 
     static func frameDuration(index: Int, source: CGImageSource) -> Double {
@@ -120,15 +119,15 @@ class BQShowImageView: UIView {
         }
     }
 
-    static func show(img: UIImage, origiFrame: CGRect) {
+    static func show(_ image: UIImage, origiFrame: CGRect) {
         let showView = BQShowImageView(frame: UIScreen.main.bounds)
         showView.initUI()
-        showView.imageView.image = img
+        showView.imageView.image = image
         showView.origiFrame = origiFrame
         showView.addTapGes { [weak showView] _ in
             showView?.removeSelf()
         }
-        UIApplication.shared.keyWindow?.rootViewController?.view.addSubview(showView)
+        UIApplication.keyWindow?.rootViewController?.view.addSubview(showView)
         showView.startShow()
     }
 

@@ -16,8 +16,8 @@ public extension AVAssetImageGenerator {
         requestedTimeToleranceBefore = CMTime.zero
         requestedTimeToleranceAfter = CMTime.zero
         let time = CMTime(value: atTime, timescale: 1)
-        if let cgimg = try? copyCGImage(at: time, actualTime: nil) {
-            return UIImage(cgImage: cgimg)
+        if let cgImage = try? copyCGImage(at: time, actualTime: nil) {
+            return UIImage(cgImage: cgImage)
         } else {
             return nil
         }

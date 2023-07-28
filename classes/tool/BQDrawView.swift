@@ -48,7 +48,7 @@ public class BQDrawView: UIView {
     public func getImage() -> UIImage? {
         let state = dottedLayer.isHidden
         dottedLayer.isHidden = true
-        let img = hasDraw ? snapshoot() : nil
+        let img = hasDraw ? snapshot() : nil
         dottedLayer.isHidden = state
         return img
     }

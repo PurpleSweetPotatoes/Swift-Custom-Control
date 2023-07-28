@@ -14,21 +14,21 @@ import UIKit
 public struct TabBarVcModel {
     var name: String = ""
     var title: String = ""
-    var selectImg: String = ""
-    var normalImg: String = ""
+    var selectImage: String = ""
+    var normalImage: String = ""
 
-    public init(name: String, title: String, selectImg: String, normalImg: String) {
+    public init(name: String, title: String, selectImage: String, normalImage: String) {
         self.name = name
         self.title = title
-        self.selectImg = selectImg
-        self.normalImg = normalImg
+        self.selectImage = selectImage
+        self.normalImage = normalImage
     }
 }
 
 public extension UITabBarController {
     /// 快捷创建tabbarVc方式
     ///
-    /// - Parameter arr: 数组嵌套字典 vcName: selectImg: normalImg:
+    /// - Parameter arr: 数组嵌套字典 vcName: selectImage: normalImage:
     /// - Returns: 返回tabbarVc
     static func createVc(arr: [TabBarVcModel], needNav: Bool = true) -> UITabBarController {
         let tabbarVc = UITabBarController()
@@ -46,12 +46,12 @@ public extension UITabBarController {
         var vcArr: [UIViewController] = []
         for vcInfo in arr {
             if let vc = BQTool.loadVc(vcName: vcInfo.name) {
-                let tabbarItem = UITabBarItem(title: title, image: UIImage.orginImg(name: vcInfo.normalImg), selectedImage: UIImage.orginImg(name: vcInfo.selectImg))
+                let tabbarItem = UITabBarItem(title: title, image: UIImage.originalImage(name: vcInfo.normalImage), selectedImage: UIImage.originalImage(name: vcInfo.selectImage))
                 vc.tabBarItem = tabbarItem
                 vc.title = vcInfo.title
 
                 if needNav {
-                    let navVc = BQNavgationController(rootViewController: vc)
+                    let navVc = BQNavigationController(rootViewController: vc)
                     vcArr.append(navVc)
                 } else {
                     vcArr.append(vc)

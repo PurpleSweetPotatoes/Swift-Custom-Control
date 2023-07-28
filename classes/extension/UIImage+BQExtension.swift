@@ -19,7 +19,7 @@ public enum ArrowDirection {
 }
 
 public extension UIImage {
-    static func orginImg(name: String) -> UIImage? {
+    static func originalImage(name: String) -> UIImage? {
         return UIImage(named: name)?.withRenderingMode(.alwaysOriginal)
     }
 
@@ -120,10 +120,10 @@ public extension UIImage {
         return newImg ?? self
     }
 
-    func addImg(img: UIImage, alpha: CGFloat = 1.0, rect: CGRect? = nil) -> UIImage? {
+    func addImg(image: UIImage, alpha: CGFloat = 1.0, rect: CGRect? = nil) -> UIImage? {
         UIGraphicsBeginImageContextWithOptions(size, false, 0)
         draw(in: CGRect(origin: CGPoint.zero, size: size))
-        img.draw(in: rect ?? CGRect(origin: CGPoint.zero, size: img.size), blendMode: .normal, alpha: alpha)
+        image.draw(in: rect ?? CGRect(origin: CGPoint.zero, size: image.size), blendMode: .normal, alpha: alpha)
         let opImg = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return opImg
@@ -182,7 +182,7 @@ public extension UIImage {
     ///
     /// - Returns: success  => an image containing a snapshot of the bitmap context `context'
     ///            fail     => self
-    func decompressedImg() -> UIImage {
+    func decompressedImage() -> UIImage {
         if images != nil || cgImage == nil {
             return self
         }
@@ -279,20 +279,20 @@ public extension UIImage {
         context?.setStrokeColor(color.cgColor)
         context?.strokePath()
 
-        let img = UIGraphicsGetImageFromCurrentImageContext()
+        let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
 
-        return img ?? UIImage()
+        return image ?? UIImage()
     }
 
     // MARK: - 私有
 
     private static func createCIImage(_ content: String) -> CIImage? {
-        let filder = CIFilter(name: "CIQRCodeGenerator")
-        filder?.setDefaults()
+        let filter = CIFilter(name: "CIQRCodeGenerator")
+        filter?.setDefaults()
         let data = content.data(using: .utf8)
-        filder?.setValue(data, forKey: "inputMessage")
-        filder?.setValue("H", forKey: "inputCorrectionLevel")
-        return filder?.outputImage
+        filter?.setValue(data, forKey: "inputMessage")
+        filter?.setValue("H", forKey: "inputCorrectionLevel")
+        return filter?.outputImage
     }
 }

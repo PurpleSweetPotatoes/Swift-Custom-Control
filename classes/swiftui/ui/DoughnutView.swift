@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public protocol DoughutViewData {
+public protocol DoughnutViewData {
     var lineWidth: CGFloat { get }
     var progress: CGFloat { get }
     var emptyColor: Color { get }
@@ -15,9 +15,10 @@ public protocol DoughutViewData {
 }
 
 public struct DoughnutView<Content: View>: View {
-    let data: DoughutViewData
+    let data: DoughnutViewData
     let insideView: () -> Content
-    public init(data: DoughutViewData, @ViewBuilder insideView: @escaping () -> Content) {
+
+    public init(data: DoughnutViewData, insideView: @escaping () -> Content) {
         self.data = data
         self.insideView = insideView
     }
@@ -31,6 +32,7 @@ public struct DoughnutView<Content: View>: View {
                 Circle()
                     .trim(from: 0, to: data.progress)
                     .stroke(style: StrokeStyle(lineWidth: data.lineWidth))
+                    .foregroundColor(data.progressColor)
                     .rotationEffect(.degrees(-90))
             }
             .overlay {

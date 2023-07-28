@@ -105,7 +105,7 @@ public class BQCBCentralManage: NSObject {
     class public func deniedAlert() {
         UIAlertController.showAlert(content: "温馨提示", title: "蓝牙授权已被拒绝，请开启蓝牙授权后使用该功能", btnTitleArr: ["取消","前往设置"]) { index in
             if 1 == index {
-                BQTool.goPermissionSettings()
+                UIApplication.goPermissionSettings()
             }
         }
     }

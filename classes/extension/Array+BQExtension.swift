@@ -64,11 +64,10 @@ public extension Array where Element: Equatable {
 
 public extension Array where Element == String {
     func toString() -> String {
-        if count == 0 {
+        guard !isEmpty else {
             return ""
         }
-        let arr = sorted { $0 < $1 }
-        return "[\(arr.joined(separator: ","))]"
+        return "[\(sorted { $0 < $1 }.joined(separator: ","))]"
     }
 }
 

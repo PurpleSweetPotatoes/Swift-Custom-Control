@@ -68,11 +68,11 @@ public class MakeVideoFromImage {
     
     public func pixelBufferFromImage(image: UIImage) -> CVPixelBuffer {
         
-        let ciimage = CIImage(image: image)
+        let ciImage = CIImage(image: image)
         //let cgimage = convertCIImageToCGImage(inputImage: ciimage!)
         let tmpcontext = CIContext(options: nil)
-        let cgimage =  tmpcontext.createCGImage(ciimage!, from: ciimage!.extent)
-        
+        let cgImage =  tmpcontext.createCGImage(ciImage!, from: ciImage!.extent)
+
         let cfnumPointer = UnsafeMutablePointer<UnsafeRawPointer>.allocate(capacity: 1)
         let cfnum = CFNumberCreate(kCFAllocatorDefault, .intType, cfnumPointer)
         let keys: [CFString] = [kCVPixelBufferCGImageCompatibilityKey, kCVPixelBufferCGBitmapContextCompatibilityKey, kCVPixelBufferBytesPerRowAlignmentKey]
@@ -84,38 +84,35 @@ public class MakeVideoFromImage {
         
         let options = CFDictionaryCreate(kCFAllocatorDefault, keysPointer, valuesPointer, keys.count, nil, nil)
         
-        let width = cgimage!.width
-        let height = cgimage!.height
+        let width = cgImage!.width
+        let height = cgImage!.height
         
-        var pxbuffer: CVPixelBuffer?
+        var pxBuffer: CVPixelBuffer?
         // if pxbuffer = nil, you will get status = -6661
         CVPixelBufferCreate(kCFAllocatorDefault, width, height,
-                                         kCVPixelFormatType_32BGRA, options, &pxbuffer)
-        CVPixelBufferLockBaseAddress(pxbuffer!, CVPixelBufferLockFlags(rawValue: 0));
+                                         kCVPixelFormatType_32BGRA, options, &pxBuffer)
+        CVPixelBufferLockBaseAddress(pxBuffer!, CVPixelBufferLockFlags(rawValue: 0));
         
-        let bufferAddress = CVPixelBufferGetBaseAddress(pxbuffer!);
+        let bufferAddress = CVPixelBufferGetBaseAddress(pxBuffer!);
         
         
         let rgbColorSpace = CGColorSpaceCreateDeviceRGB();
-        let bytesperrow = CVPixelBufferGetBytesPerRow(pxbuffer!)
+        let bytesPerRow = CVPixelBufferGetBytesPerRow(pxBuffer!)
         let context = CGContext(data: bufferAddress,
                                 width: width,
                                 height: height,
                                 bitsPerComponent: 8,
-                                bytesPerRow: bytesperrow,
+                                bytesPerRow: bytesPerRow,
                                 space: rgbColorSpace,
                                 bitmapInfo: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue);
         context?.concatenate(CGAffineTransform(rotationAngle: 0))
         context?.concatenate(__CGAffineTransformMake( 1, 0, 0, -1, 0, CGFloat(height) )) //Flip Vertical
-        //        context?.concatenate(__CGAffineTransformMake( -1.0, 0.0, 0.0, 1.0, CGFloat(width), 0.0)) //Flip Horizontal
-        
         UIGraphicsPushContext(context!)
         
         image.draw( in: CGRect(x:0, y:0, width:CGFloat(width), height:CGFloat(height)))
         UIGraphicsPopContext()
-        //context?.draw(cgimage!, in: CGRect(x:0, y:0, width:CGFloat(width), height:CGFloat(height)));
-        CVPixelBufferUnlockBaseAddress(pxbuffer!, CVPixelBufferLockFlags(rawValue: 0));
-        return pxbuffer!;
+        CVPixelBufferUnlockBaseAddress(pxBuffer!, CVPixelBufferLockFlags(rawValue: 0));
+        return pxBuffer!;
         
     }
 }

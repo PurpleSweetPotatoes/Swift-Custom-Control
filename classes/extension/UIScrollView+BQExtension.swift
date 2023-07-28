@@ -11,12 +11,7 @@ import UIKit
 
 public extension UIScrollView {
     func noAdjustInsets(vc: UIViewController) {
-        if #available(iOS 11.0, *) {
-            contentInsetAdjustmentBehavior = .never
-        } else {
-            // Fallback on earlier versions
-            vc.automaticallyAdjustsScrollViewInsets = false
-        }
+        contentInsetAdjustmentBehavior = .never
     }
     
     var captureLongImage: UIImage? {

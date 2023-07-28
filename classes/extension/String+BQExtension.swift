@@ -9,13 +9,6 @@
 
 import Foundation
 
-// infix operator =~: Regular
-// precedencegroup Regular {
-//    associativity: left
-//    higherThan: AdditionPrecedence
-//    lowerThan: MultiplicationPrecedence
-// }
-
 private var Regular_Phone = "^(13|14|15|17|18)\\d{9}$"
 private var Regular_Email = "^([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})$"
 private var Regular_CardId = "^((1[1-5])|(2[1-3])|(3[1-7])|(4[1-6])|(5[0-4])|(6[1-5])|71|(8[12])|91)\\d{4}((19\\d{2}(0[13-9]|1[012])(0[1-9]|[12]\\d|30))|(19\\d{2}(0[13578]|1[02])31)|(19\\d{2}02(0[1-9]|1\\d|2[0-8]))|(19([13579][26]|[2468][048]|0[48])0229))\\d{3}(\\d|X|x)?$"
@@ -53,17 +46,6 @@ public extension String {
         }
         return false
     }
-
-    // 正则表达判断,lhs:字符串,rhs:正则式
-//    internal static func =~ (lhs: String, rhs: String) -> Bool {
-//        do {
-//            let regex = try NSRegularExpression(pattern: rhs, options: .caseInsensitive)
-//            let matches = regex.matches(in: lhs, options: [], range: NSMakeRange(0, lhs.count))
-//            return matches.count > 0
-//        } catch {
-//            return false
-//        }
-//    }
 
     func reMatch(_ re: String) -> Bool {
         do {
@@ -189,6 +171,11 @@ public extension String {
             return outStr
         }
         return ""
+    }
+
+    func numberOfLines(with width: CGFloat, font: UIFont = .systemFont(ofSize: 17)) -> Int {
+        let attribute = NSAttributedString(string: self, font: font)
+        return attribute.numberOfLines(with: width)
     }
 
     subscript(range: NSRange) -> String {

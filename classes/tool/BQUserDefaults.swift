@@ -10,12 +10,12 @@
 import Foundation
 
 @propertyWrapper
-struct LocalDefaultValue<Value> {
+public struct LocalDefaultValue<Value> {
     let userDefault = UserDefaults.standard
     let key: String
     let defaultValue: Value
 
-    var wrappedValue: Value {
+    public var wrappedValue: Value {
         get {
             userDefault.value(forKey: key) as? Value ?? defaultValue
         }
@@ -24,11 +24,15 @@ struct LocalDefaultValue<Value> {
 }
 
 @propertyWrapper
-struct LocalValue<Value> {
+public struct LocalValue<Value> {
     let userDefault = UserDefaults.standard
-    let key: String
+    public let key: String
 
-    var wrappedValue: Value? {
+    public init(key: String) {
+        self.key = key
+    }
+
+    public var wrappedValue: Value? {
         get {
             userDefault.value(forKey: key) as? Value
         }

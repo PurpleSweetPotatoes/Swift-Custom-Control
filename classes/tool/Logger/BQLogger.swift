@@ -48,7 +48,7 @@ public enum BQLogger {
                 block(exception)
             } else {
                 let callStack = exception.callStackSymbols.joined(separator: "\n")
-                let content = "**********   \(BQLogger.currentTime())    **********\ndisName:\(AppInfo.name)\t version:\(AppInfo.version)\t system:\(UIDevice.current.systemVersion)\n\(exception.name) \(exception.reason ?? "")\ncallStackSymbols:\n\(callStack)"
+                let content = "**********   \(BQLogger.currentTime())    **********\ndisName:\(AppHelper.name)\t version:\(AppHelper.version)\t system:\(UIDevice.current.systemVersion)\n\(exception.name) \(exception.reason ?? "")\ncallStackSymbols:\n\(callStack)"
                 try? content.write(toFile: BQLogger.crashFilePath(), atomically: true, encoding: .utf8)
             }
 
@@ -72,7 +72,7 @@ public enum BQLogger {
     public static func showInfo(_ info: String) {
         let sv = UIView(frame: UIScreen.main.bounds)
         sv.backgroundColor = UIColor(white: 0, alpha: 0.7)
-        UIApplication.shared.keyWindow?.addSubview(sv)
+        UIApplication.keyWindow?.addSubview(sv)
 
         let bv = UILabel(frame: CGRect(x: 0, y: sv.sizeH - 50, width: sv.sizeW, height: 50), font: .systemFont(ofSize: 16), text: "返回", textColor: .white, alignment: .center)
         bv.isUserInteractionEnabled = true
@@ -81,7 +81,7 @@ public enum BQLogger {
         }
         sv.addSubview(bv)
 
-        let iv = UITextView(frame: CGRect(x: 0, y: UIApplication.shared.statusBarFrame.height, width: sv.sizeW, height: sv.sizeH - bv.sizeH - AppInfo.statusHeight))
+        let iv = UITextView(frame: CGRect(x: 0, y: UIApplication.statusBarHeight, width: sv.sizeW, height: sv.sizeH - bv.sizeH - UIApplication.statusBarHeight))
         iv.font = .systemFont(ofSize: 14)
         iv.backgroundColor = .clear
         iv.textColor = bv.textColor
@@ -100,7 +100,7 @@ public enum BQLogger {
     /// 缓存数组长度
     fileprivate static var cacheLength = 10
     fileprivate static func currentTime() -> String {
-        dateFormat.dateFormat = "MM/dd HH:mm:ss"
+        dateFormat.dateFormat = "yyyy.MM.dd HH:mm:ss"
         return dateFormat.string(from: Date())
     }
 
@@ -123,26 +123,26 @@ public enum BQLogger {
 
 public extension BQLogger {
 
-    static func debug<T>(_ messsage: T, file: String = #file, funcName: String = #function, lineNum: Int = #line) {
-        printInfo(type: .debug, messsage: messsage, file: file, funcName: funcName, lineNum: lineNum)
-    }
-    
-    static func info<T>(_ messsage: T, file: String = #file, funcName: String = #function, lineNum: Int = #line) {
-        printInfo(type: .info, messsage: messsage, file: file, funcName: funcName, lineNum: lineNum)
-    }
-    
-    static func log<T>(_ messsage: T, file: String = #file, funcName: String = #function, lineNum: Int = #line) {
-        printInfo(type: .defualt, messsage: messsage, file: file, funcName: funcName, lineNum: lineNum)
-    }
-    
-    static func error<T>(_ messsage: T, file: String = #file, funcName: String = #function, lineNum: Int = #line) {
-        printInfo(type: .error, messsage: messsage, file: file, funcName: funcName, lineNum: lineNum)
+    static func debug<T>(_ message: T, file: String = #file, funcName: String = #function, lineNum: Int = #line) {
+        printInfo(type: .debug, message: message, file: file, funcName: funcName, lineNum: lineNum)
     }
 
-    private static func printInfo<T>(type: BQLogType, messsage: T, file: String = #filePath, funcName: String = #function, lineNum: Int = #line) {
-        
-        let output = "\(type.colorStr)\(BQLogger.currentTime()) [\(file.lastPathComponentName):\(lineNum)] \(funcName):\n\(messsage)\n"
-        
+    static func log<T>(_ message: T, file: String = #file, funcName: String = #function, lineNum: Int = #line) {
+        printInfo(type: .info, message: message, file: file, funcName: funcName, lineNum: lineNum)
+    }
+
+    static func warning<T>(_ message: T, file: String = #file, funcName: String = #function, lineNum: Int = #line) {
+        printInfo(type: .warning, message: message, file: file, funcName: funcName, lineNum: lineNum)
+    }
+
+    static func error<T>(_ message: T, file: String = #file, funcName: String = #function, lineNum: Int = #line) {
+        printInfo(type: .error, message: message, file: file, funcName: funcName, lineNum: lineNum)
+    }
+
+    private static func printInfo<T>(type: BQLogType, message: T, file: String = #filePath, funcName: String = #function, lineNum: Int = #line) {
+
+        let output = type == .info ? "\(BQLogger.currentTime()) \(file.lastPathComponentName):\(lineNum): \(message)\n" : "\(type.colorStr)\(BQLogger.currentTime()) [\(file.lastPathComponentName):\(lineNum)] \(funcName):\n\(message)\n"
+
         if configInfo.canLog(type: type) {
             print(output, terminator:"")
         }

@@ -14,7 +14,7 @@ import UIKit
 public struct DatePickerOptions: OptionSet {
     // MARK: Public
 
-    public func convenToArr() -> [DatePickerOptions] {
+    public func convertToArr() -> [DatePickerOptions] {
         let arr: [DatePickerOptions] = [.year, .month, .day, .hour, .min, .second]
         var outArr = [DatePickerOptions]()
         for type in arr where contains(type) {
@@ -76,7 +76,7 @@ public class BQDatePicker: UIView {
 
     public var options: DatePickerOptions = .year {
         didSet {
-            numopt = options.convenToArr()
+            dataOptions = options.convertToArr()
         }
     }
 
@@ -96,7 +96,7 @@ public class BQDatePicker: UIView {
     ///   - options: 展示内容
     ///   - supV: 父视图，未传入父视图，则会加载到KeyWindow上，需要自行控制remove
     public static func config(disTitle: String = "请选择时间", options: DatePickerOptions = [.year, .month, .day], supV: UIView? = nil) -> BQDatePicker {
-        let supView: UIView! = supV ?? UIApplication.shared.keyWindow
+        let supView: UIView! = supV ?? UIApplication.keyWindow
 
         let pickerV = BQDatePicker(frame: supView.bounds, title: disTitle)
         pickerV.options = options
@@ -130,20 +130,13 @@ public class BQDatePicker: UIView {
         dateModel = date.components
         startYear = dateModel.year! - 30
         pickView.reloadAllComponents()
-        
-        if pickView.showsSelectionIndicator {
-            for subV in pickView.subviews where subV.frame.height <= 1 {
-                subV.isHidden = false
-                subV.backgroundColor = .gray
-            }
-        }
 
         showCurrentTime()
     }
 
     // MARK: Private
 
-    private var numopt = [DatePickerOptions]()
+    private var dataOptions = [DatePickerOptions]()
 
     private var bgView: UIView!
     private var animationView: UIView!
@@ -177,7 +170,7 @@ public class BQDatePicker: UIView {
     // MARK: - *** Instance method
 
     private func showCurrentTime() {
-        for (index, type) in numopt.enumerated() {
+        for (index, type) in dataOptions.enumerated() {
             var row = 0
             switch type {
             case .year:
@@ -219,7 +212,7 @@ public class BQDatePicker: UIView {
         pickView = UIPickerView(frame: CGRect(x: 0, y: 44, width: animationView.size.width, height: animationView.size.height - 44))
         pickView.delegate = self
         pickView.dataSource = self
-        pickView.showsSelectionIndicator = true
+
         let lineLayer = CALayer.lineLayer(frame: CGRect(x: 0, y: 0, width: pickView.size.width, height: 1))
         pickView.layer.addSublayer(lineLayer)
         animationView.addSubview(pickView)
@@ -252,11 +245,11 @@ public class BQDatePicker: UIView {
 
 extension BQDatePicker: UIPickerViewDataSource, UIPickerViewDelegate {
     public func numberOfComponents(in _: UIPickerView) -> Int {
-        return numopt.count
+        return dataOptions.count
     }
 
     public func pickerView(_: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        let type = numopt[component]
+        let type = dataOptions[component]
         switch type {
         case .year:
             return 60
@@ -295,7 +288,7 @@ extension BQDatePicker: UIPickerViewDataSource, UIPickerViewDelegate {
     }
 
     public func pickerView(_: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        let type = numopt[component]
+        let type = dataOptions[component]
         switch type {
         case .year:
             return String(startYear + row) + "年"
@@ -316,7 +309,7 @@ extension BQDatePicker: UIPickerViewDataSource, UIPickerViewDelegate {
     }
 
     public func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        let type = numopt[component]
+        let type = dataOptions[component]
         switch type {
         case .year:
             dateModel.year = startYear + row
@@ -342,7 +335,7 @@ extension BQDatePicker: UIPickerViewDataSource, UIPickerViewDelegate {
 
         if pickerLabel == nil {
             let lab = UILabel()
-            lab.frame = CGRect(x: 0, y: 0, width: Int(pickView.size.width) / numopt.count, height: 30)
+            lab.frame = CGRect(x: 0, y: 0, width: Int(pickView.size.width) / dataOptions.count, height: 30)
             lab.font = UIFont.systemFont(ofSize: 15)
             lab.textAlignment = .center
             pickerLabel = lab

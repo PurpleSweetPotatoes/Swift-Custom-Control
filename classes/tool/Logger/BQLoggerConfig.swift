@@ -13,24 +13,21 @@ import UIKit
 
 
 public enum BQLogType: Int {
-    
+
     case all = 0
     case debug
     case info
-    case defualt
+    case warning
     case error
-    case fault
     
     var colorStr: String {
         switch self {
         case .debug:
-            return "📓"
-        case .info:
             return "📘"
-        case .defualt:
-            return "📗"
+        case .warning:
+            return "⚠️"
         case .error:
-            return "📕"
+            return "❌"
         default:
             return ""
         }
@@ -55,8 +52,8 @@ public struct BQLoggerConfig {
         return self;
     }
     
-    /// 日志保存等级 .defualt以上保存
-    var saveType: BQLogType = .defualt
+    /// 日志保存等级 .normal以上保存
+    var saveType: BQLogType = .info
     @discardableResult
     mutating public func saveType(_ saveType: BQLogType) -> Self {
         self.saveType = saveType
@@ -78,19 +75,20 @@ public struct BQLoggerConfig {
         self.saveTime = saveTime
         return self;
     }
-    
-    @discardableResult
-    public func systemVcLog() -> Self {
+
+    public static func startViewControllerLog() {
+        guard UIApplication.isDebug else {
+            BQLogger.error("current environment is debug can't log UIViewController life cycling")
+            return
+        }
+
         DispatchQueue.once(token: #function) {
             UIViewController.exchangeMethod(targetSel: #selector(UIViewController.viewDidLoad), newSel: #selector(UIViewController.bqLoggerViewDidLoad))
             UIViewController.exchangeMethod(targetSel: #selector(UIViewController.viewWillAppear(_:)), newSel: #selector(UIViewController.bqLoggerViewWillAppear(_:)))
-//            UIViewController.exchangeMethod(targetSel: #selector(UIViewController.viewDidAppear(_:)), newSel: #selector(UIViewController.bqLoggerViewDidAppear(_:)))
             UIViewController.exchangeMethod(targetSel: #selector(UIViewController.viewWillDisappear(_:)), newSel: #selector(UIViewController.bqLoggerViewWillDisappear(_:)))
-//            UIViewController.exchangeMethod(targetSel: #selector(UIViewController.viewDidDisappear(_:)), newSel: #selector(UIViewController.bqLoggerViewDidDisappear(_:)))
             UIViewController.exchangeMethod(targetSel: #selector(UIViewController.present(_:animated:completion:)), newSel: #selector(UIViewController.bqLoggerPresent(_:animated:completion:)))
             UINavigationController.exchangeMethod(targetSel: #selector(UINavigationController.pushViewController(_:animated:)), newSel: #selector(UINavigationController.bqLoggerPushViewController(_:animated:)))
         }
-        return self
     }
     
     func canLog(type: BQLogType) -> Bool {

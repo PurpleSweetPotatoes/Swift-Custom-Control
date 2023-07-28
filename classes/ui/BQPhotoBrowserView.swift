@@ -31,7 +31,7 @@ class BQPhotoBrowserView: UIView {
 
     static func show(datas: [UIImage], current: Int = 0, delegate: BQPhotoBrowserViewDelegate? = nil) {
         let browser = BQPhotoBrowserView(frame: UIScreen.main.bounds, datas: datas, current: current)
-        UIApplication.shared.keyWindow?.addSubview(browser)
+        UIApplication.keyWindow?.addSubview(browser)
         browser.startAnimation()
     }
 

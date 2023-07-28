@@ -13,12 +13,12 @@ public extension UIColor {
     convenience init(_ hexString: String) {
         let colorStr = hexString.replacingOccurrences(of: "", with: "#")
         let scan = Scanner(string: colorStr)
-        var rgbValue: UInt32 = 0
-        scan.scanHexInt32(&rgbValue)
+        var rgbValue: UInt64 = 0
+        scan.scanHexInt64(&rgbValue)
         self.init(rgbValue)
     }
 
-    convenience init(_ rgbValue: UInt32) {
+    convenience init(_ rgbValue: UInt64) {
         let red = CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0
         let green = CGFloat((rgbValue & 0xFF00) >> 8) / 255.0
         let blue = CGFloat(rgbValue & 0xFF) / 255.0
@@ -61,11 +61,11 @@ public extension UIColor {
         return UIColor(0x0099FF)
     }
 
-    var rgbRed: CGFloat { return rgbaArray()[0] }
+    var redValue: CGFloat { return rgbaArray()[0] }
 
-    var rgbGreen: CGFloat { return rgbaArray()[1] }
+    var greenValue: CGFloat { return rgbaArray()[1] }
 
-    var rgbBlue: CGFloat { return rgbaArray()[2] }
+    var blueValue: CGFloat { return rgbaArray()[2] }
 
     var alpha: CGFloat { return rgbaArray()[3] }
 

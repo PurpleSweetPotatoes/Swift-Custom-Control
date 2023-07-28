@@ -36,7 +36,7 @@ public class BQSheetView: UIView, UICollectionViewDataSource, UICollectionViewDe
     public static func showSheetView(tableDatas: [String], title: String? = nil, handle: @escaping (Int) -> Void) {
         let sheetView = BQSheetView(tableDatas: tableDatas, title: title)
         sheetView.callBlock = handle
-        UIApplication.shared.keyWindow?.addSubview(sheetView)
+        UIApplication.keyWindow?.addSubview(sheetView)
         sheetView.startAnimation()
     }
 
@@ -49,7 +49,7 @@ public class BQSheetView: UIView, UICollectionViewDataSource, UICollectionViewDe
     public static func showShareView(shareDatas: [[String: String]], title: String, handle: @escaping (Int) -> Void) {
         let sheetView = BQSheetView(shareDatas: shareDatas, title: title)
         sheetView.callBlock = handle
-        UIApplication.shared.keyWindow?.addSubview(sheetView)
+        UIApplication.keyWindow?.addSubview(sheetView)
         sheetView.startAnimation()
     }
 

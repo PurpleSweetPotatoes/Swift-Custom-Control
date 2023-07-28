@@ -18,7 +18,7 @@ public protocol UnitConver {
 
 public extension UnitConver {
     func toDistance() -> String {
-        if let value = converToNum(), value >= 0 {
+        if let value = convertToNum(), value >= 0 {
             if value > 1000.0 {
                 return String(format: "%.1fkm", value / 1000)
             } else {
@@ -30,7 +30,7 @@ public extension UnitConver {
     }
 
     func toDiskSize() -> String {
-        if let value = converToNum(), value >= 0 {
+        if let value = convertToNum(), value >= 0 {
             let unit = 1024.0
 
             if value >= unit * unit {
@@ -45,7 +45,7 @@ public extension UnitConver {
         }
     }
 
-    private func converToNum() -> Double? {
+    private func convertToNum() -> Double? {
         var num: Double?
         switch self {
         case is String:

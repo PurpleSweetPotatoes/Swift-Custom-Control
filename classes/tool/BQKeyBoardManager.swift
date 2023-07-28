@@ -60,7 +60,7 @@ public class BQKeyBoardManager: NSObject {
         checkCanResponseV(reV: managerV!)
         for (index, subV) in editVList.enumerated() {
             if subV.inputAccessoryView == nil {
-                let bar = BQkeyBoardToolBar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 44))
+                let bar = BQKeyBoardToolBar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 44))
                 bar.preBtn.addTarget(self, action: #selector(preBtnAction(sender:)), for: .touchUpInside)
                 bar.nextBtn.addTarget(self, action: #selector(nextBtnAction(sender:)), for: .touchUpInside)
                 bar.dissBtn.addTarget(self, action: #selector(dissBtnAction(sender:)), for: .touchUpInside)
@@ -103,12 +103,12 @@ public class BQKeyBoardManager: NSObject {
         for editV in editVList {
             if editV.isFirstResponder, let userInfo = notifi.userInfo as? [String: Any] {
                 curV = editV
-                if let bar = editV.inputAccessoryView as? BQkeyBoardToolBar, let tf = editV as? UITextField {
+                if let bar = editV.inputAccessoryView as? BQKeyBoardToolBar, let tf = editV as? UITextField {
                     bar.tipLab.text = tf.placeholder
                 }
                 // 回归原视图，这样不影响获取正确的视图最低点
                 managerV?.transform = CGAffineTransform.identity
-                let vRect = editV.superview?.convert(editV.frame, to: UIApplication.shared.keyWindow)
+                let vRect = editV.superview?.convert(editV.frame, to: UIApplication.keyWindow)
                 let vY = vRect?.maxY ?? 0.0
                 // 获取键盘y值
                 let value = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue
@@ -142,9 +142,9 @@ public class BQKeyBoardManager: NSObject {
     }
 }
 
-// MARK: - BQkeyBoardToolBar
+// MARK: - BQKeyBoardToolBar
 
-class BQkeyBoardToolBar: UIView {
+class BQKeyBoardToolBar: UIView {
     // MARK: Lifecycle
 
     override init(frame: CGRect) {
@@ -167,7 +167,7 @@ class BQkeyBoardToolBar: UIView {
     // MARK: Private
 
     func configUI() {
-        backgroundColor = .groupTableViewBackground
+        backgroundColor = .systemGroupedBackground
 
         let preBtn = UIButton(type: .custom)
         preBtn.frame = CGRect(x: 10, y: 0, width: sizeH, height: sizeH)

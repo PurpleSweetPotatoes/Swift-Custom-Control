@@ -65,7 +65,7 @@ Pod::Spec.new do |spec|
   #
 
   # spec.platform     = :ios
-   spec.platform     = :ios, "15.0"
+  spec.platform     = :ios, "15.0"
 
   #  When using multiple platforms
   # spec.ios.deployment_target = "5.0"
@@ -136,6 +136,6 @@ Pod::Spec.new do |spec|
   # spec.requires_arc = true
 
   # spec.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
-   spec.dependency "Alamofire"
-   spec.dependency "SQLite.swift"
+  # spec.dependency "Alamofire"
+  # spec.dependency "SQLite.swift"
 end

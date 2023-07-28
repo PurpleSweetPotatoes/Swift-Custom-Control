@@ -9,7 +9,6 @@
 import Combine
 import Foundation
 
-@available(iOS 13.0, *)
 public extension UIControl {
     @discardableResult
     func publisher(for events: UIControl.Event) -> AnyPublisher<UIControl, Never> {
@@ -17,7 +16,6 @@ public extension UIControl {
     }
 }
 
-@available(iOS 13.0, *)
 struct UIControlPublisher<Control: UIControl>: Publisher {
     typealias Output = Control
     typealias Failure = Never
@@ -37,13 +35,12 @@ struct UIControlPublisher<Control: UIControl>: Publisher {
 }
 
 /// A custom subscription to capture UIControl target events.
-@available(iOS 13.0, *)
 final class UIControlSubscription<SubscriberType: Subscriber, Control: UIControl>: Subscription where SubscriberType.Input == Control {
     private var subscriber: SubscriberType?
     private let control: Control
 
     deinit {
-        print("释放 Subscription")
+        BQLogger.debug("释放 Subscription")
     }
 
     init(subscriber: SubscriberType, control: Control, event: UIControl.Event) {

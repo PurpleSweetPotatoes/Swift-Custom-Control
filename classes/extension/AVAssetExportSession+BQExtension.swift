@@ -11,26 +11,6 @@ import AVFoundation
 
 public typealias ExportBlock = (_ exportUrl: String?, _ errDesc: String?) -> Void
 
-public enum BQFileType: String {
-    case mp4
-    case mov
-    case m4a
-    case caf
-
-    func avFileType() -> AVFileType {
-        switch self {
-        case .mp4:
-            return AVFileType.mp4
-        case .mov:
-            return AVFileType.mov
-        case .m4a:
-            return AVFileType.m4a
-        case .caf:
-            return AVFileType.caf
-        }
-    }
-}
-
 public extension AVAssetExportSession {
     /// 压缩导出音视频文件
     /// - Parameters:
@@ -39,7 +19,7 @@ public extension AVAssetExportSession {
     ///   - presetName: 导出预设样式
     ///   - handle: 回调
     @discardableResult
-    class func compositionFile(type: BQFileType, trackList: [BQAssetTrack], presetName: String = AVAssetExportPresetHighestQuality, handle: @escaping ExportBlock) -> AVAssetExportSession? {
+    class func compositionFile(type: AVFileType, trackList: [BQAssetTrack], presetName: String = AVAssetExportPresetHighestQuality, handle: @escaping ExportBlock) -> AVAssetExportSession? {
         let compostion = AVMutableComposition()
         compostion.addTracks(trackList: trackList)
         return exportFile(type: type, assert: compostion, presetName: presetName, handle: handle)
@@ -52,7 +32,7 @@ public extension AVAssetExportSession {
     ///   - presetName: 导出预设样式
     ///   - handle: 回调
     @discardableResult
-    static func exportFile(type: BQFileType, fileUrl: String, presetName: String, videoComposition: AVVideoComposition? = nil, handle: @escaping ExportBlock) -> AVAssetExportSession? {
+    static func exportFile(type: AVFileType, fileUrl: String, presetName: String, videoComposition: AVVideoComposition? = nil, handle: @escaping ExportBlock) -> AVAssetExportSession? {
         if fileUrl.count == 0 {
             handle(nil, "资源路径不存在!")
             return nil
@@ -67,16 +47,15 @@ public extension AVAssetExportSession {
     ///   - presetName: 导出预设样式
     ///   - handle: 回调
     @discardableResult
-    static func exportFile(type: BQFileType, assert: AVAsset, presetName: String, videoComposition: AVVideoComposition? = nil, handle: @escaping ExportBlock) -> AVAssetExportSession? {
+    static func exportFile(type: AVFileType, assert: AVAsset, presetName: String, videoComposition: AVVideoComposition? = nil, handle: @escaping ExportBlock) -> AVAssetExportSession? {
         guard let session = AVAssetExportSession(asset: assert, presetName: presetName) else {
             handle(nil, "压缩过程错误")
             return nil
         }
         session.shouldOptimizeForNetworkUse = true
         session.videoComposition = videoComposition
-        let fileType = type.avFileType()
-        if session.supportedFileTypes.contains(fileType) {
-            session.outputFileType = fileType
+        if session.supportedFileTypes.contains(type) {
+            session.outputFileType = type
             let outFilePath = "\(NSTemporaryDirectory())\(UUID().uuidString).\(type.rawValue)"
             if FileManager.default.fileExists(atPath: outFilePath) {
                 try? FileManager.default.removeItem(atPath: outFilePath)
@@ -98,7 +77,7 @@ public extension AVAssetExportSession {
             }
             return session
         } else {
-            handle(nil, "暂不支持导出该类型:\(fileType)")
+            handle(nil, "暂不支持导出该类型:\(type)")
             return nil
         }
     }

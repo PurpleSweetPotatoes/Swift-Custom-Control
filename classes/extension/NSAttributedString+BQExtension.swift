@@ -32,6 +32,13 @@ public extension NSAttributedString {
         attach.bounds = CGRect(x: 0, y: -textPaddingTop - space, width: imgW, height: imgH)
         self.init(attachment: attach)
     }
+
+    func numberOfLines(with width: CGFloat) -> Int {
+        let path = UIBezierPath(rect: CGRect(x: 0, y: 0, width: width, height: CGFloat(MAXFLOAT)))
+        let frameSetterRef : CTFramesetter = CTFramesetterCreateWithAttributedString(self as CFAttributedString)
+        let frameRef: CTFrame = CTFramesetterCreateFrame(frameSetterRef, CFRangeMake(0, 0), path.cgPath, nil)
+        return CFArrayGetCount(CTFrameGetLines(frameRef))
+    }
 }
 
 public final class BQTextAttributes {

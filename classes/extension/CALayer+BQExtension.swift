@@ -9,9 +9,9 @@
 
 import UIKit
 
-public enum GradientPostion: Int {
+public enum GradientPosition: Int {
     case leftTop, rightTop, leftBottom, rightBottom
-    func convenPoint() -> CGPoint {
+    func convertPoint() -> CGPoint {
         switch self {
         case .leftTop:
             return CGPoint.zero
@@ -26,14 +26,14 @@ public enum GradientPostion: Int {
 }
 
 public extension CALayer {
-    class func lineLayer(frame: CGRect, color: UIColor = .groupTableViewBackground) -> CAShapeLayer {
+    class func lineLayer(frame: CGRect, color: UIColor = .systemGroupedBackground) -> CAShapeLayer {
         let line = CAShapeLayer()
         line.frame = frame
         line.backgroundColor = color.cgColor
         return line
     }
 
-    class func dashLayer(frame: CGRect, color: UIColor = .groupTableViewBackground, dashPattern: [NSNumber] = [5, 5]) -> CAShapeLayer {
+    class func dashLayer(frame: CGRect, color: UIColor = .systemGroupedBackground, dashPattern: [NSNumber] = [5, 5]) -> CAShapeLayer {
         let shapeLayer = CAShapeLayer()
         shapeLayer.frame = frame
         shapeLayer.lineDashPattern = dashPattern
@@ -48,13 +48,13 @@ public extension CALayer {
         return shapeLayer
     }
 
-    class func gradientLayer(frame: CGRect, start: GradientPostion = .leftTop, end: GradientPostion = .leftBottom, colors: [CGColor], locations: [NSNumber]? = nil) -> CAGradientLayer {
+    class func gradientLayer(frame: CGRect, start: GradientPosition = .leftTop, end: GradientPosition = .leftBottom, colors: [CGColor], locations: [NSNumber]? = nil) -> CAGradientLayer {
         let gradLayer = CAGradientLayer()
         gradLayer.frame = frame
         gradLayer.colors = colors
         gradLayer.locations = locations
-        gradLayer.startPoint = start.convenPoint()
-        gradLayer.endPoint = end.convenPoint()
+        gradLayer.startPoint = start.convertPoint()
+        gradLayer.endPoint = end.convertPoint()
 
         return gradLayer
     }

@@ -7,179 +7,150 @@
 //  All rights reserved
 // *******************************************
 
+import Contacts
+import Photos
 import UIKit
 
-public enum DeviceType: String {
-    #if os(iOS)
-        case iPhone
-        case iPad
-        case iPod
-        case simulator
-    #elseif os(OSX)
-        case iMac
-        case macMini
-        case macPro
-        case macBook
-        case macBookAir
-        case macBookPro
-        case xserve
-    #endif
-    case unknown
-}
-
-public enum DeviceName: String {
-    /*** iPhone ***/
-    case iPhone4
-    case iPhone4S
-    case iPhone5
-    case iPhone5C
-    case iPhone5S
-    case iPhone6
-    case iPhone6Plus
-    case iPhone6S
-    case iPhone6SPlus
-    case iPhoneSE
-    case iPhone7
-    case iPhone7Plus
-    case iPhone8
-    case iPhone8Plus
-    case iPhoneX
-    case iPhoneXS
-    case iPhoneXS_Max
-    case iPhoneXR
-    case iPhone11
-    case iPhone11Pro
-    case iPhone11Pro_Max
-
-    /*** iPad ***/
-    case iPad1
-    case iPad2
-    case iPad3
-    case iPad4
-    case iPad5
-    case iPad6
-    case iPad7
-    case iPadAir
-    case iPadAir2
-    case iPadAir3
-    case iPadMini
-    case iPadMini2
-    case iPadMini3
-    case iPadMini4
-
-    /*** iPadPro ***/
-    case iPadPro9_7Inch
-    case iPadPro12_9Inch
-    case iPadPro10_5Inch
-    case iPadPro12_9Inch2
-    case iPadPro11_0Inch
-    case iPadPro12_9Inch3
-
-    /*** iPod ***/
-    case iPodTouch1Gen
-    case iPodTouch2Gen
-    case iPodTouch3Gen
-    case iPodTouch4Gen
-    case iPodTouch5Gen
-    case iPodTouch6Gen
-
-    /*** simulator ***/
+public enum DeviceType {
+    case iPhone
+    case iPad
+    case iPod
     case simulator
-
-    /*** unknown ***/
     case unknown
 }
 
 public extension UIDevice {
-    fileprivate static func getVersionCode() -> String {
+
+    static func getModelName() -> String {
         var systemInfo = utsname()
         uname(&systemInfo)
-
-        let versionCode = String(validatingUTF8: NSString(bytes: &systemInfo.machine, length: Int(_SYS_NAMELEN), encoding: String.Encoding.ascii.rawValue)!.utf8String!)!
-
-        return versionCode
-    }
-
-    fileprivate static func getVersion(code: String) -> DeviceName {
-        switch code {
-        /*** iPhone ***/
-        case "iPhone3,1", "iPhone3,2", "iPhone3,3": return .iPhone4
-        case "iPhone4,1", "iPhone4,2", "iPhone4,3": return .iPhone4S
-        case "iPhone5,1", "iPhone5,2": return .iPhone5
-        case "iPhone5,3", "iPhone5,4": return .iPhone5C
-        case "iPhone6,1", "iPhone6,2": return .iPhone5S
-        case "iPhone7,2": return .iPhone6
-        case "iPhone7,1": return .iPhone6Plus
-        case "iPhone8,1": return .iPhone6S
-        case "iPhone8,2": return .iPhone6SPlus
-        case "iPhone8,3", "iPhone8,4": return .iPhoneSE
-        case "iPhone9,1", "iPhone9,3": return .iPhone7
-        case "iPhone9,2", "iPhone9,4": return .iPhone7Plus
-        case "iPhone10,1", "iPhone10,4": return .iPhone8
-        case "iPhone10,2", "iPhone10,5": return .iPhone8Plus
-        case "iPhone10,3", "iPhone10,6": return .iPhoneX
-        case "iPhone11,2": return .iPhoneXS
-        case "iPhone11,4", "iPhone11,6": return .iPhoneXS_Max
-        case "iPhone11,8": return .iPhoneXR
-        case "iPhone12,1": return .iPhone11
-        case "iPhone12,3": return .iPhone11Pro
-        case "iPhone12,5": return .iPhone11Pro_Max
-
-        /*** iPad ***/
-        case "iPad1,1", "iPad1,2": return .iPad1
-        case "iPad2,1", "iPad2,2", "iPad2,3", "iPad2,4": return .iPad2
-        case "iPad3,1", "iPad3,2", "iPad3,3": return .iPad3
-        case "iPad3,4", "iPad3,5", "iPad3,6": return .iPad4
-        case "iPad6,11", "iPad6,12": return .iPad5
-        case "iPad7,5", "iPad7,6": return .iPad6
-        case "iPad4,1", "iPad4,2", "iPad4,3": return .iPadAir
-        case "iPad5,3", "iPad5,4": return .iPadAir2
-        case "iPad11,3", "iPad11,4": return .iPadAir3
-        case "iPad2,5", "iPad2,6", "iPad2,7": return .iPadMini
-        case "iPad4,4", "iPad4,5", "iPad4,6": return .iPadMini2
-        case "iPad4,7", "iPad4,8", "iPad4,9": return .iPadMini3
-        case "iPad5,1", "iPad5,2": return .iPadMini4
-
-        /*** iPadPro ***/
-        case "iPad6,3", "iPad6,4": return .iPadPro9_7Inch
-        case "iPad6,7", "iPad6,8": return .iPadPro12_9Inch
-        case "iPad7,1", "iPad7,2": return .iPadPro12_9Inch2
-        case "iPad7,3", "iPad7,4": return .iPadPro10_5Inch
-        case "iPad8,1", "iPad8,2", "iPad8,3", "iPad8,4": return .iPadPro11_0Inch
-        case "iPad8,5", "iPad8,6", "iPad8,7", "iPad8,8": return .iPadPro12_9Inch3
-
-        /*** iPod ***/
-        case "iPod1,1": return .iPodTouch1Gen
-        case "iPod2,1": return .iPodTouch2Gen
-        case "iPod3,1": return .iPodTouch3Gen
-        case "iPod4,1": return .iPodTouch4Gen
-        case "iPod5,1": return .iPodTouch5Gen
-        case "iPod7,1": return .iPodTouch6Gen
-
-        /*** Simulator ***/
-        case "i386", "x86_64": return .simulator
-
-        default: return .unknown
+        return withUnsafePointer(to: &systemInfo.machine.0) { ptr in
+            String(cString: ptr)
         }
     }
 
     static func type() -> DeviceType {
-        let versionCode = getVersionCode()
+        let modelName = getModelName()
 
-        if versionCode.contains("iPhone") {
+        if modelName.contains("iPhone") {
             return .iPhone
-        } else if versionCode.contains("iPad") {
+        } else if modelName.contains("iPad") {
             return .iPad
-        } else if versionCode.contains("iPod") {
+        } else if modelName.contains("iPod") {
             return .iPod
-        } else if versionCode == "i386" || versionCode == "x86_64" {
+        } else if modelName == "i386" || modelName == "x86_64" {
             return .simulator
         } else {
             return .unknown
         }
     }
 
-    static func name() -> DeviceName {
-        return getVersion(code: getVersionCode())
+    /// IP地址相关(第一个为外网ip)
+    static func getIFAddresses() -> [String] {
+        var addresses = [String]()
+
+        // Get list of all interfaces on the local machine:
+        var ifAddr: UnsafeMutablePointer<ifaddrs>?
+        if getifaddrs(&ifAddr) == 0 {
+            var ptr = ifAddr
+            while ptr != nil {
+                let flags = Int32((ptr?.pointee.ifa_flags)!)
+                var addr = ptr?.pointee.ifa_addr.pointee
+
+                // Check for running IPv4, IPv6 interfaces. Skip the loopback interface.
+                if (flags & (IFF_UP | IFF_RUNNING | IFF_LOOPBACK)) == (IFF_UP | IFF_RUNNING) {
+                    if addr?.sa_family == UInt8(AF_INET) || addr?.sa_family == UInt8(AF_INET6) {
+                        // Convert interface address to a human readable string:
+                        var hostname = [CChar](repeating: 0, count: Int(NI_MAXHOST))
+                        if getnameinfo(&addr!, socklen_t((addr?.sa_len)!), &hostname, socklen_t(hostname.count),
+                                       nil, socklen_t(0), NI_NUMERICHOST) == 0
+                        {
+                            if let address = String(validatingUTF8: hostname) {
+                                addresses.append(address)
+                            }
+                        }
+                    }
+                }
+                ptr = ptr?.pointee.ifa_next
+            }
+
+            freeifaddrs(ifAddr)
+        }
+        return addresses
+    }
+}
+
+/// Device Auth 
+public extension UIDevice {
+    enum DeviceAuthModel: Int {
+        case camera = 0 // 相机 Privacy - Camera Usage Description
+        case photo // 相册 Privacy - Photo Library Usage Description
+        case audio // 麦克风 Privacy - Microphone Usage Description
+        case contact // 通讯录 Privacy - Contacts Usage Description
+    }
+
+    static func authorization(type: DeviceAuthModel, handle: @escaping (_ result: Bool) -> Void) {
+        switch type {
+        case .camera:
+            cameraAuth(handle: handle)
+        case .photo:
+            photoAuth(handle: handle)
+        case .audio:
+            audioAuth(handle: handle)
+        case .contact:
+            contactAuth(handle: handle)
+        }
+    }
+
+    private static func cameraAuth(handle: @escaping (_ result: Bool) -> Void) {
+        let status = AVCaptureDevice.authorizationStatus(for: .video)
+        if status == .authorized {
+            handle(true)
+        } else if status == .notDetermined {
+            AVCaptureDevice.requestAccess(for: .video) { result in
+                handle(result)
+            }
+        } else {
+            handle(false)
+        }
+    }
+
+    private static func photoAuth(handle: @escaping (_ result: Bool) -> Void) {
+        let status = PHPhotoLibrary.authorizationStatus()
+        if status == .authorized {
+            handle(true)
+        } else if status == .notDetermined {
+            PHPhotoLibrary.requestAuthorization { status in
+                handle(status == .authorized)
+            }
+        } else {
+            handle(false)
+        }
+    }
+
+    private static func audioAuth(handle: @escaping (_ result: Bool) -> Void) {
+        let status = AVCaptureDevice.authorizationStatus(for: .audio)
+        if status == .authorized {
+            handle(true)
+        } else if status == .notDetermined {
+            AVCaptureDevice.requestAccess(for: .audio) { result in
+                handle(result)
+            }
+        } else {
+            handle(false)
+        }
+    }
+
+    private static func contactAuth(handle: @escaping (_ result: Bool) -> Void) {
+        let status = CNContactStore.authorizationStatus(for: .contacts)
+        if status == .authorized {
+            handle(true)
+        } else if status == .notDetermined {
+            CNContactStore().requestAccess(for: .contacts) { result, _ in
+                handle(result)
+            }
+        } else {
+            handle(false)
+        }
     }
 }

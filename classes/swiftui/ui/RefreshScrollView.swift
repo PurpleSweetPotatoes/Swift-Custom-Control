@@ -8,8 +8,9 @@
 import SwiftUI
 
 private enum Constants {
-    static let ProgressViewHeight: CGFloat = 60
-    static let triggerRefreshHeight: CGFloat = 80
+    static let RefreshableScrollViewSpanName: String = "RefreshableScrollViewSpanName"
+    static let ProgressViewHeight: CGFloat = 80
+    static let TriggerRefreshHeight: CGFloat = 100
 }
 
 public struct RefreshScrollView<Content: View>: View {
@@ -31,25 +32,35 @@ public struct RefreshScrollView<Content: View>: View {
                     Rectangle().fill(
                         Color.clear)
                         .frame(width: 0, height: 0)
-                        .preference(key: RefreshScrollViewPreferenceKey.self, value: proxy.frame(in: .global).origin.y)
+                        .preference(key: ScrollViewOffsetPreferenceKey.self, value: proxy.frame(in: .named(Constants.RefreshableScrollViewSpanName)).origin.y)
                 }
                 .frame(height: 0)
-                if onRefresh != nil {
+                if viewModel.isRefreshing {
                     ProgressView()
                         .scaleEffect(1.5)
-                        .frame(width: Constants.ProgressViewHeight, height: viewModel.isRefreshing ? Constants.ProgressViewHeight : max(Constants.ProgressViewHeight * viewModel.process, 0), alignment: .center)
-                        .clipped()
+                        .padding(20)
                         .offset(y: -(viewModel.offsetY ?? 0) + viewModel.initialOffsetY)
                 }
                 content()
             }
+            .background(GeometryReader { proxy in
+                Color.clear.preference(
+                    key: ScrollViewContentSizePreferenceKey.self,
+                    value: proxy.size
+                )
+            })
         }
-        .onPreferenceChange(RefreshScrollViewPreferenceKey.self) { value in
+        
+        .onPreferenceChange(ScrollViewOffsetPreferenceKey.self) { value in
             if let _ = viewModel.offsetY {
                 offsetChanged?(value - viewModel.initialOffsetY)
             }
             viewModel.didUpdateOffsetY(value)
         }
+        .onPreferenceChange(ScrollViewContentSizePreferenceKey.self) { value in
+            print("size value: \(value)")
+        }
+        .coordinateSpace(name: Constants.RefreshableScrollViewSpanName)
         .onChange(of: viewModel.isRefreshing) { isRefresh in
             guard isRefresh else { return }
             Task { @MainActor in
@@ -60,15 +71,20 @@ public struct RefreshScrollView<Content: View>: View {
     }
 }
 
-private struct RefreshScrollViewPreferenceKey: PreferenceKey {
+private struct ScrollViewOffsetPreferenceKey: PreferenceKey {
     static var defaultValue: CGFloat = 0
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {}
+}
+
+private struct ScrollViewContentSizePreferenceKey: PreferenceKey {
+    static var defaultValue: CGSize = CGSize.zero
+    static func reduce(value: inout CGSize, nextValue: () -> CGSize) {}
 }
 
 private final class RefreshScrollViewModel: ObservableObject {
     var offsetY: CGFloat?
     var initialOffsetY: CGFloat = 0.0
-    private let triggerRefresh: CGFloat = Constants.triggerRefreshHeight
+    private let triggerRefresh: CGFloat = Constants.TriggerRefreshHeight
     @Published var isRefreshing: Bool = false
     @Published var process: CGFloat = 0.0
 
@@ -76,8 +92,8 @@ private final class RefreshScrollViewModel: ObservableObject {
     func didUpdateOffsetY(_ value: CGFloat) {
         if let _ = offsetY {
             let difference = value - initialOffsetY
-            let process = min(max(difference, 0), triggerRefresh) / triggerRefresh
-            self.process = process
+//            let process = min(max(difference, 0), triggerRefresh) / triggerRefresh
+//            self.process = process
             self.offsetY = value
             if !isRefreshing,
                difference > triggerRefresh {

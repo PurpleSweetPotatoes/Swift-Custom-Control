@@ -33,7 +33,7 @@ class BQShowImgsView: UIView, UIScrollViewDelegate {
         view.imgArr.append(contentsOf: imgs)
         view.callBlock = deleteHandle
         view.initUI()
-        UIApplication.shared.keyWindow?.addSubview(view)
+        UIApplication.keyWindow?.addSubview(view)
         UIView.animate(withDuration: 0.25, animations: {
             view.animationView.frame = view.toFrame
             view.backView.alpha = 1
@@ -92,7 +92,7 @@ class BQShowImgsView: UIView, UIScrollViewDelegate {
 
         contentView.setContentOffset(CGPoint(x: CGFloat(currentIndex) * sizeW, y: 0), animated: true)
         let imgView = imgArr[currentIndex]
-        animationView.frame = imgView.superview?.convert(imgView.frame, to: UIApplication.shared.keyWindow?.rootViewController?.view) ?? CGRect.zero
+        animationView.frame = imgView.superview?.convert(imgView.frame, to: UIApplication.keyWindow?.rootViewController?.view) ?? CGRect.zero
         animationView.image = imgView.image
         addSubview(animationView)
     }
@@ -103,7 +103,7 @@ class BQShowImgsView: UIView, UIScrollViewDelegate {
         let height = imgView.image!.size.height * imgWith / imgView.image!.size.width
         animationView.frame = CGRect(x: space, y: (sizeH - height) * 0.5, width: imgWith, height: height)
         animationView.image = imgArr[currentIndex].image
-        toFrame = imgView.superview?.convert(imgView.frame, to: UIApplication.shared.keyWindow?.rootViewController?.view) ?? CGRect.zero
+        toFrame = imgView.superview?.convert(imgView.frame, to: UIApplication.keyWindow?.rootViewController?.view) ?? CGRect.zero
         animationView.alpha = 1
         contentView.alpha = 0
         pageContrl.alpha = 0

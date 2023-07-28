@@ -85,7 +85,7 @@ public class BQPlayerView: UIView {
     public func setFull() {
         if let superV = superview {
             isFull = true
-            let keyWindow = UIApplication.shared.keyWindow
+            let keyWindow = UIApplication.keyWindow
             originFrame = frame
             supV = superV
             frame = superV.convert(frame, to: keyWindow)

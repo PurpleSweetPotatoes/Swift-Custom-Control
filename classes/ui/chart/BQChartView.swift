@@ -73,7 +73,7 @@ open class BQChartView: UIView {
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .groupTableViewBackground
+        backgroundColor = .systemGroupedBackground
         
         dashLayers = (0..<3).map { index in return CALayer.dashLayer(frame: CGRect(x: 0, y: 0, width: sizeW, height: 1), color: .mainColor, dashPattern: [5,5]) }
         

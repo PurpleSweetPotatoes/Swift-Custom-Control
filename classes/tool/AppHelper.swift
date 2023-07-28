@@ -9,30 +9,17 @@
 
 import UIKit
 
-struct AppInfo {
+struct AppHelper {
     static var name: String {
-        if let outStr = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String {
-            return outStr
-        } else if let outStr = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String {
-            return outStr
-        }
-        return ""
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ?? ""
     }
 
     static var identifier: String {
-        return Bundle.main.object(forInfoDictionaryKey: "CFBundleIdentifier") as! String
+        return Bundle.main.object(forInfoDictionaryKey: "CFBundleIdentifier") as? String ?? ""
     }
 
     static var version: String {
-        return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
-    }
-
-    static var statusHeight: CGFloat {
-        return UIApplication.shared.statusBarFrame.height
-    }
-
-    static var bottomSaveHeight: CGFloat {
-        return statusHeight > 20 ? 34 : 0
+        return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
     }
 
     static var languageCode: String {
@@ -48,4 +35,7 @@ struct AppInfo {
             return "en"
         }
     }
+}
+public func AppLocalizedString(_ key: String) -> String {
+    return NSLocalizedString(key, comment: "")
 }

@@ -11,21 +11,20 @@ import UIKit
 
 public extension UIViewController {
     var navBarBottom: CGFloat {
-        if let nvc = navigationController {
-            return nvc.navigationBar.bounds.height + AppInfo.statusHeight
-        } else {
+        guard let navBar = navigationController?.navigationBar else {
             return 0
         }
+        return navBar.bounds.height + UIApplication.statusBarHeight
     }
 
-    var statusHeight: CGFloat { return AppInfo.statusHeight }
+    var statusHeight: CGFloat { return UIApplication.statusBarHeight }
 
     var tabBarSizeH: CGFloat {
-        return tabBarController?.tabBar.sizeH ?? 0
+        tabBarController?.tabBar.sizeH ?? 0
     }
 
     static func currentVc() -> UIViewController? {
-        var vc = UIApplication.shared.keyWindow?.rootViewController
+        var vc = UIApplication.keyWindow?.rootViewController
         while let presentVc = vc?.presentedViewController {
             vc = presentVc
         }

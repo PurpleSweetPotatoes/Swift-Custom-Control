@@ -50,7 +50,7 @@ public class BQHudView: UIView {
 
         let msgView = BQHudView(frame: UIScreen.main.bounds, info: info, title: title)
 
-        if let hudView = self.hudView(supView: UIApplication.shared.keyWindow!) {
+        if let hudView = self.hudView(supView: UIApplication.keyWindow ?? UIView()) {
             hudView.removeFromSuperview()
         } else {
             msgView.alpha = 0
@@ -60,7 +60,7 @@ public class BQHudView: UIView {
         }
 
         msgView.center = CGPoint(x: UIScreen.main.bounds.size.width * 0.5, y: UIScreen.main.bounds.size.height * 0.5)
-        UIApplication.shared.keyWindow?.addSubview(msgView)
+        UIApplication.keyWindow?.addSubview(msgView)
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             msgView.removeFromSuperview()
         }

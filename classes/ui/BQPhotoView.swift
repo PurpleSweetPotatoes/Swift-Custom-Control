@@ -29,11 +29,11 @@ class BQPhotoView: UIView {
         }
         let showView = BQPhotoView(frame: UIScreen.main.bounds)
         showView.imageView.image = image
-        showView.origiFrame = supView.convert(imgView.frame, to: UIApplication.shared.keyWindow?.rootViewController?.view)
+        showView.origiFrame = supView.convert(imgView.frame, to: UIApplication.keyWindow?.rootViewController?.view)
         showView.tapAction { _ in
             showView.removeSelf()
         }
-        UIApplication.shared.keyWindow?.rootViewController?.view.addSubview(showView)
+        UIApplication.keyWindow?.rootViewController?.view.addSubview(showView)
         showView.startAnimation()
     }
 
@@ -44,7 +44,7 @@ class BQPhotoView: UIView {
         let height = imgSize.height * showView.sizeW / imgSize.width
         let frame = CGRect(x: 0, y: (showView.sizeH - height) * 0.5, width: showView.sizeW, height: height)
         showView.imageView.frame = frame
-        UIApplication.shared.keyWindow?.rootViewController?.view.addSubview(showView)
+        UIApplication.keyWindow?.rootViewController?.view.addSubview(showView)
     }
 
     // MARK: - ***** initialize Method *****

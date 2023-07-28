@@ -1,5 +1,5 @@
 // *******************************************
-//  File Name:      BQNavgationController.swift
+//  File Name:      BQNavigationController.swift
 //  Author:         MrBai
 //  Created Date:   2021/6/2 2:14 PM
 //
@@ -9,7 +9,7 @@
 
 import UIKit
 
-public class BQNavgationController: UINavigationController, UINavigationControllerDelegate, UIGestureRecognizerDelegate {
+public class BQNavigationController: UINavigationController, UINavigationControllerDelegate, UIGestureRecognizerDelegate {
     private var panGestureVC: UIViewController?
 
     public override func viewDidLoad() {
@@ -56,7 +56,7 @@ public extension UIViewController {
             return true
         }
         set {
-            if let nav = navigationController, nav is BQNavgationController {
+            if let nav = navigationController, nav is BQNavigationController {
                 objc_setAssociatedObject(self, &AssociatedKeys.navBack, newValue, .OBJC_ASSOCIATION_ASSIGN)
             }
         }

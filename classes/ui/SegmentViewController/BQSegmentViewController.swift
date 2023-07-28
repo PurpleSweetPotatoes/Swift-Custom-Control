@@ -54,7 +54,7 @@ open class BQSegmentViewController: UIViewController {
     }
     
     open var contentViewHeight: CGFloat {
-        return UIScreen.height - segmentView.sizeH - navBarBottom
+        return UIApplication.height - segmentView.sizeH - navBarBottom
     }
     
     // MARK: - *** Public method

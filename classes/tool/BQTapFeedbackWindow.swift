@@ -8,13 +8,35 @@
 
 import Foundation
 
+public class TapFeedbackManager: NSObject {
+    public static var feedbackWindow: BQTapFeedbackWindow?
+
+    public static func addFeedBackWindow() {
+        guard let windowScenes = UIApplication.shared.connectedScenes as? Set<UIWindowScene>,
+              let currentScene = windowScenes.first(where: { $0.activationState == .foregroundActive || $0.activationState == .foregroundInactive }) else {
+            return
+        }
+        Self.feedbackWindow = BQTapFeedbackWindow(windowScene: currentScene)
+        Self.feedbackWindow?.windowLevel = UIWindow.Level.alert + 1
+        Self.feedbackWindow?.isHidden = false
+    }
+}
+
 public final class BQTapFeedbackWindow: UIWindow {
     private var event: UIEvent?
     private var displayLink: CADisplayLink?
-    private let tapView = UIView()
+    private let firstTapView = UIView()
+    private let secondTapView = UIView()
+
+    private final class FeedbackViewController: UIViewController {
+        override var preferredStatusBarStyle: UIStatusBarStyle {
+            return .darkContent
+        }
+    }
 
     public override init(windowScene: UIWindowScene) {
         super.init(windowScene: windowScene)
+        rootViewController = FeedbackViewController()
         setupUI()
     }
 
@@ -43,32 +65,51 @@ public final class BQTapFeedbackWindow: UIWindow {
         event = nil
         clearDisplayLink()
         UIView.animate(withDuration: 0.15) {
-            self.tapView.alpha = 0
+            self.firstTapView.alpha = 0
+            self.secondTapView.alpha = 0
         }
     }
 
     @objc private func eventProcessHandle() {
         guard let allTouches = self.event?.allTouches,
-              !allTouches.isEmpty else {
+              !allTouches.isEmpty,
+              let firstTouch = allTouches.first else {
             clear()
             return
         }
-        if let touch = allTouches.first,
-           let currentWindow = UIApplication.shared.connectedScenes.compactMap({ ($0 as? UIWindowScene)?.keyWindow }).last {
+        processTouchDisplay(with: firstTouch, displayView: firstTapView)
+        if allTouches.count == 2,
+           let secondTouch = Array(allTouches).last {
+            processTouchDisplay(with: secondTouch, displayView: secondTapView)
+        } else if secondTapView.alpha != 0 {
+            UIView.animate(withDuration: 0.15) {
+                self.secondTapView.alpha = 0
+            }
+        }
+    }
+
+    private func processTouchDisplay(with touch: UITouch, displayView: UIView) {
+        if let currentWindow = UIApplication.shared.connectedScenes.compactMap({ ($0 as? UIWindowScene)?.keyWindow }).last {
             let point = touch.location(in: currentWindow)
             switch touch.phase {
             case .began, .moved, .stationary:
-                tapView.alpha = 1
-                tapView.center = point
+                displayView.alpha = 1
+                displayView.center = point
             default:
                 UIView.animate(withDuration: 0.15) {
-                    self.tapView.alpha = 0
+                    displayView.alpha = 0
                 }
             }
         }
     }
 
     private func setupUI() {
+        rootViewController?.view.backgroundColor = .clear
+        configTapView(with: firstTapView)
+        configTapView(with: secondTapView)
+    }
+
+    private func configTapView(with tapView: UIView) {
         tapView.frame = CGRect(origin: .zero, size: CGSize(width: 40, height: 40))
         tapView.backgroundColor = UIColor(white: 0.7, alpha: 0.4)
         tapView.layer.cornerRadius = 20
@@ -77,6 +118,6 @@ public final class BQTapFeedbackWindow: UIWindow {
         tapView.isUserInteractionEnabled = false
         tapView.clipsToBounds = true
         tapView.alpha = 0
-        addSubview(tapView)
+        rootViewController?.view.addSubview(tapView)
     }
 }
