@@ -19,7 +19,7 @@ public class MakeVideoFromImage {
             let assetWriter = try AVAssetWriter(outputURL: url, fileType: .mov)
             
             let videoSettings:[String:Any] = [
-                AVVideoCodecKey: AVVideoCodecH264,
+                AVVideoCodecKey: AVVideoCodecType.h264,
                 AVVideoWidthKey: image.size.width,
                 AVVideoHeightKey: image.size.height
             ]

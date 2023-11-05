@@ -17,10 +17,11 @@ public struct IOCFactory {
         instanceMap[key] = instance
     }
 
-    public static func load<T>() -> T {
+    public static func load<T>() throws -> T {
         let key = "\(T.self)"
         guard let instance = instanceMap[key] as? T else {
             assert(false, "IOC container don't have \(key)")
+            throw NSError(domain: "IOCFactory", code: 400)
         }
         return instance
     }

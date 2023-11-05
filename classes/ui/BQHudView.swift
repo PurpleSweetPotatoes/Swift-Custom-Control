@@ -80,7 +80,7 @@ public class BQHudView: UIView {
         backgroundColor = UIColor(white: 0, alpha: 0.7)
         layer.cornerRadius = 8
 
-        let activiView = UIActivityIndicatorView(style: .white)
+        let activiView = UIActivityIndicatorView(style: .medium)
         activiView.startAnimating()
         activiView.center = CGPoint(x: sizeW * 0.5, y: sizeH * 0.5)
         activiView.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)

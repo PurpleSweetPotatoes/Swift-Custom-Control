@@ -68,7 +68,7 @@ public class BQPlayerCtrlView: UIView {
         topLab.frame = CGRect(x: 0, y: 0, width: size.width, height: 40)
         var left: CGFloat = 10
         if let play = playerV, play.isFull {
-            left = UIApplication.shared.statusBarFrame.height
+            left = UIApplication.statusBarHeight
         }
         bottomV.frame = CGRect(x: 0, y: size.height - 40, width: size.width, height: 40)
         playBtn.frame = CGRect(x: left, y: 0, width: bottomV.size.height, height: bottomV.size.height)

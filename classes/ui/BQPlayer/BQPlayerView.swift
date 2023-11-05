@@ -201,7 +201,7 @@ public class BQPlayerView: UIView {
         activView = UIView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
         activView.backgroundColor = UIColor(white: 0, alpha: 0.3)
         activView.corner(6)
-        let activ = UIActivityIndicatorView(style: .white)
+        let activ = UIActivityIndicatorView(style: .medium)
         activ.frame = activView.bounds
         activ.startAnimating()
         activView.addSubview(activ)
