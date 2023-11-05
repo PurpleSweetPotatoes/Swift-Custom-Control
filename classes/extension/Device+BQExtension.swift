@@ -45,6 +45,15 @@ public extension UIDevice {
         }
     }
 
+    static func typeName() -> String {
+        guard let path = Bundle.bqSwiftModule?.path(forResource: "iPhone", ofType: "json"),
+              let string = try? String(contentsOfFile: path, encoding: .utf8),
+              let phonePairs = string.toDictionary() as? [String: String] else {
+            return ""
+        }
+        return phonePairs[getModelName()] ?? ""
+    }
+
     /// IP地址相关(第一个为外网ip)
     static func getIFAddresses() -> [String] {
         var addresses = [String]()
