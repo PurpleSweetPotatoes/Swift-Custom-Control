@@ -115,9 +115,9 @@ class BQBannerView: UIView {
         _scrollView.setContentOffset(CGPoint(x: sizeW * 2, y: 0), animated: true)
     }
 
-    @objc private func bannerTapGesturAction(tap: UITapGestureRecognizer) {
-        print("点击事件")
+    @objc private func bannerTapGestureAction(tap: UITapGestureRecognizer) {
         if tap.state == .ended {
+            BQLogger.log("tap banner with index: \(_index)")
             delegate?.didClickDisView(bannerView: self, imgV: _imgVList[1], item: _index)
         }
     }
@@ -129,7 +129,7 @@ class BQBannerView: UIView {
         configImgViews()
         configCtrlView()
 
-        let tap = UITapGestureRecognizer(target: self, action: #selector(bannerTapGesturAction(tap:)))
+        let tap = UITapGestureRecognizer(target: self, action: #selector(bannerTapGestureAction(tap:)))
         addGestureRecognizer(tap)
     }
 

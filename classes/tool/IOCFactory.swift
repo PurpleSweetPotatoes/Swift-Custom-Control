@@ -13,7 +13,6 @@ public struct IOCFactory {
 
     public static func register(instance: Any) {
         let key = "\(type(of: instance))"
-        print("register key: \(key)")
         instanceMap[key] = instance
     }
 

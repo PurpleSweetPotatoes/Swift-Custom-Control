@@ -139,7 +139,6 @@ class BQPhotoView: UIView {
             let height = imageView.sizeH / scrollView.maximumZoomScale
             let rect = CGRect(x: location.x - width * 0.5, y: location.y - height * 0.5, width: width, height: height)
             scrollView.zoom(to: rect, animated: true)
-            print(scrollView.contentOffset)
         } else {
             scrollView.setZoomScale(scrollView.minimumZoomScale, animated: true)
         }

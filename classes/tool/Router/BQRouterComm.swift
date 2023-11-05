@@ -69,7 +69,7 @@ class BQRouterComm {
         if target.removeIndex >= 0 {
             commObjcs.remove(at: target.removeIndex)
         }
-        print(commObjcs)
+        BQLogger.log(commObjcs)
     }
 
     private init() {}

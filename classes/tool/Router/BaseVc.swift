@@ -27,7 +27,7 @@ class BaseVc: UIViewController, BQRouterCommProtocol {
     }
 
     deinit {
-        print("\(self) is destroy")
+        BQLogger.log("\(self) is destroy")
         NotificationCenter.default.removeObserver(self)
         BQRouterComm.romveRouterComm(target: self)
     }
@@ -58,13 +58,9 @@ class BaseVc: UIViewController, BQRouterCommProtocol {
 
     // MARK: - ***** Protocol *****
 
-    func loadVcInfo(params _: Any) {
-        print("空方法")
-    }
+    func loadVcInfo(params _: Any) {}
 
-    func reciveRouterComm(name _: Notification.Name, params _: Any?) {
-        print("空方法")
-    }
+    func reciveRouterComm(name _: Notification.Name, params _: Any?) {}
 
     // MARK: - ***** create Method *****
 }

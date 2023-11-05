@@ -56,13 +56,13 @@ public class MakeVideoFromImage {
             })
             
         } catch {
-            print(error.localizedDescription)
+            BQLogger.error(error.localizedDescription)
         }
     }
     
     public func genUrl() -> URL {
         let directory = NSTemporaryDirectory()
-        let fileName = NSUUID().uuidString + ".mov"
+        let fileName = Date().toString(format: "yyyyMMdd_HHmmss_") + NSUUID().uuidString + ".mov"
         return NSURL.fileURL(withPathComponents: [directory, fileName])!
     }
     
@@ -79,16 +79,16 @@ public class MakeVideoFromImage {
         let values: [CFTypeRef] = [kCFBooleanTrue, kCFBooleanTrue, cfnum!]
         let keysPointer = UnsafeMutablePointer<UnsafeRawPointer?>.allocate(capacity: 1)
         let valuesPointer =  UnsafeMutablePointer<UnsafeRawPointer?>.allocate(capacity: 1)
-        keysPointer.initialize(to: keys)
-        valuesPointer.initialize(to: values)
-        
+        keysPointer.initialize(to: keys.withUnsafeBytes { $0.baseAddress })
+        valuesPointer.initialize(to: values.withUnsafeBytes { $0.baseAddress })
+
         let options = CFDictionaryCreate(kCFAllocatorDefault, keysPointer, valuesPointer, keys.count, nil, nil)
         
         let width = cgImage!.width
         let height = cgImage!.height
         
         var pxBuffer: CVPixelBuffer?
-        // if pxbuffer = nil, you will get status = -6661
+        // if pxBuffer = nil, you will get status = -6661
         CVPixelBufferCreate(kCFAllocatorDefault, width, height,
                                          kCVPixelFormatType_32BGRA, options, &pxBuffer)
         CVPixelBufferLockBaseAddress(pxBuffer!, CVPixelBufferLockFlags(rawValue: 0));

@@ -15,7 +15,7 @@ public extension Data {
         do {
             result = try JSONSerialization.jsonObject(with: self, options: .mutableContainers)
         } catch let err as NSError {
-            print(err.localizedDescription)
+            BQLogger.error(err.localizedDescription)
         }
         return result
     }

@@ -17,7 +17,7 @@ public struct BQTool {
         let start = CACurrentMediaTime()
         function()
         let end = CACurrentMediaTime()
-        print("耗时:\(end - start) s")
+        BQLogger.log("耗时:\(end - start) s")
     }
 
     // MARK: - ***** 对象转json *****

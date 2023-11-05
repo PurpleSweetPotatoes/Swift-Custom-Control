@@ -58,7 +58,7 @@ open class BQPopVc: UIViewController {
     }
 
     func didDisMiss() {
-        print("完成移除")
+        BQLogger.log("完成移除")
     }
 
     func animationShow() {}

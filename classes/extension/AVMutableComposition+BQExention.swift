@@ -146,7 +146,7 @@ public extension AVMutableCompositionTrack {
         do {
             try insertTimeRange(bqTrack.insertRange, of: bqTrack.track, at: bqTrack.atTime)
         } catch {
-            print("插入素材失败")
+            BQLogger.error("插入素材失败")
         }
     }
 }

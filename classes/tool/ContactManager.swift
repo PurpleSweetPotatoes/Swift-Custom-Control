@@ -28,7 +28,7 @@ struct ContactManager {
                 models.append(contact)
             })
         } catch {
-            print(error)
+            BQLogger.error(error)
         }
 
         return models

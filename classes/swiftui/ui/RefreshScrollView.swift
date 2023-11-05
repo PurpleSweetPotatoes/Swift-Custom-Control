@@ -58,7 +58,7 @@ public struct RefreshScrollView<Content: View>: View {
             viewModel.didUpdateOffsetY(value)
         }
         .onPreferenceChange(ScrollViewContentSizePreferenceKey.self) { value in
-            print("size value: \(value)")
+            BQLogger.log("size value: \(value)")
         }
         .coordinateSpace(name: Constants.RefreshableScrollViewSpanName)
         .onChange(of: viewModel.isRefreshing) { isRefresh in

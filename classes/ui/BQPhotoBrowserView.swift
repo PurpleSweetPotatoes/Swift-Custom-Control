@@ -86,7 +86,6 @@ class BQPhotoBrowserView: UIView {
     }
 
     fileprivate func removeSelf(row: Int) {
-        print("第\(row)个被点击")
         index = row
         if let delegate = delegate, let toRect = delegate.removeAnimationToFrame(currentIndex: index) {
             configImgFrame(frame: toRect)

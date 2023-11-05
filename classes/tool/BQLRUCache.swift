@@ -84,7 +84,7 @@ public final class BQLRUCache<Key: Hashable, Value> where Key: Comparable {
     public func description() {
         let values = nodeDictionary.sorted(by: {$0.0 < $1.0}).map{ $0.value }
         values.forEach({
-            print($0.value.debugDescription)
+            BQLogger.log($0.value.debugDescription)
         })
     }
 }

@@ -157,11 +157,11 @@ extension BQTextView: UITextViewDelegate {
 
 extension BQTextViewDelegate {
     func textViewDidHasMaxNum(textView _: BQTextView) {
-        print("达到最大字数限制")
+        BQLogger.log("达到最大字数限制")
     }
 
     func textViewDidAdjustFrame(textView _: BQTextView) {
-        print("Frame改变")
+        BQLogger.log("Frame改变")
     }
 
     func textViewShouldBeginEditing(textView _: BQTextView) -> Bool {
@@ -173,14 +173,14 @@ extension BQTextViewDelegate {
     }
 
     func textViewDidBeginEditing(textView _: BQTextView) {
-        print("已经开始编辑")
+        BQLogger.log("已经开始编辑")
     }
 
     func textViewDidEndEditing(textView _: BQTextView) {
-        print("结束编辑")
+        BQLogger.log("结束编辑")
     }
 
     func textViewDidChange(textView _: BQTextView) {
-        print("文字改变")
+        BQLogger.log("文字改变")
     }
 }
