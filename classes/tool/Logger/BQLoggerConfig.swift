@@ -75,21 +75,6 @@ public struct BQLoggerConfig {
         self.saveTime = saveTime
         return self;
     }
-
-    public static func startViewControllerLog() {
-        guard UIApplication.isDebug else {
-            BQLogger.error("current environment is debug can't log UIViewController life cycling")
-            return
-        }
-
-        DispatchQueue.once(token: #function) {
-            UIViewController.exchangeMethod(targetSel: #selector(UIViewController.viewDidLoad), newSel: #selector(UIViewController.bqLoggerViewDidLoad))
-            UIViewController.exchangeMethod(targetSel: #selector(UIViewController.viewWillAppear(_:)), newSel: #selector(UIViewController.bqLoggerViewWillAppear(_:)))
-            UIViewController.exchangeMethod(targetSel: #selector(UIViewController.viewWillDisappear(_:)), newSel: #selector(UIViewController.bqLoggerViewWillDisappear(_:)))
-            UIViewController.exchangeMethod(targetSel: #selector(UIViewController.present(_:animated:completion:)), newSel: #selector(UIViewController.bqLoggerPresent(_:animated:completion:)))
-            UINavigationController.exchangeMethod(targetSel: #selector(UINavigationController.pushViewController(_:animated:)), newSel: #selector(UINavigationController.bqLoggerPushViewController(_:animated:)))
-        }
-    }
     
     func canLog(type: BQLogType) -> Bool {
         type.rawValue > logType.rawValue

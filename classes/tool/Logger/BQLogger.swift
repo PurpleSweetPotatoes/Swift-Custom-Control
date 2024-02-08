@@ -141,7 +141,7 @@ public extension BQLogger {
 
     private static func printInfo<T>(type: BQLogType, message: T, file: String = #filePath, funcName: String = #function, lineNum: Int = #line) {
 
-        let output = type == .info ? "\(BQLogger.currentTime()) \(file.lastPathComponentName):\(lineNum): \(message)\n" : "\(type.colorStr)\(BQLogger.currentTime()) [\(file.lastPathComponentName):\(lineNum)] \(funcName):\n\(message)\n"
+        let output = type == .info ? "\(BQLogger.currentTime()): \(message)\n" : "\(type.colorStr)\(BQLogger.currentTime()) [\(file.lastPathComponentName):\(lineNum)] \(funcName):\n\(message)\n"
 
         if configInfo.canLog(type: type) {
             print(output, terminator:"")

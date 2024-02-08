@@ -58,11 +58,10 @@ public extension Array where Element: Codable {
     static func decodeJSON(from jsonString: String?, parsePath: String? = nil) -> [Element?] {
         guard let data = jsonString?.data(using: .utf8),
               let jsonData = getInnerObject(inside: data, by: parsePath),
-              let jsonObject = try? JSONSerialization.jsonObject(with: jsonData, options: .allowFragments) as? [Any]
-        else {
+              let result = try? JSONDecoder().decode([Element].self, from: jsonData) else {
             return []
         }
-        return Array.decodeJSON(from: jsonObject)
+        return result
     }
 
     static func decodeJSON(from array: [Any]?) -> [Element?] {

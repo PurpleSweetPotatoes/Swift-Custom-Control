@@ -141,7 +141,7 @@ open class BQChartView: UIView {
             textLayer.string = delegate.chartItemDesc(self, index:i)
             layer.addSublayer(textLayer)
         }
-        
+
         // 自定义部分
         customLayer()
     }
