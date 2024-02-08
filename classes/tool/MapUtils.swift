@@ -1,5 +1,5 @@
 //
-//  MKMapUtils.swift
+//  MapUtils.swift
 //  Pods
 //  
 //  Created by Bai, Payne on 2024/2/7.
@@ -7,8 +7,62 @@
 //  
 
 import MapKit
+import UIKit
 
-struct MKMapUtils {
+public protocol BQPolyLine {
+    var strokeColor: UIColor { get }
+    var lineWidth: CGFloat { get }
+    var zIndex: CGFloat { get }
+}
+
+public struct MapCoordinate: Codable {
+    public let lat: Double
+    public let lon: Double
+    var coordinate: CLLocationCoordinate2D {
+        CLLocationCoordinate2D(latitude: lat, longitude: lon)
+    }
+}
+
+public struct MapUtils {
+
+    private static var countryTypeInfo: [String: UIBezierPath] = [:]
+
+    public enum MapCountryType: String {
+        case china
+        case mainlandChina
+    }
+
+    public static func getCountryBounds(_ countryType: MapCountryType) -> [CLLocationCoordinate2D] {
+        guard let path = Bundle.bqSwiftModule?.path(forResource: countryType.rawValue, ofType: "json"),
+              let data = try? Data(contentsOf: URL(fileURLWithPath: path)),
+              let result = try? JSONDecoder().decode([MapCoordinate].self, from: data) else {
+            fatalError("Failed to load \(countryType.rawValue)")
+        }
+        return result.map { $0.coordinate }
+    }
+
+    public static func contains(_ coordinate: CLLocationCoordinate2D, countryType: MapCountryType) -> Bool {
+        let locationPoint = CGPoint(x: coordinate.longitude, y: coordinate.latitude)
+        if let bezierPath = countryTypeInfo[countryType.rawValue] {
+            return bezierPath.contains(locationPoint)
+        }
+
+        let result = getCountryBounds(countryType)
+        guard result.count > 2,
+              let firstPoint = result.first else {
+            fatalError("\(countryType.rawValue) bounds point less than 3")
+        }
+        let bezierPath = UIBezierPath()
+        bezierPath.move(to: CGPoint(x: firstPoint.longitude, y: firstPoint.latitude))
+        for index in 1..<result.count {
+            let point = result[index]
+            bezierPath.addLine(to: CGPoint(x: point.longitude, y: point.latitude))
+        }
+        bezierPath.close()
+        Self.countryTypeInfo[countryType.rawValue] = bezierPath
+        return bezierPath.contains(locationPoint)
+    }
+
     static func convert(from points: [CLLocationCoordinate2D]) -> MKMapRect {
         var boundBox = MKMapRect.null
         for location in points {
@@ -25,7 +79,7 @@ struct MKMapUtils {
 
 public extension MKMapView {
     func fit(points: [CLLocationCoordinate2D], animated: Bool, insets: UIEdgeInsets = .zero) {
-        var boundingBox = MKMapUtils.convert(from: points)
+        var boundingBox = MapUtils.convert(from: points)
         let mapWidth = bounds.width
         let mapHeight = bounds.height
         if insets != .zero,
@@ -42,6 +96,22 @@ public extension MKMapView {
         }
         let region = MKCoordinateRegion(boundingBox)
         setRegion(region, animated: animated)
+    }
+
+    func add(polyline: BQPolyLine) {
+        guard let polylinOverlay = polyline as? MKOverlay else {
+            return
+        }
+        for overlay in overlays {
+            if let addedPolyline = overlay as? BQPolyLine {
+                if polyline.zIndex > addedPolyline.zIndex {
+                    continue
+                }
+            }
+            insertOverlay(polylinOverlay, below: overlay)
+            return
+        }
+        addOverlay(polylinOverlay)
     }
 }
 
