@@ -11,17 +11,17 @@ import UIKit
 
 extension UIViewController {
     @objc func bqLoggerViewWillAppear(_ animated: Bool) {
-        print("\(self) ViewWillAppear")
+        print("test!!! ViewWillAppear \(self) ")
         bqLoggerViewWillAppear(animated)
     }
 
     @objc func bqLoggerViewWillDisappear(_ animated: Bool) {
-        print("\(self) viewWillDisappear")
+        print("test!!! viewWillDisappear\(self) ")
         bqLoggerViewWillDisappear(animated)
     }
 
     @objc func bqLoggerPresent(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
-        print("\(self) present \(viewControllerToPresent)")
+        print("test!!! \(self) present \(viewControllerToPresent)")
         bqLoggerPresent(viewControllerToPresent, animated: flag, completion: completion)
     }
 
@@ -31,7 +31,7 @@ extension UIViewController {
             print("current environment is debug can't log UIViewController life cycling")
             return false
         }
-        print("start UIViewController life cycling log")
+        print("test!!! start UIViewController life cycling log")
 
         UIViewController.exchangeMethodImp(targetSel: #selector(UIViewController.viewWillAppear(_:)), newSel: #selector(UIViewController.bqLoggerViewWillAppear(_:)))
         UIViewController.exchangeMethodImp(targetSel: #selector(UIViewController.viewWillDisappear(_:)), newSel: #selector(UIViewController.bqLoggerViewWillDisappear(_:)))
@@ -75,7 +75,7 @@ extension UIViewController {
 
 extension UINavigationController {
     @objc func bqLoggerPushViewController(_ viewController: UIViewController, animated: Bool) {
-        print("\(self) push \(viewController)")
+        print("test!!! \(self) push \(viewController)")
         bqLoggerPushViewController(viewController, animated: animated)
     }
 }
