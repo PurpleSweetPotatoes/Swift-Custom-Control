@@ -36,6 +36,7 @@ struct AppHelper {
         }
     }
 }
+
 public func AppLocalizedString(_ key: String) -> String {
     return NSLocalizedString(key, comment: "")
 }

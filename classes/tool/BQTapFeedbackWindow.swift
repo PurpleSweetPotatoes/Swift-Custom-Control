@@ -8,35 +8,14 @@
 
 import Foundation
 
-public class TapFeedbackManager: NSObject {
-    public static var feedbackWindow: BQTapFeedbackWindow?
-
-    public static func addFeedBackWindow() {
-        guard let windowScenes = UIApplication.shared.connectedScenes as? Set<UIWindowScene>,
-              let currentScene = windowScenes.first(where: { $0.activationState == .foregroundActive || $0.activationState == .foregroundInactive }) else {
-            return
-        }
-        Self.feedbackWindow = BQTapFeedbackWindow(windowScene: currentScene)
-        Self.feedbackWindow?.windowLevel = UIWindow.Level.alert + 1
-        Self.feedbackWindow?.isHidden = false
-    }
-}
-
 public final class BQTapFeedbackWindow: UIWindow {
     private var event: UIEvent?
     private var displayLink: CADisplayLink?
     private let firstTapView = UIView()
     private let secondTapView = UIView()
 
-    private final class FeedbackViewController: UIViewController {
-        override var preferredStatusBarStyle: UIStatusBarStyle {
-            return .darkContent
-        }
-    }
-
     public override init(windowScene: UIWindowScene) {
         super.init(windowScene: windowScene)
-        rootViewController = FeedbackViewController()
         setupUI()
     }
 
@@ -44,19 +23,30 @@ public final class BQTapFeedbackWindow: UIWindow {
         fatalError("init(coder:) has not been implemented")
     }
 
+    public override func addSubview(_ view: UIView) {
+        super.addSubview(view)
+        if subviews.last != secondTapView {
+            bringSubviewToFront(firstTapView)
+            bringSubviewToFront(secondTapView)
+        }
+    }
+
     public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         clear()
         self.event = event
         resetDisplayLink()
-        return nil
+        return super.hitTest(point, with: event)
     }
+}
 
-    private func resetDisplayLink() {
+private extension BQTapFeedbackWindow {
+
+    func resetDisplayLink() {
         displayLink = CADisplayLink(target: self, selector: #selector(eventProcessHandle))
         displayLink?.add(to: RunLoop.current, forMode: .common)
     }
 
-    private func clearDisplayLink() {
+    func clearDisplayLink() {
         displayLink?.invalidate()
         displayLink = nil
     }
@@ -71,6 +61,7 @@ public final class BQTapFeedbackWindow: UIWindow {
     }
 
     @objc private func eventProcessHandle() {
+        print("eventProcessHandle")
         guard let allTouches = self.event?.allTouches,
               !allTouches.isEmpty,
               let firstTouch = allTouches.first else {
@@ -104,7 +95,6 @@ public final class BQTapFeedbackWindow: UIWindow {
     }
 
     private func setupUI() {
-        rootViewController?.view.backgroundColor = .clear
         configTapView(with: firstTapView)
         configTapView(with: secondTapView)
     }
@@ -118,6 +108,6 @@ public final class BQTapFeedbackWindow: UIWindow {
         tapView.isUserInteractionEnabled = false
         tapView.clipsToBounds = true
         tapView.alpha = 0
-        rootViewController?.view.addSubview(tapView)
+        addSubview(tapView)
     }
 }

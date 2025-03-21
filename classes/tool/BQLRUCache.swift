@@ -40,6 +40,28 @@ public final class BQLRUCache<Key: Hashable, Value> where Key: Comparable {
         tail.prevNode = head
     }
 
+    /// Push your value and if there is same value, remove that automatically.
+    /// if not, and the capacity of LRUCache full, remove Least Recently Used Node and push new node.
+    public func setValue(value: Value, forKey key: Key) {
+        let newNode = ListNode(key: key, value: value)
+
+        if let oldNode = nodeDictionary[key] {
+            remove(node: oldNode)
+        } else if nodeDictionary.count >= capacity,
+                  let tailNode = tail.prevNode {
+            remove(node: tailNode) // remove Least Recently Used Node
+        }
+        insertToHead(node: newNode)
+    }
+
+    /// When the cache hit happen, remove the node what you get and insert to Head side again.
+    public func getValue(forKey key: Key) -> Value? {
+        guard let node = nodeDictionary[key] else { return nil }
+        remove(node: node)
+        insertToHead(node: node)
+        return node.value
+    }
+
     /// Remove Node in the Double Linked-list.
     private func remove(node: ListNode) {
         node.prevNode?.nextNode = node.nextNode
@@ -56,28 +78,6 @@ public final class BQLRUCache<Key: Hashable, Value> where Key: Comparable {
         head.nextNode = node
         guard let key = node.key else { return }
         nodeDictionary.updateValue(node, forKey: key)
-    }
-
-    /// When the cache hit happen, remove the node what you get and insert to Head side again.
-    public func getValue(forKey key: Key) -> Value? {
-        guard let node = nodeDictionary[key] else { return nil }
-        remove(node: node)
-        insertToHead(node: node)
-        return node.value
-    }
-
-    /// Push your value and if there is same value, remove that automatically.
-    /// if not, and the capacity of LRUCache full, remove Least Recently Used Node and push new node.
-    public func setValue(value: Value, forKey key: Key) {
-        let newNode = ListNode(key: key, value: value)
-
-        if let oldNode = nodeDictionary[key] {
-            remove(node: oldNode)
-        } else if nodeDictionary.count >= capacity,
-                  let tailNode = tail.prevNode {
-            remove(node: tailNode) // remove Least Recently Used Node
-        }
-        insertToHead(node: newNode)
     }
 
     /// Print values in Cache sorted by key
